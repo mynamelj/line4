@@ -1,0 +1,50 @@
+﻿<Window x:Class="MES.View.PopupSeqView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:MES.View"
+        xmlns:vm="clr-namespace:MES.ViewModel"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="扫描材料码"
+        Height="400"
+        Width="800"
+        ResizeMode="NoResize"
+        Closed="Window_Closed">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding WindowLoadedCmd}"
+                                   CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Window.DataContext>
+        <vm:PopupSeqViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid DataContext="{Binding MaterialCodeList}" Height="380">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="4*"/>
+            </Grid.RowDefinitions>
+            <DockPanel Grid.Row="0">
+                <TextBlock Text="{Binding MaterialName}"
+                           Margin="5"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           DockPanel.Dock="Left" />
+                <TextBox Text="{Binding MaterialCode}"
+                         Height="30"
+                         Margin="20,0,20,0"
+                         Padding="5"
+                         HorizontalAlignment="Stretch"
+                         IsReadOnly="True" />
+            </DockPanel>
+            <DockPanel Grid.Row="1">
+                <TextBox Text="{Binding MaterialMsg}" TextWrapping="Wrap" FontSize="15" Foreground="Red"/>
+            </DockPanel>
+        </Grid>
+        <!--<Button Content="aa" Height="10" Width="10" Command="{Binding AddCommand}"/>-->
+    </Grid>
+</Window>

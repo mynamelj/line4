@@ -1,0 +1,30 @@
+﻿<Window x:Class="MES.View.UserLoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MES.View"
+        xmlns:vm="clr-namespace:MES.ViewModel"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="用户登录" Height="200" Width="300" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" Margin="5">
+            <TextBlock Text="用户名"  VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
+            <TextBox Height="30" Margin="5" x:Name="txtUserName" VerticalAlignment="Center" Padding="6"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Margin="5">
+            <TextBlock Text="密   码"  VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
+            <PasswordBox Height="30" Margin="5"  x:Name="txtPassword" VerticalAlignment="Center" Padding="6"/>
+        </DockPanel>
+
+        <Button  Grid.Row="2" Width="170" Height="30" Content="登录" Click="Button_Click"/>
+        
+
+    </Grid>
+</Window>

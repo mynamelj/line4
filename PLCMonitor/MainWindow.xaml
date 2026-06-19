@@ -1,0 +1,287 @@
+﻿<UserControl x:Class="PLCMonitor.MainWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCMonitor"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:vm="clr-namespace:MES.ViewModel"
+             d:DesignHeight="450"
+             d:DesignWidth="1069.667"
+             Background="White"
+             mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:PLCMonitorViewModel />
+    </UserControl.DataContext>
+    <Border Margin="2"
+            BorderBrush="Black"
+            BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Margin="5"
+                        DataContext="{Binding PLCSetting}"
+                        Orientation="Horizontal">
+                <TextBlock Text="IP地址"
+                           Grid.Column="0"
+                           Margin="5,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+                <TextBox Text="{Binding IPAddress}"
+                         Grid.Column="1"
+                         Width="140"
+                         Margin="5,0"
+                         Padding="2"
+                         FontSize="18" />
+                <TextBlock Text="端口"
+                           Visibility="Collapsed"
+                           Grid.Column="2"
+                           Margin="5,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+                <TextBox Text="{Binding Port}"
+                         Visibility="Collapsed"
+                         Grid.Column="3"
+                         Width="50"
+                         Height="30"
+                         Margin="5,0"
+                         Padding="2"
+                         FontSize="18" />
+            </StackPanel>
+
+            <ComboBox Height="30"
+                      Width="135"
+                      Margin="342,4,0,6"
+                      HorizontalAlignment="Left"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment="Center"
+                      DisplayMemberPath="ProductName"
+                      ItemsSource="{Binding productTypes}"
+                      SelectedItem="{Binding ProductType}"
+                      SelectedValuePath="ProductID">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding ProductTypeChange}"
+                                               CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ComboBox}}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+
+            <Border Grid.Row="1"
+                    Margin="2"
+                    BorderBrush="Black"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="0" />
+                    </Grid.ColumnDefinitions>
+                    <Grid DataContext="{Binding EditPLCGroup}" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding GroupName}"
+                                 Grid.Column="0"
+                                 Margin="2"
+                                 Padding="5"
+                                 FontSize="18" />
+                        <ComboBox Text="{Binding GroupType}"
+                                  Grid.Column="1"
+                                  Margin="2"
+                                  Padding="5"
+                                  FontSize="18">
+                            <sys:String>TriggerGroup</sys:String>
+                            <sys:String>WriteGroup</sys:String>
+                            <sys:String>ReadGroup</sys:String>
+                            <sys:String>CheckOutGroup</sys:String>
+                            <sys:String>OeeGroup</sys:String>
+                            <sys:String>GetParaGroup</sys:String>
+                            <sys:String>AlarmGroup</sys:String>
+                            <sys:String>FormulaGroup</sys:String>
+                            <sys:String>DataCollectionGroup</sys:String>
+                        </ComboBox>
+                        <TextBox Text="{Binding RefreshTime}"
+                                 Grid.Column="2"
+                                 Margin="2"
+                                 Padding="5"
+                                 FontSize="18" />
+                        <TextBox Text="{Binding GroupDesc}"
+                                 Grid.Column="3"
+                                 Margin="2"
+                                 Padding="5"
+                                 FontSize="18" />
+                    </Grid>
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                        <DataGrid Margin="2"
+                                  AutoGenerateColumns="False"
+                                  BorderThickness="0.1"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  GridLinesVisibility="All"
+                                  IsReadOnly="True"
+                                  ItemsSource="{Binding PLCSetting.ListGroup}"
+                                  SelectedIndex="0"
+                                  SelectedValue="{Binding SelectPLCGroup}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedCellsChanged">
+                                    <i:InvokeCommandAction Command="{Binding SelectionChange}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="组名"
+                                                    Width="*"
+                                                    Binding="{Binding GroupName}"
+                                                    FontSize="13" />
+                                <DataGridTextColumn Header="组类型"
+                                                    Width="*"
+                                                    Binding="{Binding GroupType}"
+                                                    FontSize="13" />
+                                <DataGridTextColumn Header="刷新速率"
+                                                    Width="*"
+                                                    Binding="{Binding RefreshTime}"
+                                                    FontSize="13" />
+                                <DataGridTextColumn Header="备注"
+                                                    Width="*"
+                                                    Binding="{Binding GroupDesc}"
+                                                    FontSize="13" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border Grid.Row="2"
+                    Margin="2"
+                    BorderBrush="Black"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="0" />
+                    </Grid.ColumnDefinitions>
+                    <Grid DataContext="{Binding EditPLCTag}" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Text="{Binding TagName}"
+                                 Grid.Column="0"
+                                 Margin="2"
+                                 Padding="5"
+                                 FontSize="18">
+                        </TextBox>
+                        <TextBox Text="{Binding TagDbArea}"
+                                 Grid.Column="1"
+                                 Margin="2"
+                                 Padding="5"
+                                 FontSize="18">
+                        </TextBox>
+                        <TextBox Text="{Binding TagAddress}"
+                                 Grid.Column="2"
+                                 Margin="2"
+                                 Padding="5"
+                                 FontSize="18">
+                        </TextBox>
+                        <ComboBox Text="{Binding DataType}"
+                                  Grid.Column="3"
+                                  Margin="2"
+                                  Padding="5,6"
+                                  FontSize="18">
+                            <sys:String>int</sys:String>
+                            <sys:String>intArray</sys:String>
+                            <sys:String>real</sys:String>
+                            <sys:String>bool</sys:String>
+                            <sys:String>boolArray</sys:String>
+                            <sys:String>string</sys:String>
+                        </ComboBox>
+                        <TextBox Text="{Binding TagDesc}"
+                                 Grid.Column="4"
+                                 Margin="2"
+                                 Padding="5"
+                                 FontSize="18">
+                        </TextBox>
+                        <TextBox Text="{Binding CurrentValue}"
+                                 Grid.Column="5"
+                                 Margin="3,2,3,2"
+                                 Padding="5"
+                                 FontSize="18" Grid.ColumnSpan="3" />
+                    </Grid>
+                    <DataGrid Grid.Row="1"
+                              Margin="2,2,2,2"
+                              AutoGenerateColumns="False"
+                              BorderThickness="1"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              DataContext="{Binding SelectPLCGroup}"
+                              GridLinesVisibility="All"
+                              IsReadOnly="True"
+                              ItemsSource="{Binding ListTag, Mode=TwoWay}"
+                              SelectedValue="{Binding DataContext.SelectPLCTag, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"
+                              SelectionMode="Extended">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedCellsChanged">
+                                <i:InvokeCommandAction Command="{Binding DataContext.TagSelectionChange, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="标签名"
+                                                Width="*"
+                                                Binding="{Binding TagName}"
+                                                FontSize="13" />
+
+                            <DataGridTextColumn Header="数据区域"
+                                                Width="*"
+                                                Binding="{Binding TagDbArea}"
+                                                FontSize="13" />
+                            <DataGridTextColumn Header="标签地址"
+                                                Width="*"
+                                                Binding="{Binding TagAddress}"
+                                                FontSize="13" />
+                            <DataGridTextColumn Header="数据类型"
+                                                Width="*"
+                                                Binding="{Binding DataType}"
+                                                FontSize="13" />
+                            <DataGridTextColumn Header="描述"
+                                                Width="*"
+                                                Binding="{Binding TagDesc}"
+                                                FontSize="13" />
+                            <DataGridTextColumn Header="当前值"
+                                                Width="*"
+                                                Binding="{Binding CurrentValue}"
+                                                FontSize="13">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="Background" Value="{Binding BackColor}" />
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

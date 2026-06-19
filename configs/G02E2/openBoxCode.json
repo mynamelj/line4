@@ -1,0 +1,58 @@
+[
+    [
+        {
+            "CheckCode": "111111"
+        },
+        {
+            "CheckCode": "222222，2222New"
+        },
+        {
+            "CheckCode": "111113"
+        },
+        {
+            "CheckCode": "111114"
+        }
+    ],
+    [
+        {
+            "CheckCode": "1,2,3"
+        },
+        {
+            "CheckCode": "1,2,3"
+        },
+        {
+            "CheckCode": "1,2,3"
+        },
+        {
+            "CheckCode": "222224"
+        }
+    ],
+    [
+        {
+            "CheckCode": ""
+        },
+        {
+            "CheckCode": ""
+        },
+        {
+            "CheckCode": ""
+        },
+        {
+            "CheckCode": ""
+        }
+    ],
+    [
+        {
+            "CheckCode": ""
+        },
+        {
+            "CheckCode": ""
+        },
+        {
+            "CheckCode": ""
+        },
+        {
+            "CheckCode": ""
+        }
+    ]
+]

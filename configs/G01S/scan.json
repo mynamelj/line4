@@ -1,0 +1,18 @@
+[
+    {
+        "ID": "552d284e-6d9c-410b-aba2-cc0e1da43e02",
+        "IP": null,
+        "Port": 0,
+        "Com": 2,
+        "BaudRate": "9600",
+        "Parity": "None",
+        "DataBits": "8",
+        "StopBits": "One",
+        "EndLine": "\\r\\n",
+        "TestTime": 3000,
+        "OnCmd": null,
+        "OnHex": false,
+        "OffCmd": null,
+        "OffHex": false
+    }
+]

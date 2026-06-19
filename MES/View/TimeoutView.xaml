@@ -1,0 +1,49 @@
+﻿<Window x:Class="MES.View.TimeoutView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MES.View"
+        xmlns:vm="clr-namespace:MES.ViewModel"
+        mc:Ignorable="d"
+        Title="超时报警" Height="300" Width="600" 
+        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Topmost="True">
+    <Window.DataContext>
+        <vm:TimeoutViewModel />
+    </Window.DataContext>
+    <Grid Background="#F5F5F5">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="450">
+
+            <TextBlock Text="⚠️ 涂胶超时，请输入密码然后确认" 
+                       Foreground="Red" 
+                       FontSize="26" 
+                       FontWeight="Bold" 
+                       TextAlignment="Center" 
+                       Margin="0,0,0,30" 
+                       TextWrapping="Wrap"/>
+
+            <PasswordBox x:Name="PasswordInput" 
+                         Height="40" 
+                         FontSize="20" 
+                         VerticalContentAlignment="Center" 
+                         Margin="0,0,0,20"/>
+
+            <Button Content="确 认" 
+                    Command="{Binding ConfirmCommand}"
+                    CommandParameter="{Binding ElementName=PasswordInput}"
+                    Height="50" 
+                    FontSize="20" 
+                    FontWeight="Bold" 
+                    Background="#D32F2F" 
+                    Foreground="White" 
+                    Cursor="Hand">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="5"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+        </StackPanel>
+    </Grid>
+</Window>

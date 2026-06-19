@@ -1,0 +1,27 @@
+[
+    {
+        "ID": 0,
+        "AlarmCode": "R02OOOO-01",
+        "AlarmInfo": "DB772.DBX50.0-RFID����/����"
+    },
+    {
+        "ID": 1,
+        "AlarmCode": "R03OOOO-01",
+        "AlarmInfo": "DB772.DBX50.1-RFID��ȡ��ʱ"
+    },
+    {
+        "ID": 2,
+        "AlarmCode": "N04SWMS-01",
+        "AlarmInfo": "DB772.DBX50.2-MES��վʧ��"
+    },
+    {
+        "ID": 3,
+        "AlarmCode": "N04SWMS-02",
+        "AlarmInfo": "DB772.DBX50.3-MES��վʧ��"
+    },
+    {
+        "ID": 4,
+        "AlarmCode": "V06VSDV-01",
+        "AlarmInfo": "DB772.DBX50.4-�������NG"
+    }
+]

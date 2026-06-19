@@ -1,0 +1,23 @@
+﻿<Window x:Class="MES.View.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MES.View"
+        mc:Ignorable="d"
+        Title="Window1" Height="450" Width="800">
+    <Grid x:Name="can"  MouseLeftButtonDown="Canvas_MouseLeftButtonDown">
+        <Grid.Background>
+            <ImageBrush ImageSource="/Image/20240903105507.jpg"/>
+        </Grid.Background>
+
+        <TextBlock Foreground="Green" Text="{Binding ParamName}"></TextBlock>
+        <TextBlock Foreground="Green" Text="{Binding ParamValue}"></TextBlock>
+        <TextBlock Foreground="Green" Text="{Binding ParamResult}"></TextBlock>
+
+
+
+
+    </Grid>
+
+</Window>

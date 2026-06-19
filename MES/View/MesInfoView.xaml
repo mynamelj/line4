@@ -1,0 +1,151 @@
+﻿<UserControl x:Class="MES.View.MesInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:MES.ViewModel"
+             xmlns:local="clr-namespace:MES.View"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <UserControl.DataContext>
+        <vm:MesInfoViewModel />
+    </UserControl.DataContext>
+    <Grid>
+        <Grid Grid.ColumnSpan="3"
+              DataContext="{Binding MesInfos}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.Row="0"
+                       Grid.ColumnSpan="2">
+                <TextBlock Text="载具码"
+                           FontSize="18"
+                           VerticalAlignment="Center"
+                           Margin="16,0" />
+                <TextBlock Text="{Binding CarrierID}"
+                           Height="30"
+                           Margin="10,0,20,0"
+                           Padding="5"
+                           FontSize="18"
+                           HorizontalAlignment="Stretch" />
+            </DockPanel>
+            <DockPanel Grid.Row="1"
+                       Grid.ColumnSpan="2">
+                <TextBlock Text="产品码"
+                           FontSize="18"
+                           VerticalAlignment="Center"
+                           Margin="16,0" />
+                <TextBlock Text="{Binding SNCode}"
+                           Height="30"
+                           Margin="10,0,20,0"
+                           Padding="5"
+                           FontSize="18"
+                           HorizontalAlignment="Stretch" />
+            </DockPanel>
+
+            <ItemsControl Grid.Row="2"
+                          Grid.ColumnSpan="2"
+                          DataContext="{Binding MaterialCode}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="1" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <TextBlock Text="{Binding MaterialName}"
+                                       FontSize="18"
+                                       VerticalAlignment="Center"
+                                       Margin="16,0" />
+                            <TextBlock Text="{Binding MaterialCode}"
+                                       FontSize="18"
+                                       Height="30"
+                                       Margin="10,0,20,0"
+                                       Padding="5"
+                                       HorizontalAlignment="Stretch" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Grid Grid.Row="3"
+                  Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0">
+                    <TextBlock Text="进站结果"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Margin="10,0" />
+                    <TextBlock Text="{Binding CheckInResult}"
+                               Foreground="{Binding CheckInColor}"
+                               Height="30"
+                               Margin="10,0,20,0"
+                               Padding="5"
+                               FontSize="18"
+                               HorizontalAlignment="Stretch" />
+                </DockPanel >
+                <DockPanel Grid.Row="1">
+                    <TextBlock Text="进站消息"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Margin="10,0" />
+                    <TextBlock Text="{Binding CheckInMsg}"
+                               Foreground="{Binding CheckInColor}"
+                               Height="30"
+                               Margin="10,0,20,0"
+                               Padding="5"
+                               FontSize="18"
+                               HorizontalAlignment="Stretch" />
+                </DockPanel>
+            </Grid>
+
+            <Grid Grid.Row="3"
+                  Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0">
+                    <TextBlock Text="出站结果"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Margin="10,0" />
+                    <TextBlock Text="{Binding CheckOutResult}"
+                               Foreground="{Binding CheckOutColor}"
+                               Height="30"
+                               Margin="10,0,20,0"
+                               Padding="5"
+                               FontSize="18"
+                               HorizontalAlignment="Stretch" />
+                </DockPanel>
+                <DockPanel Grid.Row="1">
+                    <TextBlock Text="出站消息"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Margin="10,0" />
+                    <TextBlock Text="{Binding CheckOutMsg}"
+                               Foreground="{Binding CheckOutColor}"
+                               Height="30"
+                               Margin="10,0,20,0"
+                               Padding="5"
+                               FontSize="18"
+                               HorizontalAlignment="Stretch" />
+                </DockPanel>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</UserControl>

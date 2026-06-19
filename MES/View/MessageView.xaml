@@ -1,0 +1,940 @@
+﻿<UserControl x:Class="MES.View.MessageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:MES.View"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:MES.ViewModel"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             Background="White"
+             mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:MessageViewModel />
+    </UserControl.DataContext>
+
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <DockPanel  Grid.Row="1"
+                        LastChildFill="True">
+                <Grid DockPanel.Dock="Top"
+                      Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="0.15*" />
+                    </Grid.ColumnDefinitions>
+
+                    <ItemsControl Grid.Column="0"
+                                  ItemsSource="{Binding ResultModel}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid  Columns="1"
+                                              Margin="0,0,0,0" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,5">
+                                    <Grid.ColumnDefinitions>
+                                        <!--<ColumnDefinition Width="0.4*"/>-->
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="15" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <!--<DockPanel Grid.Column="0">
+                                        -->
+                                    <!--<TextBlock Text="工位" FontSize="20" FontWeight="Bold"  HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
+                                    <!--
+                                        <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </DockPanel>-->
+                                    <Grid Grid.Column="0"
+                                          Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="75" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Margin="5,0,5,0"
+                                                   Text="线别代码:"
+                                                   FontSize="15"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Line}"
+                                                   FontSize="20"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                    <Grid Grid.Column="1"
+                                          Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="85" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="大机台段别:"
+                                                   FontSize="15"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding StationID}"
+                                                   FontSize="20"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                    <Grid Grid.Column="2"
+                                          Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="75" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="机台编号:"
+                                                   FontSize="15"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding MachineID}"
+                                                   FontSize="20"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                    <!--<StackPanel HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+                                        <TextBlock Margin="5,0,5,0" Text="线别代码:" FontSize="12"   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Line}" FontSize="12"   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                        <TextBlock Margin="40,0,5,0" Text="大机台段别:" FontSize="12"   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding StationID}" FontSize="12"   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Margin="40,0,5,0" Text="机台编号:" FontSize="12"   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding MachineID}" FontSize="12"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </StackPanel>-->
+                                    <Grid Grid.Column="0"
+                                          Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Orientation="Horizontal"
+                                                    Grid.Row="0"
+                                                    Margin="5,0,0,0">
+                                            <TextBlock Text="产品进站："
+                                                       FontWeight="Bold"
+                                                       FontSize="25" />
+                                            <TextBlock Text="{Binding Result1}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="25"
+                                                       FontWeight="Bold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="OK-返修件">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}" Value="OK-返修合装">
+                                                                <Setter Property="Foreground" Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}" Value="OK-返修打散">
+                                                                <Setter Property="Foreground" Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="OK">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="NG-空载具">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="NG">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="上线-OK-返修件">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="上线-OK">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="上线-NG-空载具">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="上线-NG">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="下线-OK-返修件">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="下线-OK">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="下线-NG-空载具">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result1}"
+                                                                         Value="下线-NG">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding CheckInSN}"
+                                                   Grid.Row="1"
+                                                   FontSize="15"
+                                                   TextWrapping="Wrap" />
+                                    </Grid>
+
+                                    <Grid Grid.Column="1"
+                                          Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Orientation="Horizontal"
+                                                    Grid.Row="0"
+                                                    Visibility="{Binding LinkVis}">
+                                            <TextBlock Text="{Binding MiddleText}"
+                                                       FontWeight="Bold"
+                                                       FontSize="25" />
+                                            <TextBlock Text="{Binding Result2}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="25"
+                                                       FontWeight="Bold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Result2}"
+                                                                         Value="OK">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result2}"
+                                                                         Value="NG">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding MaterialSN}"
+                                                   Grid.Row="1"
+                                                   FontSize="15"
+                                                   TextWrapping="Wrap" />
+                                    </Grid>
+
+                                    <Grid Grid.Column="2"
+                                          Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Orientation="Horizontal"
+                                                    Grid.Row="0">
+                                            <TextBlock Text="产品出站："
+                                                       FontWeight="Bold"
+                                                       FontSize="25" />
+                                            <TextBlock Text="{Binding Result3}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="25"
+                                                       FontWeight="Bold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Result3}"
+                                                                         Value="OK">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Green" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Result3}"
+                                                                         Value="NG">
+                                                                <Setter Property="Foreground"
+                                                                        Value="Red" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding CheckOutSN}"
+                                                   Grid.Row="1"
+                                                   FontSize="15"
+                                                   TextWrapping="Wrap" />
+                                    </Grid>
+                                </Grid>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <ItemsControl Grid.Column="1"
+                                  ItemsSource="{Binding Opid}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid  Columns="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="工号"
+                                               FontSize="15"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+                                    <TextBox Text="{Binding Id, Mode=TwoWay}"
+                                             FontSize="20"
+                                             MinWidth="100"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+                <!--<Border Grid.Row="1"
+                    Grid.Column="0"
+                    BorderBrush="Black"
+                    BorderThickness="0.1"
+                    DataContext="{Binding ResultModel}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        -->
+                <!--<WrapPanel HorizontalAlignment="Center"
+                                   DockPanel.Dock="Top">-->
+                <!--
+                        <TextBlock Text="产品进站："
+                                   Margin="5"
+                                   FontSize="30"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="{Binding Result1}"
+                                   VerticalAlignment="Center"
+                                   FontSize="30"
+                                   FontWeight="Bold">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Result1}"
+                                                     Value="OK">
+                                            <Setter Property="Foreground" Value="Green" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Result1}"
+                                                     Value="NG">
+                                            <Setter Property="Foreground" Value="Red" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        -->
+                <!--</WrapPanel>-->
+                <!--
+
+                    </DockPanel>
+                    <TextBlock Text="{Binding CheckInSN}"
+                               Grid.Row="1"
+                               Margin="20,0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Bottom"
+                               FontSize="10"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap" />
+                </Grid>
+
+            </Border>
+
+            <Border Grid.Row="1"
+                    Grid.Column="1"
+                    BorderBrush="Black"
+                    BorderThickness="0.1"
+                    DataContext="{Binding ResultModel}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1.5*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding DataContext.LinkVis, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}">
+                        -->
+                <!--<WrapPanel HorizontalAlignment="Center"
+                               DockPanel.Dock="Top">-->
+                <!--
+                        <TextBlock Text="材料Link："
+                                   Margin="5"
+                                   FontSize="30"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="{Binding Result2}"
+                                   VerticalAlignment="Center"
+                                   FontSize="30"
+                                   FontWeight="Bold">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Result2}"
+                                                     Value="OK">
+                                            <Setter Property="Foreground" Value="Green" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Result2}"
+                                                     Value="NG">
+                                            <Setter Property="Foreground" Value="Red" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        -->
+                <!--</WrapPanel>-->
+                <!--
+
+                    </DockPanel>
+                    <TextBlock Text="{Binding MaterialSN}"
+                               Grid.Row="1"
+                               Margin="20,0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Bottom"
+                               FontSize="10"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Grid.Column="2"
+                    BorderBrush="Black"
+                    BorderThickness="0.1"
+                    DataContext="{Binding ResultModel}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1.5*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        -->
+                <!--<WrapPanel HorizontalAlignment="Center"
+                                   DockPanel.Dock="Top">-->
+                <!--
+                        <TextBlock Text="产品出站："
+                                   Margin="5"
+                                   FontSize="30"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="{Binding Result3}"
+                                   VerticalAlignment="Center"
+                                   FontSize="30"
+                                   FontWeight="Bold">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Result3}"
+                                                     Value="OK">
+                                            <Setter Property="Foreground" Value="Green" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Result3}"
+                                                     Value="NG">
+                                            <Setter Property="Foreground" Value="Red" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        -->
+                <!--</WrapPanel>-->
+                <!--
+
+                    </DockPanel>
+                    <TextBlock Text="{Binding CheckOutSN}"
+                               Grid.Row="1"
+                               Margin="20,0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Bottom"
+                               FontSize="10"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,0,20,0"
+                    BorderBrush="Black"
+                    BorderThickness="0">
+                <DockPanel HorizontalAlignment="Center"
+                           VerticalAlignment="Center">
+                    <WrapPanel DataContext="{Binding MesSetting}">
+                        <TextBlock Text="线别："
+                                   FontWeight="Bold" />
+                        <TextBlock Text="{Binding Line}"
+                                   FontWeight="Bold" />
+                    </WrapPanel>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="0,0,20,0"
+                    BorderBrush="Black"
+                    BorderThickness="0">
+                <DockPanel HorizontalAlignment="Center"
+                           VerticalAlignment="Center">
+                    <WrapPanel DataContext="{Binding MesSetting}"
+                               DockPanel.Dock="Top">
+                        <TextBlock Text="站别："
+                                   FontWeight="Bold" />
+                        <TextBlock Text="{Binding StationID}"
+                                   FontWeight="Bold" />
+                    </WrapPanel>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="0,0,20,0"
+                    BorderBrush="Black"
+                    BorderThickness="0">
+                <DockPanel HorizontalAlignment="Center"
+                           VerticalAlignment="Center">
+                    <WrapPanel DataContext="{Binding MesSetting}"
+                               DockPanel.Dock="Top">
+                        <TextBlock Text="机台号："
+                                   FontWeight="Bold" />
+                        <TextBlock Text="{Binding MachineID}"
+                                   FontWeight="Bold" />
+                    </WrapPanel>
+                </DockPanel>
+            </Border>-->
+
+                <!--<Border Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    BorderBrush="Black"
+                    BorderThickness="0.1"
+                    Visibility="Collapsed">
+                <Grid ShowGridLines="False">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.5*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <DockPanel HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        <StackPanel Margin="5"
+                                    DockPanel.Dock="Top">
+                            <TextBlock Text="产品SN："
+                                       Margin="5"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       FontWeight="Bold" />
+                            <TextBlock Text="材 料 码:  "
+                                       Margin="5"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       FontWeight="Bold" />
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel Grid.Column="1"
+                               HorizontalAlignment="Center">
+                        <StackPanel Margin="5"
+                                    DockPanel.Dock="Top">
+                            <TextBlock Text="1ENJHU7QGYEJBHNELQWKUE12"
+                                       Margin="5"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       FontWeight="Bold" />
+                            <TextBlock Text="1ENJHU7QGYEJBHNELQWKUEENJHU7QGYEJBHNELQWKUEENJHU72"
+                                       Margin="5"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       FontWeight="Bold" />
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </Border>-->
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <!--<RowDefinition MaxHeight="{Binding Height}" />-->
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <GroupBox Header="扫码枪消息">
+
+                                <ScrollViewer>
+                                    <ItemsControl ItemsSource="{Binding ListScanMessage}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel IsItemsHost="True" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="65" />
+                                                        <ColumnDefinition />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
+                                                               FontSize="15"
+                                                               Foreground="{Binding FailBrush}" />
+                                                    <TextBlock Text="{Binding Info}"
+                                                               Grid.Column="1"
+                                                               FontSize="15"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{Binding FailBrush}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </GroupBox>
+
+                            <Grid Grid.Row="1">
+                                <WrapPanel Orientation="Horizontal">
+                                    <TextBlock  Text="产品型号"
+                                                Margin="5" />
+                                    <TextBlock  Text="{Binding ProductType}"
+                                                Margin="5" />
+
+
+                                </WrapPanel>
+                                <Button Width="100"
+                                        Visibility="{Binding IsSpoutOil}"
+                                        Content="{Binding Content}"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding SpoutOilCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self},Path=Content}" />
+                            </Grid>
+
+                        </Grid>
+
+
+                        <!--<GroupBox Header="分钉箱开箱"
+                          Grid.Row="1"
+                          Visibility="Collapsed">
+                    <StackPanel>
+                        <StackPanel Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="3"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="分钉箱码扫描"
+                                       Margin="5"
+                                       HorizontalAlignment="Center" />
+                            <TextBox Text="{Binding BoxCode}"
+                                     Height="30"
+                                     Margin="20,0,20,0"
+                                     Padding="5"
+                                     HorizontalAlignment="Stretch"
+                                     TextAlignment="Center" />
+                        </StackPanel>
+
+                        <ItemsControl Grid.Row="1"
+                                      Grid.Column="0"
+                                      Margin="3"
+                                      VerticalAlignment="Center"
+                                      ItemsSource="{Binding BoxCodeInfo}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="1" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <StackPanel HorizontalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                            <TextBlock Text="分钉箱码"
+                                                       Margin="3"
+                                                       HorizontalAlignment="Center" />
+                                            <TextBlock Text="{Binding Index}"
+                                                       Margin="3"
+                                                       HorizontalAlignment="Center" />
+                                        </StackPanel>
+
+                                        <TextBox Text="{Binding Code}"
+                                                 Height="30"
+                                                 Margin="20,0,20,0"
+                                                 Padding="5"
+                                                 HorizontalAlignment="Stretch"
+                                                 TextAlignment="Center" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="0"
+                                Width="100"
+                                Height="30"
+                                Margin="10"
+                                Command="{Binding SaveCommand}"
+                                Content="保存" />
+
+                    </StackPanel>
+                </GroupBox>-->
+
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <GroupBox Header="PLC消息">
+                            <ScrollViewer>
+                                <ItemsControl ItemsSource="{Binding ListPLCMessage}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel IsItemsHost="True" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="65" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
+                                                           FontSize="15" />
+                                                <TextBlock Text="{Binding Info}"
+                                                           Grid.Column="1"
+                                                           FontSize="15"
+                                                           TextWrapping="Wrap" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </GroupBox>
+                        <!--<TextBlock Grid.Row="1" Text="{Binding ButtonTime}" FontSize="25" FontWeight="Black" TextAlignment="Center" Foreground="Red"/>-->
+                        <TextBlock Text="{Binding ButtonTime}"
+                                   Grid.Row="1"
+                                   TextAlignment="Center"
+                                   FontSize="20"
+                                   FontWeight="Black"
+                                   Foreground="Red" />
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TabControl>
+                                <TabItem Header="MES消息"
+                                         Width="100">
+                                    <GroupBox>
+                                        <ScrollViewer>
+                                            <ItemsControl ItemsSource="{Binding ListMesMessage}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel IsItemsHost="True" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="65" />
+                                                                <ColumnDefinition />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
+                                                                       FontSize="15"
+                                                                       Foreground="{Binding FailBrush}" />
+                                                            <TextBlock Text="{Binding Info}"
+                                                                       Grid.Column="1"
+                                                                       FontSize="15"
+                                                                       Foreground="{Binding FailBrush}"
+                                                                       TextWrapping="Wrap" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </GroupBox>
+                                </TabItem>
+                                <TabItem Header="JSON日志"
+                                         Width="100">
+                                    <GroupBox>
+                                        <ScrollViewer>
+                                            <ItemsControl ItemsSource="{Binding ListOEEMessage}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel IsItemsHost="True" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="65" />
+                                                                <ColumnDefinition />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
+                                                                       FontSize="15"
+                                                                       Foreground="{Binding FailBrush}" />
+                                                            <TextBlock Text="{Binding Info}"
+                                                                       Grid.Column="1"
+                                                                       FontSize="15"
+                                                                       Foreground="{Binding FailBrush}"
+                                                                       TextWrapping="Wrap" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </GroupBox>
+                                </TabItem>
+                                <TabItem Header="OEE日志"
+                                         Width="100">
+                                    <GroupBox>
+                                        <ScrollViewer>
+                                            <ItemsControl ItemsSource="{Binding ListOtherMessage}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel IsItemsHost="True" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="65" />
+                                                                <ColumnDefinition />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
+                                                                       FontSize="15"
+                                                                       Foreground="{Binding FailBrush}" />
+                                                            <TextBlock Text="{Binding Info}"
+                                                                       Grid.Column="1"
+                                                                       FontSize="15"
+                                                                       Foreground="{Binding FailBrush}"
+                                                                       TextWrapping="Wrap" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </GroupBox>
+                                </TabItem>
+                            </TabControl>
+                            <StackPanel Grid.Row="1"
+                                        Orientation="Horizontal">
+                                <TextBlock  Text="PLC心跳"
+                                            Background="White"
+                                            Margin="5" />
+                                <TextBlock  Text="{Binding PlcHeart}"
+                                            Background="White"
+                                            Margin="5" />
+                                
+                                <!--<TextBlock  Text="" Background="White" Margin="5"/>-->
+                                <TextBlock  Text="V5.1"
+                                            Background="White"
+                                            Margin="10,5,5,5" />
+                                <TextBlock  Text="{Binding RepairStatus}"
+                                                Foreground="{Binding RepairStatusColor}"
+                                                Visibility="{Binding RepairStationVisibility}"
+                                                FontWeight="Bold"
+                                                Margin="70 5 0 0" />
+
+                                <!--更新历史信息
+                            1.v1.2 2025/4/6MES变更胶水上线接口规则修改代码
+                            2.v1.3 胶水工位进站后自动FeedingCheck胶水码
+                            3.v1.4 2150-4005-4015 一带七工站软件兼容
+                            4.v1.5 选垫更新
+                            5.v1.6 多精追料PLC关闭弹窗BUG修复
+                            6.v1.7 材料Link隐藏增加，胶水码出站上传增加
+                            7.OP4130扫码进站加LINKCOMP绑定功能兼容
+                            8.OP3030扫码校验取消
+                            9.v2.0 3030拆分工站更新 OP1010弹窗增加
+                            10.v2.1胶水上传修改
+                            11.V2.2LINKCOMP弹窗更新
+                            12 v2.4选垫上下料逻辑MES要求修改
+                            V2.6胶水校验修改
+                            V2.7
+    ·                        V2.8 oee功能增加
+                            v2.9NG上下线逻辑修改
+                            v3.0 手动工位按钮时间增加
+                            v3.1胶水上料工站选择修改    
+                            V3.2修复软件不退出的Bug
+                            v3.3核对载具码结果及码显示
+                            v3.4 op3021工位扫码油底壳码的时候需要校验胶水码    
+                            v3.5 扫码枪自动屏蔽换行功能增加 
+                            v3.6 强制下料直接删除行 
+                            v3.7 3045三个工站兼容  
+                            v3.8 打印机工位接口字段名称修改StationID改为Station    
+                            v3.9 3045工位修改，2号工站扫材料码时软件需要弹窗提醒，增加由PLC触发扫码启动，软件弹窗后再扫码，只在3045更新了，界面软件版本未修改
+                            v4.0 物料不足预警判断成物料不足了，程序已修改，未更新
+                            v4.1 3045两个弹窗位置错开
+                            v4.2 状态上传功能修改
+                            v4.3 扫码提示2秒BUG修改,MES日志存储占用问题加Lock
+                            v4.4 多个工站有相同名称物料时触发上料异常问题修复
+                            V4.5 op1010修改为PLC给进站信号弹窗，复位掉进站信号关闭弹窗
+                            v4.6 OP5120-5130 手动工位登录权限发送给PLC同时发送同时复位
+                            v4.7 新增进站后确保SN码写入PLC后再给PLC进站结果信号    
+                            v4.8 OEE代码部分：多螺栓特殊工位需分类讨论，此版本只测试OP2080选垫，后续再加
+                            v4.9 OP1010更改：弹窗关闭时候，扫码不触发进站
+                            v5.0 OEE代码部分：补全除选垫工位之外其余工位的代码 
+                            v5.1 MES配置界面和PLC配置界面新增权限管控  
+                                -->
+                            </StackPanel>
+
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,441 @@
+{
+    "IPAddress": "192.168.11.20",
+    "Port": 100,
+    "ReadDB": 6012,
+    "WriteDB": 6012,
+    "ListGroup": [
+        {
+            "GroupName": "读取信号组",
+            "GroupType": "ReadGroup",
+            "RefreshTime": 200,
+            "GroupDesc": null,
+            "ListTag": [
+                {
+                    "TagName": "PLC进站流程ID",
+                    "TagDbArea": 6012,
+                    "TagAddress": "402",
+                    "DataType": "int",
+                    "TagDesc": null,
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "进站载具码",
+                    "TagDbArea": 6012,
+                    "TagAddress": "298.50",
+                    "DataType": "string",
+                    "TagDesc": null,
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "PLC出站流程ID",
+                    "TagDbArea": 6012,
+                    "TagAddress": "404",
+                    "DataType": "int",
+                    "TagDesc": null,
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "设定参数版本",
+                    "TagDbArea": 6012,
+                    "TagAddress": "408.50",
+                    "DataType": "string",
+                    "TagDesc": null,
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "产品SN",
+                    "TagDbArea": 6012,
+                    "TagAddress": "350.50",
+                    "DataType": "string",
+                    "TagDesc": "",
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "出站载具码",
+                    "TagDbArea": 6012,
+                    "TagAddress": "298.50",
+                    "DataType": "string",
+                    "TagDesc": null,
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "按钮时间",
+                    "TagDbArea": 6012,
+                    "TagAddress": "468",
+                    "DataType": "real",
+                    "TagDesc": null,
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                }
+            ]
+        },
+        {
+            "GroupName": "写入信号组",
+            "GroupType": "WriteGroup",
+            "RefreshTime": 200,
+            "GroupDesc": null,
+            "ListTag": [
+                {
+                    "TagName": "PC进站流程ID",
+                    "TagDbArea": 6012,
+                    "TagAddress": "182",
+                    "DataType": "int",
+                    "TagDesc": "",
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "PC出站流程ID",
+                    "TagDbArea": 6012,
+                    "TagAddress": "184",
+                    "DataType": "int",
+                    "TagDesc": "",
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "进站结果",
+                    "TagDbArea": 6012,
+                    "TagAddress": "12",
+                    "DataType": "int",
+                    "TagDesc": "",
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "出站结果",
+                    "TagDbArea": 6012,
+                    "TagAddress": "14",
+                    "DataType": "int",
+                    "TagDesc": "",
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "产品SN",
+                    "TagDbArea": 6012,
+                    "TagAddress": "130.50",
+                    "DataType": "string",
+                    "TagDesc": "",
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "开箱1",
+                    "TagDbArea": 6012,
+                    "TagAddress": "0.1",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "开箱2",
+                    "TagDbArea": 6012,
+                    "TagAddress": "0.2",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "扫描材料码结果",
+                    "TagDbArea": 6012,
+                    "TagAddress": "16",
+                    "DataType": "int",
+                    "TagDesc": "",
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "核对载具码结果",
+                    "TagDbArea": 6012,
+                    "TagAddress": "20",
+                    "DataType": "int",
+                    "TagDesc": "",
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "检查材料合法性结果",
+                    "TagDbArea": 6012,
+                    "TagAddress": "18",
+                    "DataType": "int",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "打印信号发送结果",
+                    "TagDbArea": 6012,
+                    "TagAddress": "22",
+                    "DataType": "int",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "设定参数上报结果",
+                    "TagDbArea": 6012,
+                    "TagAddress": "24",
+                    "DataType": "int",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "心跳",
+                    "TagDbArea": 6012,
+                    "TagAddress": "0.0",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "操作权限",
+                    "TagDbArea": 6012,
+                    "TagAddress": "0.7",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                }
+            ]
+        },
+        {
+            "GroupName": "触发信号组",
+            "GroupType": "TriggerGroup",
+            "RefreshTime": 200,
+            "GroupDesc": null,
+            "ListTag": [
+                {
+                    "TagName": "产品出站启动",
+                    "TagDbArea": 6012,
+                    "TagAddress": "296.2",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "产品进站启动",
+                    "TagDbArea": 6012,
+                    "TagAddress": "296.1",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": -100.0,
+                    "LowLimit": 100.0
+                },
+                {
+                    "TagName": "扫描材料码启动",
+                    "TagDbArea": 6012,
+                    "TagAddress": "296.3",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "设备运行状态",
+                    "TagDbArea": 6012,
+                    "TagAddress": "406",
+                    "DataType": "int",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "检查材料合法性启动",
+                    "TagDbArea": 6012,
+                    "TagAddress": "296.4",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "核对载具码启动",
+                    "TagDbArea": 6012,
+                    "TagAddress": "296.5",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "打印信号发送启动",
+                    "TagDbArea": 6012,
+                    "TagAddress": "296.6",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "设定参数上报启动",
+                    "TagDbArea": 6012,
+                    "TagAddress": "296.7",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                },
+                {
+                    "TagName": "心跳",
+                    "TagDbArea": 6012,
+                    "TagAddress": "296.0",
+                    "DataType": "bool",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                }
+            ]
+        },
+        {
+            "GroupName": "出站数据读取信号组",
+            "GroupType": "CheckOutGroup",
+            "RefreshTime": 200,
+            "GroupDesc": null,
+            "ListTag": [
+                {
+                    "TagName": "TightenTorque1",
+                    "TagDbArea": 6012,
+                    "TagAddress": "582",
+                    "DataType": "real",
+                    "TagDesc": "三相螺栓拧紧扭力-1",
+                    "UpLimit": 10000.0,
+                    "LowLimit": -10000.0
+                },
+                {
+                    "TagName": "TightenAngle1",
+                    "TagDbArea": 6012,
+                    "TagAddress": "592",
+                    "DataType": "real",
+                    "TagDesc": "三相螺栓拧紧角度-1",
+                    "UpLimit": 10000.0,
+                    "LowLimit": -10000.0
+                },
+                {
+                    "TagName": "TightenTorque2",
+                    "TagDbArea": 6012,
+                    "TagAddress": "602",
+                    "DataType": "real",
+                    "TagDesc": "三相螺栓拧紧扭力-2",
+                    "UpLimit": 10000.0,
+                    "LowLimit": -10000.0
+                },
+                {
+                    "TagName": "TightenAngle2",
+                    "TagDbArea": 6012,
+                    "TagAddress": "612",
+                    "DataType": "real",
+                    "TagDesc": "三相螺栓拧紧角度-2",
+                    "UpLimit": 10000.0,
+                    "LowLimit": -10000.0
+                },
+                {
+                    "TagName": "TightenTorque3",
+                    "TagDbArea": 6012,
+                    "TagAddress": "622",
+                    "DataType": "real",
+                    "TagDesc": "三相螺栓拧紧扭力-3",
+                    "UpLimit": 10000.0,
+                    "LowLimit": -10000.0
+                },
+                {
+                    "TagName": "TightenAngle3",
+                    "TagDbArea": 6012,
+                    "TagAddress": "632",
+                    "DataType": "real",
+                    "TagDesc": "三相螺栓拧紧角度-3",
+                    "UpLimit": 10000.0,
+                    "LowLimit": -10000.0
+                },
+                {
+                    "TagName": "CCDResult",
+                    "TagDbArea": 6012,
+                    "TagAddress": "642",
+                    "DataType": "real",
+                    "TagDesc": "相机结果",
+                    "UpLimit": 10000.0,
+                    "LowLimit": -10000.0
+                }
+            ]
+        },
+        {
+            "GroupName": "OEE数据收集组",
+            "GroupType": "OeeGroup",
+            "RefreshTime": 200,
+            "GroupDesc": null,
+            "ListTag": []
+        },
+        {
+            "GroupName": "设定参数上报组",
+            "GroupType": "GetParaGroup",
+            "RefreshTime": 200,
+            "GroupDesc": null,
+            "ListTag": [
+                {
+                    "TagName": "setvalue1",
+                    "TagDbArea": 6012,
+                    "TagAddress": "1480",
+                    "DataType": "real",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": 10.0
+                },
+                {
+                    "TagName": "setvalue2",
+                    "TagDbArea": 6012,
+                    "TagAddress": "1484",
+                    "DataType": "real",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": 10.0
+                },
+                {
+                    "TagName": "setvalue3",
+                    "TagDbArea": 6012,
+                    "TagAddress": "1496",
+                    "DataType": "real",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": 10.0
+                },
+                {
+                    "TagName": "setvalue4",
+                    "TagDbArea": 6012,
+                    "TagAddress": "1500",
+                    "DataType": "real",
+                    "TagDesc": null,
+                    "UpLimit": 100.0,
+                    "LowLimit": 10.0
+                }
+            ]
+        },
+        {
+            "GroupName": "报警信号组",
+            "GroupType": "AlarmGroup",
+            "RefreshTime": 200,
+            "GroupDesc": null,
+            "ListTag": [
+                {
+                    "TagName": "报警",
+                    "TagDbArea": 6012,
+                    "TagAddress": "2380.0.2000",
+                    "DataType": "boolArray",
+                    "TagDesc": "报警变量 从偏移量0的第0位开始读2000个bool量",
+                    "UpLimit": 100.0,
+                    "LowLimit": -100.0
+                }
+            ]
+        }
+    ]
+}
