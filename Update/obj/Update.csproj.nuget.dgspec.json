@@ -1,0 +1,70 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Document\\DotNet Project\\Mes\\rz26001-lux-mes-line4\\Update\\Update.csproj": {}
+  },
+  "projects": {
+    "D:\\Document\\DotNet Project\\Mes\\rz26001-lux-mes-line4\\Update\\Update.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Document\\DotNet Project\\Mes\\rz26001-lux-mes-line4\\Update\\Update.csproj",
+        "projectName": "Update",
+        "projectPath": "D:\\Document\\DotNet Project\\Mes\\rz26001-lux-mes-line4\\Update\\Update.csproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "D:\\Document\\DotNet Project\\Mes\\rz26001-lux-mes-line4\\Update\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\Software\\Visual Studio\\SDK\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net4.8"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net4.8": {
+            "framework": "net48",
+            "targetAlias": "net4.8",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net4.8": {
+          "framework": "net48",
+          "targetAlias": "net4.8",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

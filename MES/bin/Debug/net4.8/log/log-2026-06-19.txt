@@ -1,0 +1,910 @@
+2026-06-19 13:14:10 060：System.IO.DirectoryNotFoundException: 未能找到路径“D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\bin\Debug\net4.8\configs\user.json”的一部分。
+   在 System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   在 System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   在 System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   在 System.IO.StreamReader..ctor(String path, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost)
+   在 System.IO.File.InternalReadAllText(String path, Encoding encoding, Boolean checkHost)
+   在 MES.Manager.SetHelper.ReadSys[T](String path, String Name) 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\SetHelper.cs:行号 302
+2026-06-19 13:14:10 089：System.IO.DirectoryNotFoundException: 未能找到路径“D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\bin\Debug\net4.8\configs\product.json”的一部分。
+   在 System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   在 System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   在 System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   在 System.IO.StreamReader..ctor(String path, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost)
+   在 System.IO.File.InternalReadAllText(String path, Encoding encoding, Boolean checkHost)
+   在 MES.Manager.SetHelper.ReadSys[T](String path, String Name) 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\SetHelper.cs:行号 302
+2026-06-19 13:14:10 090：当前产品型号
+2026-06-19 13:14:10 247：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:10 358：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:10 466：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:10 510：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:10 577：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:10 685：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:10 793：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:10 903：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 009：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 021：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:11 120：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 230：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 339：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 448：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 536：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:11 557：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 667：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 776：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 883：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:11 989：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:12 037：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:12 095：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:12 203：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:12 310：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:12 416：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:12 522：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:12 538：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:12 629：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:12 735：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:12 841：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:12 948：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:13 038：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:13 055：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:13 162：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:13 268：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:13 375：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:13 482：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:13 539：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:13 588：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:13 696：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:13 802：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:13 909：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 015：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 039：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:14 122：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 228：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 334：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 441：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 541：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:14 548：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 654：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 760：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 867：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:14 974：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:15 041：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:15 080：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:15 186：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:15 293：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:15 398：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:15 505：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:15 542：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:14:15 542：状态上传功能已启动，监控工位数量：0
+2026-06-19 13:14:15 610：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:15 718：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:15 824：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:15 931：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 038：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 145：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 251：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 357：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 465：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 572：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 678：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 785：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 891：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:16 998：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:17 105：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:17 212：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:17 319：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:17 426：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:17 531：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:17 638：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:17 745：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:17 851：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:17 957：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:14:18 064：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog()
+2026-06-19 13:14:18 170：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog()
+2026-06-19 13:14:18 277：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog()
+2026-06-19 13:16:24 161：System.IO.DirectoryNotFoundException: 未能找到路径“D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\bin\Debug\net4.8\configs\user.json”的一部分。
+   在 System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   在 System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   在 System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   在 System.IO.StreamReader..ctor(String path, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost)
+   在 System.IO.File.InternalReadAllText(String path, Encoding encoding, Boolean checkHost)
+   在 MES.Manager.SetHelper.ReadSys[T](String path, String Name) 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\SetHelper.cs:行号 302
+2026-06-19 13:16:24 191：System.IO.DirectoryNotFoundException: 未能找到路径“D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\bin\Debug\net4.8\configs\product.json”的一部分。
+   在 System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   在 System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   在 System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   在 System.IO.StreamReader..ctor(String path, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost)
+   在 System.IO.File.InternalReadAllText(String path, Encoding encoding, Boolean checkHost)
+   在 MES.Manager.SetHelper.ReadSys[T](String path, String Name) 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\SetHelper.cs:行号 302
+2026-06-19 13:16:24 191：当前产品型号
+2026-06-19 13:16:24 342：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:24 451：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:24 557：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:24 613：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:24 666：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:24 777：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:24 887：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:24 995：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:25 105：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:25 115：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:25 214：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:25 323：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:25 433：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:25 542：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:25 630：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:25 651：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:25 760：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:25 869：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:25 978：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:26 086：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:26 131：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:26 192：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:26 299：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:26 405：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:26 512：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:26 618：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:26 632：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:26 724：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:26 832：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:26 938：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:27 045：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:27 132：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:27 151：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:27 257：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:27 363：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:27 469：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:27 576：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:27 633：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:27 682：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:27 789：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:27 895：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 001：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 110：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 134：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:28 217：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 324：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 430：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 537：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 634：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:28 642：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 749：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 856：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:28 962：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:29 069：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:29 135：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:29 176：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:29 281：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:29 387：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:29 495：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:29 601：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:29 636：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:16:29 636：状态上传功能已启动，监控工位数量：0
+2026-06-19 13:16:29 710：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:29 816：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:29 923：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 030：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 137：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 243：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 350：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 457：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 563：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 671：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 777：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 882：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:30 988：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:31 096：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:31 202：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:31 308：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:31 416：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:31 522：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:31 628：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:31 735：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:31 841：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:31 949：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:32 057：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:32 163：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:32 271：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:32 379：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:32 487：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:32 595：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:32 703：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:32 809：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:32 916：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:33 022：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:33 129：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:33 236：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:33 341：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:33 448：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:33 555：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1842
+2026-06-19 13:16:33 663：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog()
+2026-06-19 13:16:33 769：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog()
+2026-06-19 13:16:33 876：删除超时日志异常：System.ArgumentOutOfRangeException: 索引超出范围。必须为非负值并小于集合大小。
+参数名: index
+   在 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   在 System.Collections.Generic.List`1.get_Item(Int32 index)
+   在 MES.Manager.DataManager.DeleteLocalLog()
+2026-06-19 13:17:29 564：用户配置加载完成
+2026-06-19 13:17:29 573：当前产品型号D02
+2026-06-19 13:17:29 575：报警信息配置加载完成
+2026-06-19 13:17:29 584：MES配置加载完成
+2026-06-19 13:17:29 585：操作人员工号配置加载完成
+2026-06-19 13:17:29 586：开箱匹配码配置加载完成
+2026-06-19 13:17:29 594：API配置加载完成
+2026-06-19 13:17:29 595：工站配置加载完成
+2026-06-19 13:17:29 596：胶水未配置
+2026-06-19 13:17:29 597：批追料配置加载完成
+2026-06-19 13:17:29 599：扫码枪配置加载完成
+2026-06-19 13:17:29 604：PLC配置加载完成
+2026-06-19 13:17:29 667：扫码枪初始化失败！
+2026-06-19 13:17:29 668：扫码枪初始化失败
+2026-06-19 13:17:30 040：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:17:30 551：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:17:31 062：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:17:31 338：删除超时图片异常：System.IO.DirectoryNotFoundException: 未能找到路径“D:\Image\NG”的一部分。
+   在 System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   在 System.IO.FileSystemEnumerableIterator`1.CommonInit()
+   在 System.IO.FileSystemEnumerableIterator`1..ctor(String path, String originalUserPath, String searchPattern, SearchOption searchOption, SearchResultHandler`1 resultHandler, Boolean checkHost)
+   在 System.IO.DirectoryInfo.InternalGetFiles(String searchPattern, SearchOption searchOption)
+   在 MES.Manager.DataManager.DeleteLocalPicture() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1803
+2026-06-19 13:17:31 342：PLC初始化失败
+2026-06-19 13:17:31 582：等待配置加载完成，才能获取设备状态信息...
+2026-06-19 13:17:31 582：状态上传功能已启动，监控工位数量：2

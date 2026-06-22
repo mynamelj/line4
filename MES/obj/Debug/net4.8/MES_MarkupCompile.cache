@@ -1,0 +1,20 @@
+﻿MES
+
+
+winexe
+C#
+.cs
+D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\obj\Debug\net4.8\
+MES
+none
+false
+TRACE;DEBUG;NETFRAMEWORK;NET48;NET30_OR_GREATER;NET35_OR_GREATER;NET40_OR_GREATER;NET45_OR_GREATER;NET451_OR_GREATER;NET452_OR_GREATER;NET46_OR_GREATER;NET461_OR_GREATER;NET462_OR_GREATER;NET47_OR_GREATER;NET471_OR_GREATER;NET472_OR_GREATER;NET48_OR_GREATER
+D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\App.xaml
+24-1246030105
+1-963786803
+127836363378
+152235659073
+MainWindow.xaml;View\CopyToView.xaml;View\EQStatusView.xaml;View\GlueMaterialOnOffView.xaml;View\LightConfigView.xaml;View\MaterialAlarmView.xaml;View\MaterialOnOffView.xaml;View\MaterialWarnView.xaml;View\MesMainView.xaml;View\MessageView.xaml;View\NGOnLineView.xaml;View\OP1010View.xaml;View\PLCSetView.xaml;View\PopupSeqView.xaml;View\PopupView.xaml;View\PopupWindow.xaml;View\PopupWindowGreen.xaml;View\ProductTypeView.xaml;View\ScanView.xaml;View\StationView.xaml;View\TestView.xaml;View\TimeoutView.xaml;View\UserInfoView.xaml;View\UserLoginView.xaml;
+
+False
+

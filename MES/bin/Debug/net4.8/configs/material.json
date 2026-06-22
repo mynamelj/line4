@@ -1,0 +1,22 @@
+[
+    {
+        "GlueCode": "",
+        "UseCountOnce": 1,
+        "BoxNo": "",
+        "MaterialName": "三相螺栓",
+        "DateTime": "2025/10/25 14:34:42",
+        "LocationNo": "OP4100BoltAssy",
+        "MesMsg": "1",
+        "LightNumber": 0
+    },
+    {
+        "GlueCode": "",
+        "UseCountOnce": 1,
+        "BoxNo": "",
+        "MaterialName": "电磁阀密封圈",
+        "DateTime": "2025/11/15 11:13:58",
+        "LocationNo": "OP4100BoltAssy",
+        "MesMsg": "1",
+        "LightNumber": 0
+    }
+]

@@ -1,0 +1,20 @@
+[
+    {
+        "GlueCode": "1033404GA1-00-00|20250530|500|00010068|5100223651|20250530|1033404GA1-00-0020250530000001|||||",
+        "UseCountOnce": 1,
+        "MaterialName": "电磁阀密封圈",
+        "DateTime": "2025/7/31 10:10:20",
+        "LocationNo": "OP4100BoltAssy",
+        "MesMsg": "1",
+        "LightNumber": 0
+    },
+    {
+        "GlueCode": "999010834|0|500|9000000|0|2541287M01|99901083420250522000009|0|0|0|0|0",
+        "UseCountOnce": 1,
+        "MaterialName": "三相螺栓",
+        "DateTime": "2025/7/31 10:11:24",
+        "LocationNo": "OP4100BoltAssy",
+        "MesMsg": "1",
+        "LightNumber": 0
+    }
+]
