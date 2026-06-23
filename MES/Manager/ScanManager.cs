@@ -113,6 +113,7 @@ namespace MES.Manager
 
         public event ScanOpenBox OnScanOpenBox;
 
+
         public async void ScanBar_OnReadBar(List<string> listBar, int hardIndex)
         {
             string str = string.Join("", listBar);
@@ -180,7 +181,7 @@ namespace MES.Manager
                 {
                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 2=>");
                     if (stationName.ToUpper().Contains("OP1010") || stationName.ToUpper().Contains("OP4130") 
-                        || stationName.ToUpper().Contains("OP4025")|| stationName.ToUpper().Contains("OP2020")
+                        || stationName.ToUpper().Contains("OP4030")|| stationName.ToUpper().Contains("OP2020")
                         || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("1NG_IO"))
                     {
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 3=>");
