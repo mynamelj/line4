@@ -48,19 +48,6 @@ namespace MES.Manager
 
                 int SeqID = 0;
 
-                if ((stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2030")) && RepairFlag == true)
-                {
-                    snCode = ScanManager.SNCode;
-                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品SN_" + stationNumber, snCode);
-                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, 1);
-                    return; 
-                }
-
-                if (stationName.ToUpper().Contains("OP4030"))
-                {
-                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "拍照_" + stationNumber, 1);
-                }
-
                 if (stationName.ToUpper().Contains("1NG_IO"))
                 {
                     // ScanManager.SNCode 是扫码枪模块全局存储的最新扫码结果

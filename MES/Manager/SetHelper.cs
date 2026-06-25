@@ -92,6 +92,7 @@ namespace MES.Manager
         public static string[] NowMaterialCode;
         public static string Password = Extension.ReadConfig("Password");
         public static string UserName = Extension.ReadConfig("UserName");
+
         public static string NowProductCode = "";
         public static string NowUser = "";
 

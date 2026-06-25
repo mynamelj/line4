@@ -206,6 +206,7 @@ namespace MES.Manager
                                 {
                                     op1010View.Close();
                                 }
+                                SetHelper.NowScanStaion = stationName;
                                 op1010View = new OP1010View("等待扫描SN码进站", $"{stationName}工位请扫码进站");
                                 op1010View.Show();
                                 IsOP1010ViewOpen = true;
@@ -226,10 +227,13 @@ namespace MES.Manager
                                 || stationName.ToUpper().Contains("OP4030") || stationName.ToUpper().Contains("OP2020") 
                                 || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("NG_IO"))
                             {
+                                
                                 await Application.Current.Dispatcher.BeginInvoke(() =>
                                 {
+                                    SetHelper.NowScanStaion = "";
                                     if (IsOP1010ViewOpen)
                                     {
+                                        
                                         op1010View.Close();
                                         IsOP1010ViewOpen = false;
                                     }

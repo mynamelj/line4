@@ -118,6 +118,8 @@ namespace MES.Manager
         {
             string str = string.Join("", listBar);
             string stationName = "";
+
+
             SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 扫描到条码为" + str.ToString());
             try
             {
@@ -144,19 +146,22 @@ namespace MES.Manager
                 SetHelper.ListScanMessage.ShowInfoQueue($"未找到第{hardIndex + 1}个扫码枪对应的工位");
                 return;
             }
+
+            int stationIndex = ResolveStationIndex(hardIndex);
+            if (stationIndex < 0)
+            {
+                return;
+            }
+
+            hardIndex = stationIndex;
             stationName = SetHelper.StationNumber.numberGroups[hardIndex].Name;
+
             SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 1=>");
             //SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 扫描到条码为" + str.ToString());
 
             if (SetHelper.MesSetting.ListGroup[hardIndex].RegexRule != "")
             {
                 Regex regex = new Regex(SetHelper.MesSetting.ListGroup[hardIndex].RegexRule);
-
-                if (stationName.Contains("OP2020") && stationName != SetHelper.NowScanStaion)
-                {
-                    System.Windows.MessageBox.Show("非此工位扫码枪扫描");
-                    return;
-                }
 
                 bool isOk = regex.IsMatch(str);
                 if (!isOk)
@@ -194,10 +199,43 @@ namespace MES.Manager
                                 {
                                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 4=>{str}");
                                     SNCode = str;
-                                    var x1 = Task.Run(() =>
+
+                                    var x1 = Task.Run(async () =>
                                     {
-                                        SetHelper.dataManager.Siemens_OnDataChange("产品进站启动" + "_" + (hardIndex + 1).ToString(), 0, 0, true);
+                                        if (stationName.ToUpper().Contains("OP2020M")|| stationName.ToUpper().Contains("OP2030M"))
+                                        {
+                                            (bool, string, string) response0 =
+                                                await SetHelper.mesManager.FeedingCheck(SNCode.GetFeedingCheck(hardIndex), hardIndex);
+
+                                            SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "产品SN" + "_" + (hardIndex + 1).ToString(), SNCode);
+
+                                            SetHelper.resultModel[hardIndex].Result1 = response0.Item1 switch
+                                            {
+                                                true => "OK",
+                                                false => "NG",
+                                            };
+                                            SetHelper.resultModel[hardIndex].CheckInSN = SNCode;
+
+                                            if (!response0.Item1)
+                                            {
+                                                SetHelper.ListMesMessage.ShowInfoQueue(
+                                                    $"{stationName} FeedingCheck失败：{response0.Item2}");
+                                                var result0 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + (hardIndex + 1), 2);
+                                                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {SNCode}--{stationName} 进站结果{hardIndex + 1}写{2}" +
+                                                    $"{(result0 ? "成功" : "失败")}");
+                                            }
+                                            return;
+                                        }
+
+                                        SetHelper.dataManager.Siemens_OnDataChange(
+                                            "产品进站启动" + "_" + (hardIndex + 1).ToString(),
+                                            0,
+                                            0,
+                                            true);
+                                        //  SetHelper.dataManager.Siemens_OnDataChange("产品进站启动" + "_" + (hardIndex + 1).ToString(), 0, 0, true);
                                     });
+
+
                                 }
                                 else
                                 {
@@ -284,6 +322,71 @@ namespace MES.Manager
                     }
                 }
             }
+        }
+        private bool IsOP2030FourStationPc()
+        {
+            var stations = SetHelper.StationNumber.numberGroups
+                .Select(x => x.Name)
+                .ToList();
+
+            return stations.Count >= 4
+                && stations[0].Contains("OP2030");
+
+        }
+
+        private bool IsOP2020FourStationPc()
+        {
+            var stations = SetHelper.StationNumber.numberGroups
+                .Select(x => x.Name)
+                .ToList();
+
+            return stations.Count >= 4
+                && stations[0].Contains("OP2020");
+        }
+
+        private int ResolveStationIndex(int hardIndex)
+        {
+            if (!(IsOP2030FourStationPc()||IsOP2020FourStationPc()))
+            {
+                return hardIndex; 
+            }
+
+            int[] allowStations = hardIndex switch
+            {
+                0 => new[] { 0, 1 }, // 第1个扫码枪扫1、3站
+                1 => new[] { 2, 3 }, // 第2个扫码枪扫2、4站
+                _ => new[] { hardIndex }
+            };
+
+            int activeStationIndex = -1;
+
+            if (!string.IsNullOrWhiteSpace(SetHelper.NowScanStaion))
+            {
+                for (int i = 0; i < SetHelper.StationNumber.numberGroups.Count; i++)
+                {
+                    if (string.Equals(
+                        SetHelper.StationNumber.numberGroups[i].Name,
+                        SetHelper.NowScanStaion,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        activeStationIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (activeStationIndex >= 0)
+            {
+                if (allowStations.Contains(activeStationIndex))
+                {
+                    return activeStationIndex;
+                }
+
+                MessageBox.Show($"当前等待扫码工位是 {SetHelper.NowScanStaion}，不允许使用第 {hardIndex + 1} 个扫码枪扫描");
+                return -1;
+            }
+
+            return hardIndex;
         }
     }
 }

@@ -16,6 +16,17 @@ namespace MES.Manager
         /// </summary>
         /// <param name="number"></param>
         /// <returns></returns>
+        /// 
+
+        Dictionary<string, string> lightDic = new Dictionary<string, string>
+        {
+            { "灯号1", "输入轴" },
+            { "灯号2", "中间轴" },
+            { "灯号3", "差速器" }
+        };
+
+
+
         public async Task ProductCheckOutAsync(string number)
         {
             int iNumber = Convert.ToInt32(number) - 1;
@@ -198,53 +209,60 @@ namespace MES.Manager
                                 .FirstOrDefault(x => x.GroupType == PLCGroupName.ReadGroup.ToString())?
                                 .ListTag.Where(x => x.TagName.Contains("灯号")).ToList();
 
-                            if (tags.Count > 0)
+                            if (tags != null && tags.Count > 0)
                             {
-                                // 遍历所有灯号标签（每个标签对应一种垫片选型结果）
                                 foreach (var tag in tags)
                                 {
-                                    int lightID = 0;        // PLC返回的灯号值，代表本次实际用了哪种垫片
-                                    string TagName = tag.TagName; // 例如："灯号"
+                                    string tagName = tag.TagName;
 
-                                    // 从PLC读取当前灯号值（标签名加上工位编号后缀，如"灯号_1"）
-                                    if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, TagName + "_" + number, ref obj))
+                                    if (!lightDic.TryGetValue(tagName, out string type))
+                                    {
+                                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 未配置{tagName}对应的垫片类型");
+                                        continue;
+                                    }
+
+                                    int lightID = 0;
+
+                                    if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, tagName + "_" + number, ref obj))
                                     {
                                         lightID = obj.Obj2Int();
-                                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到出站{TagName}为{lightID}");
+                                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到出站{tagName}为{lightID}");
                                     }
                                     else
                                     {
-                                        // 读取失败，lightID保持0，后续兜底匹配灯号为0的物料（非垫片通用物料）
-                                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读出站{TagName}失败");
+                                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读出站{tagName}失败");
+                                        continue;
                                     }
 
-                                    // 根据灯号过滤并添加对应的物料到compList
-                                    foreach (var item in materails)
+                                    var filterMaterails = materails.Where(m =>
+                                        !string.IsNullOrEmpty(m.GlueCode)
+                                        && m.LocationNo == stationName
+                                        && !string.IsNullOrEmpty(m.MaterialName)
+                                        && m.MaterialName.Contains(type)
+                                        && m.LightNumber == lightID);
+
+                                    foreach (var item in filterMaterails)
                                     {
-                                        // 过滤条件：
-                                        //  GlueCode不为空（已上料）
-                                        // LocationNo == stationName（本工位的物料）
-                                        // LightNumber == lightID：垫片物料，灯号匹配（精确匹配PLC告知的垫片规格）
-                                        //    OR LightNumber == 0：非垫片物料（如螺栓），灯号配0表示每次都要上报
-                                        if (!string.IsNullOrEmpty(item.GlueCode)
-                                            && item.LocationNo == stationName
-                                            && (item.LightNumber == lightID || item.LightNumber == 0))
+                                        compList.Add(new CompList()
                                         {
-                                            compList.Add(new CompList() { CompID = item.GlueCode, Qty = item.UseCountOnce });
-                                        }
+                                            CompID = item.GlueCode,
+                                            Qty = item.UseCountOnce
+                                        });
                                     }
                                 }
-                            }
-                            else
-                            {
-                                // 灯号为0表示非垫片类的通用物料（无需动态选型）
+
+                                // 非垫片类通用物料，只加一次，避免在多个灯号循环中重复扣料
                                 foreach (var item in materails)
                                 {
                                     if (!string.IsNullOrEmpty(item.GlueCode)
                                         && item.LocationNo == stationName
                                         && item.LightNumber == 0)
                                     {
-                                        compList.Add(new CompList() { CompID = item.GlueCode, Qty = item.UseCountOnce });
+                                        compList.Add(new CompList()
+                                        {
+                                            CompID = item.GlueCode,
+                                            Qty = item.UseCountOnce
+                                        });
                                     }
                                 }
                             }
@@ -329,7 +347,6 @@ namespace MES.Manager
                 {
                     // 出站结果置为3（约定：1=OK, 2=NG, 3=物料不足预警, 4=物料不足报警）
                     checkOutResult = 3;
-
                     // 必须切回UI线程操作界面（WPF规定）
                     await Application.Current.Dispatcher.BeginInvoke(() =>
                     {

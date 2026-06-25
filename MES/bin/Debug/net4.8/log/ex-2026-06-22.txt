@@ -1,5 +1,0 @@
-2026-06-22 10:32:09 435：图片上传失败：System.IO.DirectoryNotFoundException: 未能找到路径“W:\XP\202606\22\Line02\OP4100BoltAssy\OP4100BoltAssy\OK\”的一部分。
-   在 System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
-   在 System.IO.Directory.InternalCreateDirectory(String fullPath, String path, Object dirSecurityObj, Boolean checkHost)
-   在 System.IO.Directory.InternalCreateDirectoryHelper(String path, Boolean checkHost)
-   在 MES.Manager.DataManager.<<PictureUploadAsync>b__54_0>d.MoveNext() 位置 D:\Document\DotNet Project\Mes\rz26001-lux-mes-line4\MES\Manager\DataManagerFunc.cs:行号 1485
