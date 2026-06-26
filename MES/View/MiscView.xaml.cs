@@ -11,20 +11,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace MES.View
 {
     /// <summary>
-    /// MesMainView.xaml 的交互逻辑
+    /// MiscView.xaml 的交互逻辑
     /// </summary>
-    public partial class MesMainView : UserControl
+    public partial class MiscView : Window
     {
-        public MesMainView(MesMainViewModel viewModel)
+        public MiscView(MiscViewModel viewModel)
         {
             InitializeComponent();
-            this.DataContext = viewModel;
+            DataContext = viewModel;
         }
     }
 }

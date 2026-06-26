@@ -7,11 +7,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:MES.ViewModel"
              Background="White"
-             mc:Ignorable="d">
-    <UserControl.DataContext>
-        <vm:MesMainViewModel />
-    </UserControl.DataContext>
-
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:MesMainViewModel, IsDesignTimeCreatable=False}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -792,6 +789,10 @@
                             Margin="10"
                             Command="{Binding OpenTestWindowCommand}"
                             Content="测试页面" />
+                    <Button Height="30"
+                            Margin="10"
+                            Command="{Binding OpenMiscWindowCommand}"
+                            Content="特殊站配置" />
                 </StackPanel>
             </GroupBox>
 

@@ -1,0 +1,80 @@
+﻿<Window x:Class="MES.View.MiscView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MES.View"
+        xmlns:vm="clr-namespace:MES.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MiscViewModel, IsDesignTimeCreatable=False}"
+        Title="特殊项设置" Height="350" Width="600">
+    <Grid Margin="15">
+        <TabControl Background="White" BorderBrush="#DDD">
+
+            <TabItem Header="小鹏SN前缀" Padding="10,5">
+                <Grid Margin="20,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="输出轴前缀：" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Name="TxtXpOutput" Grid.Row="0" Grid.Column="1" Height="28" VerticalContentAlignment="Center" Margin="0,5" Text="{Binding PrefixDic[XP2020outputShaftSNPrefix]}"/>
+
+                    <Label Content="输入轴前缀：" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Name="TxtXpInput" Grid.Row="1" Grid.Column="1" Height="28" VerticalContentAlignment="Center" Margin="0,5" Text="{Binding PrefixDic[XP2030inputShaftSNPrefix]}"/>
+
+                    <Label Content="差速器前缀：" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Name="TxtXpDiff" Grid.Row="2" Grid.Column="1" Height="28" VerticalContentAlignment="Center" Margin="0,5" Text="{Binding PrefixDic[XP2020differentialSNPrefix]}"/>
+
+                    <Label Content="中间轴前缀：" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Name="TxtXpIntermediate" Grid.Row="3" Grid.Column="1" Height="28" VerticalContentAlignment="Center" Margin="0,5" Text="{Binding PrefixDic[XP2030intermediateShaftSNPrefix]}"/>
+
+                    <Button Name="BtnXpSave" Content="保存配置" Grid.Row="4" Grid.Column="1" 
+                            Width="120" Height="32" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            Background="#007ACC" Foreground="White" BorderThickness="0" Command="{Binding SaveSettingsCommand}"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="奇瑞SN前缀" Padding="10,5">
+                <Grid Margin="20,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="输出轴前缀：" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Name="TxtQrOutput" Grid.Row="0" Grid.Column="1" Height="28" VerticalContentAlignment="Center" Margin="0,5" Text="{Binding PrefixDic[QR2020outputShaftSNPrefix]}"/>
+
+                    <Label Content="输入轴前缀：" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Name="TxtQrInput" Grid.Row="1" Grid.Column="1" Height="28" VerticalContentAlignment="Center" Margin="0,5" Text="{Binding PrefixDic[QR2030inputShaftSNPrefix]}"/>
+
+                    <Label Content="差速器前缀：" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Name="TxtQrDiff" Grid.Row="2" Grid.Column="1" Height="28" VerticalContentAlignment="Center" Margin="0,5" Text="{Binding PrefixDic[QR2020differentialSNPrefix]}"/>
+
+                    <Label Content="中间轴前缀：" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+                    <TextBox Name="TxtQrIntermediate" Grid.Row="3" Grid.Column="1" Height="28" VerticalContentAlignment="Center" Margin="0,5" Text="{Binding PrefixDic[QR2030intermediateShaftSNPrefix]}"/>
+
+                    <Button Name="BtnQrSave" Content="保存配置" Grid.Row="4" Grid.Column="1" 
+                            Width="120" Height="32" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            Background="#28A745" Foreground="White" BorderThickness="0"  Command="{Binding SaveSettingsCommand}"/>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Window>

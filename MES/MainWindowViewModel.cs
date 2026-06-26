@@ -1,4 +1,5 @@
-﻿using MES.Comm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using MES.Comm;
 using MES.Manager;
 using MES.MesModel.Request;
 using MES.SetModel;
@@ -27,7 +28,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 namespace MES
 {
     [AddINotifyPropertyChangedInterface]
-    public class MainWindowViewModel
+    public partial class MainWindowViewModel:ObservableObject
     {
         public MainWindowViewModel()
         {

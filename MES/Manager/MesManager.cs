@@ -60,9 +60,9 @@ namespace MES.Manager
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
                 //  调用接口
-                HttpResponseMessage resultData = await client.PollyPostAsync(
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(
                     SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CarrierCheck,
-                    stringContent);
+                    jsonString);
 
                 if (resultData.IsSuccessStatusCode)
                 {
@@ -133,9 +133,9 @@ namespace MES.Manager
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
                 // 2. 调用接口 (注意地址是 SN_Checkout)
-                HttpResponseMessage resultData = await client.PollyPostAsync(
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(
                     SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CheckOutApi,
-                    stringContent);
+                    jsonString);
 
                 if (resultData.IsSuccessStatusCode)
                 {
@@ -195,7 +195,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].DataCollectionApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].DataCollectionApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
                 SetHelper.ListOEEMessage.ShowInfoQueue(@string);
@@ -239,7 +239,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CarrierBind, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CarrierBind, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -289,7 +289,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
                 if (SetHelper.ApiSetting.ListGroup[number].ChangeProductTypeApi == "") return result;
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].ChangeProductTypeApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].ChangeProductTypeApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -332,7 +332,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].FileUploadApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].FileUploadApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -380,7 +380,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CheckINApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CheckINApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -446,7 +446,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].QuerySNApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].QuerySNApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -490,7 +490,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].LinkCompApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].LinkCompApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -538,7 +538,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CheckOutApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CheckOutApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -594,7 +594,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].OEEApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].OEEApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -646,7 +646,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].GetPara, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].GetPara, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -693,7 +693,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].FeedingCheck, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].FeedingCheck, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -741,7 +741,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CompSNCheckout, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CompSNCheckout, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -788,7 +788,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CompSNChange, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CompSNChange, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -839,7 +839,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CompSNOffline, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CompSNOffline, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -884,7 +884,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CarrierCheck, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CarrierCheck, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -939,7 +939,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[iNumber].BaseUrl + SetHelper.ApiSetting.ListGroup[iNumber].GlueCheckOut, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[iNumber].BaseUrl + SetHelper.ApiSetting.ListGroup[iNumber].GlueCheckOut, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
                 // @string = "{\"EventID\":\"Glue_OffLine\",\"RESULT\":\"PASS\",\"MSG\":\"\"}";
@@ -988,7 +988,7 @@ namespace MES.Manager
 
         //        StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-        //        HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[0].BaseUrl + SetHelper.ApiSetting.ListGroup[0].GlueOffLine, stringContent);
+        //        HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[0].BaseUrl + SetHelper.ApiSetting.ListGroup[0].GlueOffLine, stringContent);
 
         //        @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -1037,7 +1037,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].AlarmApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].AlarmApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -1083,7 +1083,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].StatusApi, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].StatusApi, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -1129,7 +1129,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CodeSoftPrint, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CodeSoftPrint, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -1178,7 +1178,7 @@ namespace MES.Manager
 
         //        StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-        //        HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.BaseUrl + SetHelper.ApiSetting.OEEApi, stringContent);
+        //        HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.BaseUrl + SetHelper.ApiSetting.OEEApi, stringContent);
 
         //        @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -1224,7 +1224,7 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CarrierCheck, stringContent);
+                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CarrierCheck, jsonString);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
                 //测试

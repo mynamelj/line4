@@ -2,7 +2,10 @@
 using Polly.Extensions.Http;
 using Polly.Wrap;
 using System;
+using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MES.Comm
@@ -39,18 +42,41 @@ namespace MES.Comm
         /// <param name="uri"></param>
         /// <param name="httpContent"></param>
         /// <returns></returns>
-        public static async Task<HttpResponseMessage> PollyPostAsync(this HttpClient httpClient,string uri,HttpContent httpContent)
+        public static async Task<HttpResponseMessage> PollyPostJsonAsync(
+            this HttpClient httpClient,
+            string uri,
+            string json)
         {
-            IAsyncPolicy<HttpResponseMessage> polly = policyAsyncCreator();
+            var policy = HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .Or<TaskCanceledException>()
+                .Or<WebException>()
+                .Or<SocketException>()
+                .WaitAndRetryAsync(
+                    retryCount: 1,
+                    sleepDurationProvider: _ => TimeSpan.FromSeconds(3)
+                );
 
-            HttpResponseMessage response = await polly.ExecuteAsync(async () =>
+            try
             {
-                HttpResponseMessage result = await httpClient.PostAsync(uri, httpContent);
-                return result;
-            });
-
-            return response;
+                return await policy.ExecuteAsync(async () =>
+                {
+                    using var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    return await httpClient.PostAsync(uri, content);
+                });
+            }
+            catch (Exception ex) when (
+                ex is HttpRequestException ||
+                ex is TaskCanceledException ||
+                ex is WebException ||
+                ex is SocketException)
+            {
+                throw new Exception($"MES网络请求失败，3秒后已重试1次仍失败：{ex.Message}");
+            }
         }
+
+
+
 
         #region Polly
 

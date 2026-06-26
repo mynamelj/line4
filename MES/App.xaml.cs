@@ -1,12 +1,21 @@
-﻿using DAL;
+﻿using Autofac;
+using DAL;
 using MES.Manager;
+using MES.Service;
 using MES.SetModel;
+using MES.View;
+using MES.ViewModel;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
+using static MES.Service.MiscService;
+
 
 namespace MES
 {
@@ -15,6 +24,7 @@ namespace MES
     /// </summary>
     public partial class App : Application
     {
+        public static IContainer Container { get; private set; }
         // 最早期的全局异常捕获绑定
         public App()
         {
@@ -40,59 +50,66 @@ namespace MES
         //  OnStartup用来处理程序启动后的json
         protected override void OnStartup(StartupEventArgs e)
         {
-            string name = Environment.MachineName;
-            string processName = Process.GetCurrentProcess().ProcessName;
-            int currentProcessCount = Process.GetProcessesByName(processName).Length;
-
-            if (name != "XC-PC-F72600BD"&&name != "XC-PC-F7278065")
-            {
-                if (currentProcessCount > 1)
-                {
-                    Environment.Exit(0);
-                    return;
-                }
-            }
-            else
-            {
-                if (currentProcessCount > 2) // 2150转线需要双开程序
-                {
-                    Environment.Exit(0);
-                    return;
-                }
-            }
 
             //  misc.json 配置文件
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = Path.Combine(baseDirectory, "misc.json");
+            string filePath = Path.Combine(baseDirectory, "configs\\misc.json");
 
-            if (!File.Exists(filePath))
+            try
             {
-                List<string> ExcludedDatas = new List<string>() { "HeatTemp_1", "CoverPressDisplace_1", "CoverPressForce_1" };
-                Dictionary<string, string> RuleDict = new Dictionary<string, string>()
-            {
-                { "OP2020#1", "1033211DJ1" },
-                { "OP2020#2", "1033235DJ1" },
-                { "OP2030",   "1033270DJ1" },
-            };
-
-                var jo = new JObject();
-                jo["Password"] = "123456";
-                jo["返修读取数据"] = JToken.FromObject(ExcludedDatas);
-                jo["扫码匹配规则"] = JToken.FromObject(RuleDict);
-
-                try
+                if (!File.Exists(filePath))
                 {
-                    // 防止中文在生产环境环境乱码
-                    File.WriteAllText(filePath, jo.ToString(), System.Text.Encoding.UTF8);
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                    string jsonString = JsonConvert.SerializeObject(new ObservableCollection<SNPrefix>
+                    {
+                        new SNPrefix { Name = "XP2020outputShaftSNPrefix", Value = "1"},
+                        new SNPrefix { Name = "XP2020differentialSNPrefix", Value = "2" },
+                        new SNPrefix { Name = "QR2020outputShaftSNPrefix", Value = "3" },
+                        new SNPrefix { Name = "QR2020differentialSNPrefix", Value = "4" },
+                        new SNPrefix { Name = "XP2030inputShaftSNPrefix", Value = "5" },
+                        new SNPrefix { Name = "XP2030intermediateShaftSNPrefix", Value = "6" },
+                        new SNPrefix { Name = "QR2030inputShaftSNPrefix", Value = "6" },
+                        new SNPrefix { Name = "QR2030intermediateShaftSNPrefix", Value = "7" }
+                    }, Formatting.Indented);
+
+                    File.WriteAllText(filePath, jsonString, Encoding.UTF8);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"无法创建配置文件 misc.json: {ex.Message}", "初始化错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+
             }
+            catch (Exception ex)
+            {
+                throw new Exception($"Newtonsoft 保存 JSON 失败: {ex.Message}", ex);
+            }
+
+            // 创建 Autofac 容器构建器
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<MiscService>().As<IMiscService>().SingleInstance();
+
+            builder.RegisterType<WindowService>().As<IWindowService>().SingleInstance();
+
+            builder.RegisterType<MesMainViewModel>().InstancePerDependency();
+
+            builder.RegisterType<MesMainView>().InstancePerDependency();
+            builder.RegisterType<TestView>().InstancePerDependency();
+            builder.RegisterType<MiscView>().InstancePerDependency();
+            builder.RegisterType<MiscViewModel>().InstancePerDependency();
+            builder.RegisterType<MainWindowViewModel>().InstancePerDependency();
+            // 注册 MainWindow 本身
+
+            builder.RegisterType<MainWindow>().AsSelf();
+
+
+            Container = builder.Build();
+
+            var mainWindow = Container.Resolve<MainWindow>();
+
+            mainWindow.Show();
 
             base.OnStartup(e);
         }
+
 
         protected override void OnExit(ExitEventArgs e)
         {

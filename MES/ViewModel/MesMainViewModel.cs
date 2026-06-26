@@ -1,7 +1,10 @@
-﻿using MES.Comm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MES.Comm;
 using MES.Manager;
 using MES.MesModel.Request;
 using MES.MesModel.Response;
+using MES.Service;
 using MES.SetModel;
 using MES.View;
 using PropertyChanged;
@@ -16,11 +19,13 @@ using static MES.Extension;
 namespace MES.ViewModel
 {
     [AddINotifyPropertyChangedInterface]
-    public class MesMainViewModel : ProductChangeBase
+    public partial class MesMainViewModel :  ProductChangeBase
     {
         public ICommand SelectionChangedCommand { get; }
         private DispatcherTimer timer;
-        public MesMainViewModel()
+        private readonly IWindowService _windowService;
+
+        public MesMainViewModel(IWindowService windowService)
         {
             SelectionChangedCommand = new RelayCommand<int>(OnSelectionChanged);
             stationNumber = SetHelper.StationNumber;
@@ -28,15 +33,10 @@ namespace MES.ViewModel
             {
                 SelectNumber.Add(item.Name);
             }
-
+            _windowService = windowService;
             mesSettingmodel = SetHelper.MesSetting;
             apiSettingmodel = SetHelper.ApiSetting;
             OnSelectionChanged(0);
-
-            //timer = new DispatcherTimer();
-            //timer.Interval = TimeSpan.FromSeconds(10);
-            //timer.Tick += Timer_Tick;
-            //timer.Start();
         }
 
         object lockobj = new object();
@@ -159,6 +159,7 @@ namespace MES.ViewModel
                 return path;
             }
         });
+
 
 
         /// <summary>
@@ -528,24 +529,23 @@ namespace MES.ViewModel
             SetHelper.dataManager.GetWeight("1");
         });
 
-        public ICommand OpenTestWindowCommand => new RelayCommand(() =>
-        {
-            // 检查是否已经有名为 TestView 的窗口在运行
-            foreach (Window window in System.Windows.Application.Current.Windows)
-            {
-                if (window is TestView)
-                {
-                    window.Activate(); // 如果已打开，就激活它
-                    return;
-                }
-            }
 
-            // 否则新建并打开
-            TestView testWin = new TestView();
-            testWin.Owner = System.Windows.Application.Current.MainWindow; // 设为主窗体的子窗体
-            testWin.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            testWin.Show();
-        });
+
+
+        [RelayCommand]
+        private void OpenTestWindow()
+        {
+
+            _windowService.Show<TestView>();
+        }
+
+        [RelayCommand]
+        private void OpenMiscWindow()
+        {
+            _windowService.ShowDialog<MiscView>();
+        }
+
+
         public ICommand Command11 => new RelayCommand(async () =>
         {
             try

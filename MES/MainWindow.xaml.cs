@@ -1,4 +1,5 @@
-﻿using MES.View;
+﻿using MES.Service;
+using MES.View;
 using MES.ViewModel;
 using System.Text;
 using System.Windows;
@@ -20,9 +21,14 @@ namespace MES
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(MainWindowViewModel mainVM, MesMainView mesView)
         {
             InitializeComponent();
+            // 绑定主窗口的 DataContext
+            this.DataContext = mainVM;
+
+            // 把整个 View 塞进 TabItem 的 Content 里
+            mesTab.Content = mesView;
         }
         private DispatcherTimer timer;
         private void Window_Loaded(object sender, RoutedEventArgs e)

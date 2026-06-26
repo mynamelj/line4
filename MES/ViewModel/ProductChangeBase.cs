@@ -1,4 +1,5 @@
-﻿using MES.Manager;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using MES.Manager;
 using MES.SetModel;
 using PropertyChanged;
 using System.Collections.ObjectModel;
@@ -7,7 +8,7 @@ using System.Windows.Input;
 namespace MES.ViewModel
 {
     [AddINotifyPropertyChangedInterface]
-    public class ProductChangeBase
+    public partial class ProductChangeBase: ObservableObject
     {
         public ProductChangeBase()
         {

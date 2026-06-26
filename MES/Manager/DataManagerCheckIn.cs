@@ -125,7 +125,6 @@ namespace MES.Manager
 
 
                         // FeedingSNCodeLen > 0 时才触发，说明该工位需要先校验条码合法性
-                        // 如OP4130贯通轴分装，扫描贯通轴条码后先FeedingCheck校验
                         // 确认该条码是否属于当前工单/产品类型
                         if (SetHelper.MesSetting.ListGroup[iNumber].FeedingSNCodeLen > 0)
                         {

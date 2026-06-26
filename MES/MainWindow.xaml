@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:MES"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:MES"
         Title="MES交互软件"
         Closing="Window_Closing"
         MinWidth="1000"
@@ -12,10 +13,8 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         mc:Ignorable="d"
-        Loaded="Window_Loaded">
-    <Window.DataContext>
-        <local:MainWindowViewModel />
-    </Window.DataContext>
+        Loaded="Window_Loaded"
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding Loaded}" />
@@ -34,12 +33,12 @@
                        Source="View/MessageView.xaml" />
             </TabItem>
             <TabItem Header="MES"
+                     Name="mesTab"
                      Width="80"
                      Height="30"
                      Margin="2,0"
                      HorizontalAlignment="Center">
-                <Frame NavigationUIVisibility="Hidden"
-                       Source="View/MesMainView.xaml" />
+           
             </TabItem>
             <TabItem Header="PLC"
                      Width="80"

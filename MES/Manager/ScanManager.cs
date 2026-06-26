@@ -1,4 +1,5 @@
 ﻿using MES.MesModel.Request;
+using MES.Service;
 using MES.SetModel;
 using MES.ViewModel;
 using Newtonsoft.Json.Linq;
@@ -20,6 +21,7 @@ namespace MES.Manager
         /// <returns></returns>
         public static string ProductCode = "";
 
+        private readonly MiscService miscService;
         /// <summary>
         /// SN码
         /// </summary>
@@ -28,8 +30,9 @@ namespace MES.Manager
         private List<HardWare_ScanBar> scanBar = new List<HardWare_ScanBar>();
 
         private Dictionary<string, string> ruleDict = new Dictionary<string, string>();
-        public ScanManager() 
+        public ScanManager(MiscService miscService)
         {
+            this.miscService = miscService;
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             string filePath = Path.Combine(baseDirectory, "misc.json");
             if(File.Exists(filePath))
@@ -48,6 +51,7 @@ namespace MES.Manager
             }
 
         }
+
 
         public bool InitializeScan()
         {
@@ -121,31 +125,7 @@ namespace MES.Manager
 
 
             SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 扫描到条码为" + str.ToString());
-            try
-            {
-                if (hardIndex == 2)
-                {
-                    stationName = SetHelper.StationNumber.numberGroups[1].Name;
-                    if (stationName.Contains("OP4130"))
-                    {
-                        (bool, string, string) response = await SetHelper.mesManager.FeedingCheck(str.GetFeedingCheck(1), 1);
-                        bool result1 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "端盖校验结果_" + (hardIndex).ToString(), response.Item1);
-                        SetHelper.ListPLCMessage.ShowInfoQueue($"加热工位发送端盖校验结果_{hardIndex} {response.Item1} {(result1 ? "成功" : "失败")}");
 
-                        if (response.Item1)
-                        {
-                            result1 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码_" + (hardIndex).ToString(), str.Trim());
-                            SetHelper.ListPLCMessage.ShowInfoQueue($"加热工位发送扫描材料码_{hardIndex} {str.Trim()} {(result1 ? "成功" : "失败")}");
-                        }
-                        return;
-                    }
-                }
-            }
-            catch
-            {
-                SetHelper.ListScanMessage.ShowInfoQueue($"未找到第{hardIndex + 1}个扫码枪对应的工位");
-                return;
-            }
 
             int stationIndex = ResolveStationIndex(hardIndex);
             if (stationIndex < 0)
