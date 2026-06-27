@@ -24,6 +24,10 @@ namespace MES
     /// </summary>
     public partial class App : Application
     {
+        public static class AppContainer
+        {
+            public static IContainer Instance { get; set; }
+        }
         public static IContainer Container { get; private set; }
         // 最早期的全局异常捕获绑定
         public App()
@@ -102,7 +106,7 @@ namespace MES
 
 
             Container = builder.Build();
-
+            AppContainer.Instance = Container;
             var mainWindow = Container.Resolve<MainWindow>();
 
             mainWindow.Show();

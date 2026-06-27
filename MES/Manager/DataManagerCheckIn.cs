@@ -182,12 +182,6 @@ namespace MES.Manager
                         }
                     }
 
-                    else if (stationName.Contains("OP3045") && stationNumber == "3")
-                    {
-                        // OP3045SN是方法参数，由弹窗扫码后传入的后端盖码
-                        snCode = OP3045SN;
-                        // 注意：OP3045工站3不读流程ID，由上层ScanCheckIn循环控制进站重试
-                    }
                     else
                     {
                         // 读取进站载具码（托盘RFID码）
@@ -227,9 +221,7 @@ namespace MES.Manager
                             SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读SN码失败");
                         }
                     }
-                    if (SetHelper.StationNumber.numberGroups[iNumber].Name.ToUpper().Contains("OP3040")
-                        || (SetHelper.StationNumber.numberGroups[iNumber].Name.ToUpper().Contains("OP3045") && stationNumber == "1")
-                        || SetHelper.StationNumber.numberGroups[iNumber].Name.ToUpper().Contains("OP2040"))
+                    if (SetHelper.StationNumber.numberGroups[iNumber].Name.ToUpper().Contains("OP2040"))
                     {
                         // 读取PLC中"进站产品SN"寄存器（与"产品SN"是不同地址）
                         if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "进站产品SN_" + stationNumber, ref obj))

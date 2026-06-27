@@ -1,4 +1,5 @@
-﻿using MES.MesModel.Request;
+﻿using Autofac;
+using MES.MesModel.Request;
 using MES.Service;
 using MES.SetModel;
 using MES.ViewModel;
@@ -21,7 +22,7 @@ namespace MES.Manager
         /// <returns></returns>
         public static string ProductCode = "";
 
-        private readonly MiscService miscService;
+        private readonly IMiscService miscService;
         /// <summary>
         /// SN码
         /// </summary>
@@ -30,9 +31,13 @@ namespace MES.Manager
         private List<HardWare_ScanBar> scanBar = new List<HardWare_ScanBar>();
 
         private Dictionary<string, string> ruleDict = new Dictionary<string, string>();
-        public ScanManager(MiscService miscService)
+
+        private readonly Dictionary<string, int> stationIndexMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> ambiguousPrefixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        public ScanManager()
         {
-            this.miscService = miscService;
+            miscService = CreateMiscService();
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             string filePath = Path.Combine(baseDirectory, "misc.json");
             if(File.Exists(filePath))
@@ -49,6 +54,7 @@ namespace MES.Manager
                     SetHelper.ListOEEMessage.ShowInfoQueue(ex.Message);
                 }
             }
+            SNprefixMapStations();
 
         }
 
@@ -127,7 +133,7 @@ namespace MES.Manager
             SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 扫描到条码为" + str.ToString());
 
 
-            int stationIndex = ResolveStationIndex(hardIndex);
+            int stationIndex = ResolveStationIndex(hardIndex,str);
             if (stationIndex < 0)
             {
                 return;
@@ -152,7 +158,7 @@ namespace MES.Manager
                 }
              
                 SetHelper.NowMaterialCode[hardIndex] = str;
-                OnScanOpenBox(str);//将各个页面的码更新
+                OnScanOpenBox?.Invoke(str);//将各个页面的码更新
                 //}
 
                 if (stationName.ToUpper().Contains("OP1030"))
@@ -165,7 +171,7 @@ namespace MES.Manager
                 if (SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen > 0)
                 {
                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 2=>");
-                    if (stationName.ToUpper().Contains("OP1010") || stationName.ToUpper().Contains("OP4130") 
+                    if (stationName.ToUpper().Contains("OP1010") || stationName.ToUpper().Contains("OP3040")
                         || stationName.ToUpper().Contains("OP4030")|| stationName.ToUpper().Contains("OP2020")
                         || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("1NG_IO"))
                     {
@@ -180,41 +186,42 @@ namespace MES.Manager
                                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 4=>{str}");
                                     SNCode = str;
 
-                                    var x1 = Task.Run(async () =>
+                                    if (!CanTriggerScanCheckIn(stationName, hardIndex))
                                     {
-                                        if (stationName.ToUpper().Contains("OP2020M")|| stationName.ToUpper().Contains("OP2030M"))
+                                        return;
+                                    }
+
+                                    if (stationName.ToUpper().Contains("OP2020M") || stationName.ToUpper().Contains("OP2030M"))
+                                    {
+                                        (bool, string, string) response0 =
+                                            await SetHelper.mesManager.FeedingCheck(SNCode.GetFeedingCheck(hardIndex), hardIndex);
+
+                                        SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "产品SN" + "_" + (hardIndex + 1).ToString(), SNCode);
+
+                                        SetHelper.resultModel[hardIndex].Result1 = response0.Item1 switch
                                         {
-                                            (bool, string, string) response0 =
-                                                await SetHelper.mesManager.FeedingCheck(SNCode.GetFeedingCheck(hardIndex), hardIndex);
+                                            true => "OK",
+                                            false => "NG",
+                                        };
+                                        SetHelper.resultModel[hardIndex].CheckInSN = SNCode;
 
-                                            SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "产品SN" + "_" + (hardIndex + 1).ToString(), SNCode);
-
-                                            SetHelper.resultModel[hardIndex].Result1 = response0.Item1 switch
-                                            {
-                                                true => "OK",
-                                                false => "NG",
-                                            };
-                                            SetHelper.resultModel[hardIndex].CheckInSN = SNCode;
-
-                                            if (!response0.Item1)
-                                            {
-                                                SetHelper.ListMesMessage.ShowInfoQueue(
-                                                    $"{stationName} FeedingCheck失败：{response0.Item2}");
-                                                var result0 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + (hardIndex + 1), 2);
-                                                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {SNCode}--{stationName} 进站结果{hardIndex + 1}写{2}" +
-                                                    $"{(result0 ? "成功" : "失败")}");
-                                            }
-                                            return;
+                                        if (!response0.Item1)
+                                        {
+                                            SetHelper.ListMesMessage.ShowInfoQueue(
+                                                $"{stationName} FeedingCheck失败：{response0.Item2}");
+                                            var result0 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + (hardIndex + 1), 2);
+                                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {SNCode}--{stationName} 进站结果{hardIndex + 1}写{2}" +
+                                                $"{(result0 ? "成功" : "失败")}");
                                         }
+                                        return;
+                                    }
 
-                                        SetHelper.dataManager.Siemens_OnDataChange(
-                                            "产品进站启动" + "_" + (hardIndex + 1).ToString(),
-                                            0,
-                                            0,
-                                            true);
-                                        //  SetHelper.dataManager.Siemens_OnDataChange("产品进站启动" + "_" + (hardIndex + 1).ToString(), 0, 0, true);
-                                    });
 
+                                    SetHelper.dataManager.Siemens_OnDataChange(
+                                        "产品进站启动" + "_" + (hardIndex + 1).ToString(),
+                                        0,
+                                        0,
+                                        true);
 
                                 }
                                 else
@@ -303,70 +310,189 @@ namespace MES.Manager
                 }
             }
         }
-        private bool IsOP2030FourStationPc()
+
+
+        private static IMiscService CreateMiscService()
         {
-            var stations = SetHelper.StationNumber.numberGroups
-                .Select(x => x.Name)
-                .ToList();
-
-            return stations.Count >= 4
-                && stations[0].Contains("OP2030");
-
-        }
-
-        private bool IsOP2020FourStationPc()
-        {
-            var stations = SetHelper.StationNumber.numberGroups
-                .Select(x => x.Name)
-                .ToList();
-
-            return stations.Count >= 4
-                && stations[0].Contains("OP2020");
-        }
-
-        private int ResolveStationIndex(int hardIndex)
-        {
-            if (!(IsOP2030FourStationPc()||IsOP2020FourStationPc()))
+            try
             {
-                return hardIndex; 
-            }
-
-            int[] allowStations = hardIndex switch
-            {
-                0 => new[] { 0, 1 }, // 第1个扫码枪扫1、3站
-                1 => new[] { 2, 3 }, // 第2个扫码枪扫2、4站
-                _ => new[] { hardIndex }
-            };
-
-            int activeStationIndex = -1;
-
-            if (!string.IsNullOrWhiteSpace(SetHelper.NowScanStaion))
-            {
-                for (int i = 0; i < SetHelper.StationNumber.numberGroups.Count; i++)
+                if (App.Container != null)
                 {
-                    if (string.Equals(
-                        SetHelper.StationNumber.numberGroups[i].Name,
-                        SetHelper.NowScanStaion,
-                        StringComparison.OrdinalIgnoreCase))
-                    {
-                        activeStationIndex = i;
-                        break;
-                    }
+                    return App.Container.Resolve<IMiscService>();
                 }
             }
-
-            if (activeStationIndex >= 0)
+            catch
             {
-                if (allowStations.Contains(activeStationIndex))
-                {
-                    return activeStationIndex;
-                }
+            }
 
-                MessageBox.Show($"当前等待扫码工位是 {SetHelper.NowScanStaion}，不允许使用第 {hardIndex + 1} 个扫码枪扫描");
+            Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs"));
+            return new MiscService();
+        }
+
+        private bool CanTriggerScanCheckIn(string stationName, int hardIndex)
+        {
+            if (!ContainsStation(stationName, "OP2020") && !ContainsStation(stationName, "OP2030"))
+            {
+                return true;
+            }
+
+            object obj = null;
+            string tagName = "PLC进站流程ID_" + (hardIndex + 1);
+            if (!SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, tagName, ref obj))
+            {
+                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读取{tagName}失败,不触发进站");
+                return false;
+            }
+
+            if (!IsPlcCheckInActive(obj))
+            {
+                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {tagName}为{obj},不触发进站");
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsPlcCheckInActive(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            if (obj is bool boolValue)
+            {
+                return boolValue;
+            }
+
+            string value = obj.ToString()?.Trim() ?? string.Empty;
+            if (int.TryParse(value, out int numberValue))
+            {
+                return numberValue != 0;
+            }
+
+            return bool.TryParse(value, out bool parsedValue) && parsedValue;
+        }
+
+        private bool IsSpecialStationPc(string stationName)
+        {
+            string firstStationName = SetHelper.StationNumber.numberGroups.FirstOrDefault()?.Name ?? string.Empty;
+            return ContainsStation(firstStationName, stationName);
+        }
+
+        private int ResolveStationIndex(int hardIndex, string scanStr)
+        {
+            bool isOp2020 = IsSpecialStationPc("OP2020");
+            bool isOp2030 = IsSpecialStationPc("OP2030");
+            if (!isOp2020 && !isOp2030)
+            {
+                return hardIndex;
+            }
+
+            if (stationIndexMap.Count == 0)
+            {
+                SetHelper.ListScanMessage.ShowInfoQueue("SN前缀映射未配置,使用扫码枪序号匹配工站");
+                return IsValidStationIndex(hardIndex) ? hardIndex : -1;
+            }
+
+            if (!TryResolvePrefixStation(scanStr, out int mappedIndex))
+            {
+                SetHelper.ListScanMessage.ShowInfoQueue($"扫码{scanStr}未匹配到SN前缀,不触发进站");
                 return -1;
             }
 
-            return hardIndex;
+            int stationIndex = mappedIndex;
+            if (isOp2030 && hardIndex == 1)
+            {
+                stationIndex = mappedIndex - 1;
+            }
+
+            if (!IsValidStationIndex(stationIndex))
+            {
+                SetHelper.ListScanMessage.ShowInfoQueue($"扫码{scanStr}解析到工站序号{stationIndex + 1}无效,不触发进站");
+                return -1;
+            }
+
+            return stationIndex;
+        }
+
+        private bool TryResolvePrefixStation(string scanStr, out int stationIndex)
+        {
+            foreach (var prefix in ambiguousPrefixes)
+            {
+                if (scanStr.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    SetHelper.ListScanMessage.ShowInfoQueue($"SN前缀{prefix}配置重复,无法判断工站");
+                    stationIndex = -1;
+                    return false;
+                }
+            }
+
+            foreach (var kvp in stationIndexMap.OrderByDescending(x => x.Key.Length))
+            {
+                if (scanStr.StartsWith(kvp.Key, StringComparison.OrdinalIgnoreCase))
+                {
+                    stationIndex = kvp.Value;
+                    return true;
+                }
+            }
+
+            stationIndex = -1;
+            return false;
+        }
+
+        private static bool IsValidStationIndex(int stationIndex)
+        {
+            return stationIndex >= 0 && stationIndex < SetHelper.StationNumber.numberGroups.Count;
+        }
+
+        private static bool ContainsStation(string stationName, string key)
+        {
+            return stationName?.IndexOf(key, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private void SNprefixMapStations()
+        {
+            foreach (var Sn in miscService.SNPrefixes ?? new ObservableCollection<SNPrefix>())
+            {
+                if (string.IsNullOrWhiteSpace(Sn.Name) || string.IsNullOrWhiteSpace(Sn.Value)) continue;
+
+                // 包含 outputShaft 映射为 0
+                if (Sn.Name.Contains("outputShaft"))
+                {
+                    AddStationPrefix(Sn.Value, 0);
+                }
+                // 包含 differential 或 inputShaft 映射为 1
+                else if (Sn.Name.Contains("differential") || Sn.Name.Contains("inputShaft"))
+                {
+                    AddStationPrefix(Sn.Value, 1);
+                }
+                // 包含 intermediateShaft 映射为 3
+                else if (Sn.Name.Contains("intermediateShaft"))
+                {
+                    AddStationPrefix(Sn.Value, 3);
+                }
+            }
+        }
+
+        private void AddStationPrefix(string prefix, int stationIndex)
+        {
+            prefix = prefix.Trim();
+            if (stationIndexMap.TryGetValue(prefix, out int existingIndex))
+            {
+                if (existingIndex != stationIndex)
+                {
+                    stationIndexMap.Remove(prefix);
+                    ambiguousPrefixes.Add(prefix);
+                    SetHelper.ListScanMessage.ShowInfoQueue($"SN前缀{prefix}同时配置到工站{existingIndex + 1}和工站{stationIndex + 1},已禁用该前缀");
+                }
+                return;
+            }
+
+            if (!ambiguousPrefixes.Contains(prefix))
+            {
+                stationIndexMap[prefix] = stationIndex;
+            }
         }
     }
 }
