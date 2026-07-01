@@ -11,6 +11,8 @@ namespace MES.Service
     {
         ObservableCollection<SNPrefix> SNPrefixes { get; set; }
 
+        void ReloadSettings();
+
         void SaveSettings();
 
     }

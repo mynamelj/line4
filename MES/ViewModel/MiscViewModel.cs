@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MES.Manager;
 using MES.Service;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace MES.ViewModel
             MiscService.SNPrefixes.ToList().ForEach(item => item.Value = PrefixDic[item.Name]);
 
             MiscService.SaveSettings();
+            SetHelper.scanManager.ReloadPrefixMappings();
             MessageBox.Show("配置已保存！");
         }
 

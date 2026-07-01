@@ -29,6 +29,11 @@ namespace MES.Service
 
         public MiscService()
         {
+            ReloadSettings();
+        }
+
+        public void ReloadSettings()
+        {
             string miscFilePath = Path.Combine(basePath, "configs", "misc.json");
 
 
@@ -38,7 +43,7 @@ namespace MES.Service
                 {
                     string jsonContent = System.IO.File.ReadAllText(miscFilePath);
                     var sNPrefixes = Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableCollection<SNPrefix>>(jsonContent);
-                    SNPrefixes = sNPrefixes;
+                    SNPrefixes = sNPrefixes ?? SNPrefixes;
                 }
                 catch
                 {
@@ -52,6 +57,7 @@ namespace MES.Service
                 File.WriteAllText(miscFilePath, defaultJsonContent);
             }
         }
+
         [RelayCommand]
         public void SaveSettings()
         {

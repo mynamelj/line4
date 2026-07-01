@@ -32,8 +32,23 @@ namespace MES.Manager
 
         private Dictionary<string, string> ruleDict = new Dictionary<string, string>();
 
-        private readonly Dictionary<string, int> stationIndexMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, PrefixStationTarget> prefixTargetMap = new Dictionary<string, PrefixStationTarget>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> ambiguousPrefixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        private enum ScanComponentType
+        {
+            Unknown,
+            OutputShaft,
+            Differential,
+            InputShaft,
+            IntermediateShaft,
+        }
+
+        private class PrefixStationTarget
+        {
+            public ScanComponentType ComponentType { get; set; }
+            public string Name { get; set; } = "";
+        }
 
         public ScanManager()
         {
@@ -54,7 +69,7 @@ namespace MES.Manager
                     SetHelper.ListOEEMessage.ShowInfoQueue(ex.Message);
                 }
             }
-            SNprefixMapStations();
+            ReloadPrefixMappings();
 
         }
 
@@ -63,6 +78,8 @@ namespace MES.Manager
         {
             try
             {
+                ReloadPrefixMappings();
+
                 int i = 0;
 
                 foreach (var item in scanBar)
@@ -186,11 +203,6 @@ namespace MES.Manager
                                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 4=>{str}");
                                     SNCode = str;
 
-                                    if (!CanTriggerScanCheckIn(stationName, hardIndex))
-                                    {
-                                        return;
-                                    }
-
                                     if (stationName.ToUpper().Contains("OP2020M") || stationName.ToUpper().Contains("OP2030M"))
                                     {
                                         (bool, string, string) response0 =
@@ -217,11 +229,8 @@ namespace MES.Manager
                                     }
 
 
-                                    SetHelper.dataManager.Siemens_OnDataChange(
-                                        "产品进站启动" + "_" + (hardIndex + 1).ToString(),
-                                        0,
-                                        0,
-                                        true);
+                                    SetHelper.ListPLCMessage.ShowInfoQueue($"扫码触发 产品进站启动_{hardIndex + 1} True");
+                                    SetHelper.dataManager.ProductCheckIn((hardIndex + 1).ToString(), str.Trim());
 
                                 }
                                 else
@@ -329,55 +338,30 @@ namespace MES.Manager
             return new MiscService();
         }
 
-        private bool CanTriggerScanCheckIn(string stationName, int hardIndex)
-        {
-            if (!ContainsStation(stationName, "OP2020") && !ContainsStation(stationName, "OP2030"))
-            {
-                return true;
-            }
 
-            object obj = null;
-            string tagName = "PLC进站流程ID_" + (hardIndex + 1);
-            if (!SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, tagName, ref obj))
-            {
-                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读取{tagName}失败,不触发进站");
-                return false;
-            }
 
-            if (!IsPlcCheckInActive(obj))
-            {
-                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {tagName}为{obj},不触发进站");
-                return false;
-            }
-
-            return true;
-        }
-
-        private static bool IsPlcCheckInActive(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            if (obj is bool boolValue)
-            {
-                return boolValue;
-            }
-
-            string value = obj.ToString()?.Trim() ?? string.Empty;
-            if (int.TryParse(value, out int numberValue))
-            {
-                return numberValue != 0;
-            }
-
-            return bool.TryParse(value, out bool parsedValue) && parsedValue;
-        }
 
         private bool IsSpecialStationPc(string stationName)
         {
             string firstStationName = SetHelper.StationNumber.numberGroups.FirstOrDefault()?.Name ?? string.Empty;
             return ContainsStation(firstStationName, stationName);
+        }
+
+        public void ReloadPrefixMappings()
+        {
+            prefixTargetMap.Clear();
+            ambiguousPrefixes.Clear();
+
+            try
+            {
+                miscService.ReloadSettings();
+            }
+            catch (Exception ex)
+            {
+                ShowScanMessage($"重新加载SN前缀配置失败:{ex.Message}");
+            }
+
+            SNprefixMapStations();
         }
 
         private int ResolveStationIndex(int hardIndex, string scanStr)
@@ -389,22 +373,26 @@ namespace MES.Manager
                 return hardIndex;
             }
 
-            if (stationIndexMap.Count == 0)
+            if (prefixTargetMap.Count == 0)
             {
                 SetHelper.ListScanMessage.ShowInfoQueue("SN前缀映射未配置,使用扫码枪序号匹配工站");
                 return IsValidStationIndex(hardIndex) ? hardIndex : -1;
             }
 
-            if (!TryResolvePrefixStation(scanStr, out int mappedIndex))
+            if (!TryResolvePrefixTarget(scanStr, out PrefixStationTarget target))
             {
                 SetHelper.ListScanMessage.ShowInfoQueue($"扫码{scanStr}未匹配到SN前缀,不触发进站");
                 return -1;
             }
 
-            int stationIndex = mappedIndex;
-            if (isOp2030 && hardIndex == 1)
+            int stationIndex = isOp2020
+                ? ResolveOp2020StationIndex(target)
+                : ResolveOp2030StationIndex(target, hardIndex);
+
+            if (stationIndex < 0)
             {
-                stationIndex = mappedIndex - 1;
+                SetHelper.ListScanMessage.ShowInfoQueue($"扫码{scanStr}匹配到{target.Name},但当前扫码枪无法确定工站,不触发进站");
+                return -1;
             }
 
             if (!IsValidStationIndex(stationIndex))
@@ -416,28 +404,54 @@ namespace MES.Manager
             return stationIndex;
         }
 
-        private bool TryResolvePrefixStation(string scanStr, out int stationIndex)
+        private int ResolveOp2020StationIndex(PrefixStationTarget target)
+        {
+            return target.ComponentType switch
+            {
+                ScanComponentType.OutputShaft => 0,
+                ScanComponentType.Differential => 1,
+                _ => -1,
+            };
+        }
+
+        private int ResolveOp2030StationIndex(PrefixStationTarget target, int hardIndex)
+        {
+            // OP2030PC固定硬件布置：index=0扫码枪扫压装，index=1扫码枪扫啮合。
+            bool isBearingPress = hardIndex == 0;
+            bool isMeshing = hardIndex == 1;
+
+            return target.ComponentType switch
+            {
+                ScanComponentType.InputShaft when isMeshing => 0,
+                ScanComponentType.InputShaft when isBearingPress => 1,
+                ScanComponentType.IntermediateShaft when isMeshing => 2,
+                ScanComponentType.IntermediateShaft when isBearingPress => 3,
+                _ => -1,
+            };
+        }
+
+        private bool TryResolvePrefixTarget(string scanStr, out PrefixStationTarget target)
         {
             foreach (var prefix in ambiguousPrefixes)
             {
                 if (scanStr.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
                 {
                     SetHelper.ListScanMessage.ShowInfoQueue($"SN前缀{prefix}配置重复,无法判断工站");
-                    stationIndex = -1;
+                    target = null;
                     return false;
                 }
             }
 
-            foreach (var kvp in stationIndexMap.OrderByDescending(x => x.Key.Length))
+            foreach (var kvp in prefixTargetMap.OrderByDescending(x => x.Key.Length))
             {
                 if (scanStr.StartsWith(kvp.Key, StringComparison.OrdinalIgnoreCase))
                 {
-                    stationIndex = kvp.Value;
+                    target = kvp.Value;
                     return true;
                 }
             }
 
-            stationIndex = -1;
+            target = null;
             return false;
         }
 
@@ -460,39 +474,52 @@ namespace MES.Manager
                 // 包含 outputShaft 映射为 0
                 if (Sn.Name.Contains("outputShaft"))
                 {
-                    AddStationPrefix(Sn.Value, 0);
+                    AddStationPrefix(Sn.Value, ScanComponentType.OutputShaft, Sn.Name);
                 }
                 // 包含 differential 或 inputShaft 映射为 1
-                else if (Sn.Name.Contains("differential") || Sn.Name.Contains("inputShaft"))
+                else if (Sn.Name.Contains("differential"))
                 {
-                    AddStationPrefix(Sn.Value, 1);
+                    AddStationPrefix(Sn.Value, ScanComponentType.Differential, Sn.Name);
+                }
+                else if (Sn.Name.Contains("inputShaft"))
+                {
+                    AddStationPrefix(Sn.Value, ScanComponentType.InputShaft, Sn.Name);
                 }
                 // 包含 intermediateShaft 映射为 3
                 else if (Sn.Name.Contains("intermediateShaft"))
                 {
-                    AddStationPrefix(Sn.Value, 3);
+                    AddStationPrefix(Sn.Value, ScanComponentType.IntermediateShaft, Sn.Name);
                 }
             }
         }
 
-        private void AddStationPrefix(string prefix, int stationIndex)
+        private void AddStationPrefix(string prefix, ScanComponentType componentType, string name)
         {
             prefix = prefix.Trim();
-            if (stationIndexMap.TryGetValue(prefix, out int existingIndex))
+            if (prefixTargetMap.TryGetValue(prefix, out PrefixStationTarget existingTarget))
             {
-                if (existingIndex != stationIndex)
+                if (existingTarget.ComponentType != componentType)
                 {
-                    stationIndexMap.Remove(prefix);
+                    prefixTargetMap.Remove(prefix);
                     ambiguousPrefixes.Add(prefix);
-                    SetHelper.ListScanMessage.ShowInfoQueue($"SN前缀{prefix}同时配置到工站{existingIndex + 1}和工站{stationIndex + 1},已禁用该前缀");
+                    ShowScanMessage($"SN前缀{prefix}同时配置到{existingTarget.Name}和{name},已禁用该前缀");
                 }
                 return;
             }
 
             if (!ambiguousPrefixes.Contains(prefix))
             {
-                stationIndexMap[prefix] = stationIndex;
+                prefixTargetMap[prefix] = new PrefixStationTarget
+                {
+                    ComponentType = componentType,
+                    Name = name,
+                };
             }
+        }
+
+        private static void ShowScanMessage(string message)
+        {
+            SetHelper.ListScanMessage?.ShowInfoQueue(message);
         }
     }
 }

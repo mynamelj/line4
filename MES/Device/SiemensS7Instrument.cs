@@ -21,6 +21,7 @@ namespace DAL
         private bool IsConnected;
         private bool isRun = false;
         private string Message;
+        private int count = 0;
 
         private List<PLCGroup> PLCGroups = new List<PLCGroup>();
 
@@ -371,7 +372,7 @@ namespace DAL
             }
             catch (Exception ex)
             {
-                IsConnected = false;
+                //IsConnected = false;
 
                 Message = _ip + "数据读取失败=>" + ex.Message;
                 return false;
@@ -689,6 +690,7 @@ namespace DAL
             isRun = true;
             new Thread(() =>
             {
+                
                 while (isRun)
                 {
                     try
@@ -715,15 +717,16 @@ namespace DAL
                                 }
                             }
                         }
+                        count = 0;
                         foreach (var tagItem in monitorGroup)
                         {
                             //就去读数据
                             object objNew = null;
                             Stopwatch sw = new Stopwatch();
                             sw.Start();
-
                             if (ReadItems(tagItem.Value, ref objNew))
                             {
+
                                 object InitVal = new object();
                                 DataInitVal.TryGetValue(tagItem.Key, out InitVal);
 
@@ -749,8 +752,12 @@ namespace DAL
                             }
                             else
                             {
+                                count++;
                                 //重连
-                                Reset();
+                                if (count >= 3 )
+                                {
+                                    Reset();
+                                }
                                 break;
                             }
                         }

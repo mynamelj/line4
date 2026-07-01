@@ -14,18 +14,9 @@ namespace MES.Manager
         {
             int iNumber = Convert.ToInt32(stationNumber) - 1;
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
+            string scanSN = string.IsNullOrWhiteSpace(OP3045SN) ? ScanManager.SNCode : OP3045SN.Trim();
             try
             {
-                //手动工位增加清除登录状态的功能
-                if (SetHelper.MesSetting.ListGroup[iNumber].IsMauaStation == "1")
-                {
-                    MainWindowViewModel.CheckInOrOut = true;
-                    if (stationName.ToUpper().Contains("OP5130"))
-                    {
-                        SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_2", false);
-                    }
-                    SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_1", false);
-                }
 
                 SetHelper.DateStart = new DateTime();
                 SetHelper.DateEnd = new DateTime();
@@ -50,13 +41,13 @@ namespace MES.Manager
 
                 if (stationName.ToUpper().Contains("1NG_IO"))
                 {
-                    // ScanManager.SNCode 是扫码枪模块全局存储的最新扫码结果
+                    // 优先使用本次扫码传入的SN，避免多工位同时扫码时被全局SN覆盖。
                     // 操作员人工将NG产品的条码对准扫码枪后，扫码结果存在这里
                     SetHelper.ListPLCMessage.ShowInfoQueue(
-                        $"{stationName} 扫描到的SN码为{ScanManager.SNCode}");
+                        $"{stationName} 扫描到的SN码为{scanSN}");
 
                     // 此 snCode 在后续进站逻辑中会被用到（如上报MES的参数）
-                    snCode = ScanManager.SNCode;
+                    snCode = scanSN;
                     // 目的：让PLC知道当前进站的产品是哪一个，
                     //       PLC后续可以根据此SN码做流程控制（如联锁、指示灯等）
                     bool Result0 = SetHelper.siemens.WriteItem(
@@ -118,10 +109,10 @@ namespace MES.Manager
                             return; // 直接退出，等待LinkComp完成后弹窗关闭
                         }
 
-                        // ScanManager.SNCode：扫码枪模块的全局静态变量，保存最近一次扫码结果
+                        // scanSN：本次扫码得到的SN。旧流程未传入时，回退到ScanManager.SNCode。
                         // 操作员扫描产品条码（如电机壳体码）后，值会更新
-                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 进站扫描到的SN码为{ScanManager.SNCode}");
-                        snCode = ScanManager.SNCode; // 将扫码结果赋值给snCode，后续用于进站上报
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 进站扫描到的SN码为{scanSN}");
+                        snCode = scanSN; // 将扫码结果赋值给snCode，后续用于进站上报
 
 
                         // FeedingSNCodeLen > 0 时才触发，说明该工位需要先校验条码合法性
