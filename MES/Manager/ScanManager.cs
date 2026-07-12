@@ -145,12 +145,12 @@ namespace MES.Manager
         {
             string str = string.Join("", listBar);
             string stationName = "";
-
+            OnScanOpenBox?.Invoke(str);//将各个页面的码更新
 
             SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 扫描到条码为" + str.ToString());
 
 
-            int stationIndex = ResolveStationIndex(hardIndex,str);
+            int stationIndex = ResolveStationIndex(hardIndex, str);
             if (stationIndex < 0)
             {
                 return;
@@ -175,7 +175,7 @@ namespace MES.Manager
                 }
              
                 SetHelper.NowMaterialCode[hardIndex] = str;
-                OnScanOpenBox?.Invoke(str);//将各个页面的码更新
+                //OnScanOpenBox?.Invoke(str);//将各个页面的码更新
                 //}
 
                 if (stationName.ToUpper().Contains("OP1030"))
@@ -188,8 +188,8 @@ namespace MES.Manager
                 if (SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen > 0)
                 {
                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 2=>");
-                    if (stationName.ToUpper().Contains("OP1010") || stationName.ToUpper().Contains("OP3040")
-                        || stationName.ToUpper().Contains("OP4030")|| stationName.ToUpper().Contains("OP2020")
+                    if (stationName.ToUpper().Contains("OP1010") || stationName.ToUpper().Contains("OP3040")|| 
+                        stationName.ToUpper().Contains("OP4030")|| stationName.ToUpper().Contains("OP2020")
                         || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("1NG_IO"))
                     {
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 3=>");
@@ -203,8 +203,10 @@ namespace MES.Manager
                                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 4=>{str}");
                                     SNCode = str;
 
-                                    if (stationName.ToUpper().Contains("OP2020M") || stationName.ToUpper().Contains("OP2030M"))
+                                    if ((stationName.ToUpper().Contains("OP2020M") || stationName.ToUpper().Contains("OP2030M")) && SetHelper.NowProduct.ProductID==25)
                                     {
+
+
                                         (bool, string, string) response0 =
                                             await SetHelper.mesManager.FeedingCheck(SNCode.GetFeedingCheck(hardIndex), hardIndex);
 
@@ -227,7 +229,6 @@ namespace MES.Manager
                                         }
                                         return;
                                     }
-
 
                                     SetHelper.ListPLCMessage.ShowInfoQueue($"扫码触发 产品进站启动_{hardIndex + 1} True");
                                     SetHelper.dataManager.ProductCheckIn((hardIndex + 1).ToString(), str.Trim());

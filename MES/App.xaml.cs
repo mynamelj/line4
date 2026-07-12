@@ -13,6 +13,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using static MES.Service.MiscService;
 
@@ -24,6 +25,10 @@ namespace MES
     /// </summary>
     public partial class App : Application
     {
+        private const string SingleInstanceMutexName = @"Global\MES_Line4_SingleInstance";
+        private static Mutex _singleInstanceMutex;
+        private bool _ownsSingleInstanceMutex;
+
         public static class AppContainer
         {
             public static IContainer Instance { get; set; }
@@ -54,6 +59,15 @@ namespace MES
         //  OnStartup用来处理程序启动后的json
         protected override void OnStartup(StartupEventArgs e)
         {
+            _singleInstanceMutex = new Mutex(true, SingleInstanceMutexName, out var createdNew);
+            _ownsSingleInstanceMutex = createdNew;
+
+            if (!createdNew)
+            {
+                MessageBox.Show("程序已经在运行中，请勿重复打开。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                Shutdown();
+                return;
+            }
 
             //  misc.json 配置文件
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -117,15 +131,22 @@ namespace MES
 
         protected override void OnExit(ExitEventArgs e)
         {
-            try 
+            if (_ownsSingleInstanceMutex)
             {
-                SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_2", false);
-                SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_1", false);
+                try 
+                {
+                    SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_2", false);
+                    SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_1", false);
+                }
+                catch 
+                {
+                    throw;
+                }
+
+                _singleInstanceMutex?.ReleaseMutex();
             }
-            catch 
-            {
-                throw;
-            }
+
+            _singleInstanceMutex?.Dispose();
             base.OnExit(e);
         }
         public class GlobalExceptionHandler

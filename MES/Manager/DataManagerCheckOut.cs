@@ -124,23 +124,13 @@ namespace MES.Manager
                 ObservableCollection<MaterailOnOffModel> glueMaterails = SetHelper.ReadSys<ObservableCollection<MaterailOnOffModel>>(SetHelper.gluepath);
 
                 //只有返修状态（5或6）且工站为 OP5005 或 OP2010 时才不上传，其余全部上传。
-                if (!((CheckInResult == 5 || CheckInResult == 6 ) && (stationName.ToUpper().Contains("OP2010")|| stationName.ToUpper().Contains("OP5005"))))
+                if (!((CheckInResult == 5 || CheckInResult == 6 ) ))
                 {
                     #region 读取产品需要上传MES的数据
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
                     //从这个大字典中，取出键名为 "CheckOutGroup"（出站组）的那一部分子字典。
                     var dic = SetHelper.siemens.DicDataItems[PLCGroupName.CheckOutGroup.ToString()];//<TagName,DataItem>                                                                    //读取对应工位的参数
                     dic = dic.Where(it => it.Key.Contains("_" + number)).ToDictionary(it => it.Key, it => it.Value);
-
-                    if (stationName.ToUpper().Contains("OP3040")|| stationName.ToUpper().Contains("OP1080"))
-                    {
-                        if(DataManager.specialRepairFlag==6||( CheckInResult == 5)&& !stationName.ToUpper().Contains("OP3040"))
-                        {   
-                                dic = dic.Where(it => repairDataList.Any(x => string.Equals(x, it.Key, StringComparison.OrdinalIgnoreCase)))
-                                 .ToDictionary(it => it.Key, it => it.Value);
-                        }
-
-                    }
 
                     if ( dic.Count != 0)
                     {
