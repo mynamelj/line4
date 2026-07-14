@@ -189,7 +189,7 @@ namespace MES.Manager
                 {
                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 2=>");
                     if (stationName.ToUpper().Contains("OP1010") || stationName.ToUpper().Contains("OP3040")|| 
-                        stationName.ToUpper().Contains("OP4030")|| stationName.ToUpper().Contains("OP2020")
+                        stationName.ToUpper().Contains("OP4020")|| stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2035")
                         || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("1NG_IO"))
                     {
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 3=>");
@@ -198,6 +198,9 @@ namespace MES.Manager
                         {    //弹窗未关闭
                             if (DataManager.IsOP1010ViewOpen)
                             {
+
+
+
                                 if (str.Trim().Length == SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen)
                                 {
                                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 4=>{str}");
@@ -229,7 +232,15 @@ namespace MES.Manager
                                         }
                                         return;
                                     }
-
+                                    object res = null;
+                                    if (SetHelper.siemens.ReadItem(PLCGroupName.TriggerGroup, "产品进站启动_" + (hardIndex + 1), ref res))
+                                    {
+                                        if (res.ObjToBool() == false)
+                                        {
+                                            SetHelper.ListPLCMessage.ShowInfoQueue($"扫码进站未触发_{hardIndex + 1} True");
+                                            return;
+                                        }
+                                    }
                                     SetHelper.ListPLCMessage.ShowInfoQueue($"扫码触发 产品进站启动_{hardIndex + 1} True");
                                     SetHelper.dataManager.ProductCheckIn((hardIndex + 1).ToString(), str.Trim());
 

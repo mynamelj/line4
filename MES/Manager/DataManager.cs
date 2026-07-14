@@ -196,10 +196,15 @@ namespace MES.Manager
                         int iNumber = Convert.ToInt32(Number) - 1;
                         string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
                         //4130不再扫码
-                        if ((stationName.ToUpper().Contains("OP1010")|| stationName.ToUpper().Contains("OP3040")||
-                            (stationName.ToUpper().Contains("OP4030")||stationName.ToUpper().Contains("OP2020")|| 
+                        if ((stationName.ToUpper().Contains("OP1010")|| stationName.ToUpper().Contains("OP3040")|| stationName.ToUpper().Contains("OP2035") ||
+                            (stationName.ToUpper().Contains("OP4020")||stationName.ToUpper().Contains("OP2020")|| 
                             stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("1NG_IO")) && Address != 0)) //0为扫码触发
                         {
+                            if (stationName.ToUpper().Contains("OP2035") && stationName.Contains("4"))
+                            {
+                                ProductCheckIn(Number);
+                                break;
+                            }
                             await System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 if (IsOP1010ViewOpen)
@@ -224,8 +229,8 @@ namespace MES.Manager
                         {
                             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
                             if (stationName.ToUpper().Contains("OP1010") 
-                                || stationName.ToUpper().Contains("OP4030") || stationName.ToUpper().Contains("OP2020") 
-                                || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("NG_IO"))
+                                || stationName.ToUpper().Contains("OP4020") || stationName.ToUpper().Contains("OP2020")|| stationName.ToUpper().Contains("OP2035")
+                                || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("NG_IO")||stationName.ToUpper().Contains("OP3040"))
                             {
                                 
                                 await Application.Current.Dispatcher.BeginInvoke(() =>
@@ -250,6 +255,7 @@ namespace MES.Manager
                     }
                     break;
                 case "检查材料合法性启动":
+
                     if ((bool)TagValue)
                     {
                         string materialCode = "";

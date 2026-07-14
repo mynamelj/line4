@@ -87,8 +87,8 @@ namespace MES
                         new SNPrefix { Name = "QR2020differentialSNPrefix", Value = "4" },
                         new SNPrefix { Name = "XP2030inputShaftSNPrefix", Value = "5" },
                         new SNPrefix { Name = "XP2030intermediateShaftSNPrefix", Value = "6" },
-                        new SNPrefix { Name = "QR2030inputShaftSNPrefix", Value = "6" },
-                        new SNPrefix { Name = "QR2030intermediateShaftSNPrefix", Value = "7" }
+                        new SNPrefix { Name = "QR2030inputShaftSNPrefix", Value = "7" },
+                        new SNPrefix { Name = "QR2030intermediateShaftSNPrefix", Value = "8" }
                     }, Formatting.Indented);
 
                     File.WriteAllText(filePath, jsonString, Encoding.UTF8);

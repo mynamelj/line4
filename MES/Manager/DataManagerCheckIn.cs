@@ -15,6 +15,9 @@ namespace MES.Manager
             int iNumber = Convert.ToInt32(stationNumber) - 1;
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
             string scanSN = string.IsNullOrWhiteSpace(OP3045SN) ? ScanManager.SNCode : OP3045SN.Trim();
+
+
+
             try
             {
 
@@ -100,6 +103,7 @@ namespace MES.Manager
                     // PLC不提供进站载具码，SN码由扫码枪获取
                     if (SetHelper.MesSetting.ListGroup[iNumber].SNCodeLen > 0)
                     {
+
                         // 精追码弹窗打开时（LinkComp扫码进行中），禁止触发进站
                         // 精追料扫码（如螺栓批次码）弹窗未关闭时，
                         //           不能因为操作员误扫了产品码而重新触发进站，导致流程混乱
@@ -114,7 +118,16 @@ namespace MES.Manager
                         SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 进站扫描到的SN码为{scanSN}");
                         snCode = scanSN; // 将扫码结果赋值给snCode，后续用于进站上报
 
-
+                        if (stationName.ToUpper().Contains("OP2035") && stationName.Contains("4"))
+                        {
+                            if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "产品_" + stationNumber, ref obj))
+                            {
+                                
+                                snCode = obj.Obj2String();
+                                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到流程ID为{SeqID}");
+                            }
+                        }
+ 
                         // FeedingSNCodeLen > 0 时才触发，说明该工位需要先校验条码合法性
                         // 确认该条码是否属于当前工单/产品类型
                         if (SetHelper.MesSetting.ListGroup[iNumber].FeedingSNCodeLen > 0)
