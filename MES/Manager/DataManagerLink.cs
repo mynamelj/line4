@@ -150,6 +150,7 @@ namespace MES.Manager
                             if (!LinkResult)
                             {
                                 ScanSuccess[iNumber] = false;
+                                break;
                             }
                             else
                             {
@@ -317,16 +318,6 @@ namespace MES.Manager
                             PopupSeqView window = new PopupSeqView(stationName, iNumber, showMsg);
                             //window.Height = 100;
                             window.ShowActivated = true;
-                            if (stationName.ToUpper().Contains("OP3045"))
-                            {
-                                window.WindowStartupLocation = WindowStartupLocation.Manual;
-                                window.Top = 0;
-                                window.Left = 400;
-                            }
-                            else
-                            {
-                                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                            }
                             window.Show();
                         }
                     });
@@ -338,10 +329,8 @@ namespace MES.Manager
                     materialCode = "";
                 }
 
-
-                //OP3050或者OP3045-2进行LinkComp时直接读取PLC发送的物料码信号 偏移量2630.48
+                //OP3050进行LinkComp时直接读取PLC发送的物料码信号 偏移量2630.48
                 if (stationName.Contains("OP3050")
-                || (stationName.Contains("OP3045") && stationName.Contains("2"))
                  || stationName.Contains("OP2040"))
                 //|| stationName.Contains("OP2045"))//20260119
                 {
@@ -386,9 +375,7 @@ namespace MES.Manager
                         });
                         showMsg = "";
                         mesReturn = $"条码{SetHelper.NowMaterialCode[iNumber]}FeedingCheck上传失败请重新扫码\r\n\r\nMES返回信息:{reuslt0.Item2}";
-                        if (stationName.Contains("OP3050")
-                            || (stationName.Contains("OP3045") && stationName.Contains("2"))
-                            || stationName.Contains("OP2040") || stationName.Contains("OP1030"))
+                        if (stationName.Contains("OP3050") || stationName.Contains("OP2040") || stationName.Contains("OP1030"))
                         //  || stationName.Contains("OP2045"))//20260119
                         {
                             return false;
@@ -415,9 +402,7 @@ namespace MES.Manager
                     {
                         showMsg = "";
                         mesReturn = $"条码{SetHelper.NowMaterialCode[iNumber]}LinkComp上传失败请重新扫码\r\n\r\nMES返回信息:{reuslt.Item2}";
-                        if (stationName.Contains("OP3050")
-                            || (stationName.Contains("OP3045") && stationName.Contains("2"))
-                            || stationName.Contains("OP2040"))
+                        if (stationName.Contains("OP3050")|| stationName.Contains("OP2040"))
                         //   || stationName.Contains("OP2045"))//20260119
                         {
                             return false;

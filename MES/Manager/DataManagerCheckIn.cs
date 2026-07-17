@@ -10,12 +10,12 @@ namespace MES.Manager
 {
     public partial class DataManager
     {
-        public async void ProductCheckIn(string stationNumber, string OP3045SN = "")
+        public async void ProductCheckIn(string stationNumber, string SN = "")
         {
             int iNumber = Convert.ToInt32(stationNumber) - 1;
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
-            string scanSN = string.IsNullOrWhiteSpace(OP3045SN) ? ScanManager.SNCode : OP3045SN.Trim();
-
+            string scanSN = string.IsNullOrWhiteSpace(SN) ? ScanManager.SNCode : SN.Trim();
+            FormulaSend();
 
 
             try
@@ -269,12 +269,6 @@ namespace MES.Manager
                     //MessageBox.Show($"1:{response.Item1}\n2:{response.Item2}\n3:{response.Item3}\n4:{response.Item4}\n5:{response.Item5}");
 
 
-                    if (stationName.Contains("OP3045") && stationNumber == "2")
-                    {
-                        CheckInStatus = response.Item1; // 保存工站2进站状态供上层判断
-                    }
-
- 
 
                     if (response.Item1) // MES校验通过 (Success)
                     {

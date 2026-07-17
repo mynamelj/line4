@@ -358,7 +358,7 @@ namespace MES.Manager
                         }
                     });
                 }
-                // 业务含义：MES返回消息包含"物料不足"但不含"预警"
+                // MES返回消息包含"物料不足"但不含"预警"
                 // 说明物料已经断料或严重不足，属于"红色报警"，生产可能需要停线
                 else if (response.Item2.Contains("物料不足"))
                 {
@@ -400,7 +400,7 @@ namespace MES.Manager
                 // 清空当前产品码缓存，避免影响下一个产品的出站流程
                 SetHelper.NowProductCode = "";
 
-                // 业务背景：出站时MES会对该产品消耗的批追物料（如三相螺栓批次码）进行扣料
+                // 出站时MES会对该产品消耗的批追物料（如三相螺栓批次码）进行扣料
                 // 如果某批次物料数量不够扣，MES会在 response.Item3（SN_Info[]）中返回具体哪个物料不足
                 // 此时需要将上料页面中对应物料的批次码清空，提示操作员重新扫码上料
                 if (response.Item3 != null && materails != null)

@@ -332,11 +332,7 @@ namespace MES.Manager
                     if ((bool)TagValue)
                     {
                         string stationName = SetHelper.StationNumber.numberGroups[int.Parse(Number) - 1].Name;
-                        if (stationName.Contains("OP3045") && Number == "3")//3045-3需要先弹窗扫码，再进站，所以在此处加了弹窗
-                        {
-                            ScanCheckIn(Number);
-                        }
-                        else if (stationName.Contains("OP2020") || stationName.Contains("OP2030") || stationName.Contains("OP2055"))
+                        if (stationName.Contains("OP2020") || stationName.Contains("OP2030") || stationName.Contains("OP2055"))
                         {
                             int iNumber = Convert.ToInt32(Number) - 1;
                             await System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
