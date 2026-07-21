@@ -37,11 +37,6 @@ namespace MES.Manager
                 if (SetHelper.MesSetting.ListGroup[iNumber].IsMauaStation == "1")
                 {
                     MainWindowViewModel.CheckInOrOut = true;
-                    if (stationName.ToUpper().Contains("OP5130"))
-                    {
-                        SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_2", false);
-                    }
-
                     SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_1", false);
                 }
                 //SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, PLCTagItem.产品SN, "A12123jd7");
@@ -124,7 +119,7 @@ namespace MES.Manager
                 ObservableCollection<MaterailOnOffModel> glueMaterails = SetHelper.ReadSys<ObservableCollection<MaterailOnOffModel>>(SetHelper.gluepath);
 
                 //只有返修状态（5或6）且工站为 OP5005 或 OP2010 时才不上传，其余全部上传。
-                if (!((CheckInResult == 5 || CheckInResult == 6 ) ))
+                if (CheckInResult != 5 && CheckInResult != 6 )
                 {
                     #region 读取产品需要上传MES的数据
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
@@ -325,6 +320,10 @@ namespace MES.Manager
                 //将结果保存到结果Model中，供界面显示
                 SetHelper.resultModel[iNumber].Result3 = response.Item1 ? "OK" : "NG";
                 SetHelper.resultModel[iNumber].CheckOutSN = SN;
+                SetHelper.ListOEEMessage.ShowInfoQueue($"item1:{response.Item1},item2:{response.Item2},item4:{response.Item4}");
+
+
+
 
                 #endregion 数据上传MES
 

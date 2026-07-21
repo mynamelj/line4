@@ -117,7 +117,7 @@ namespace MES.Manager
         public static ProductTypeModel GetProductType(int ProductType)
         {
             ProductTypeModel productType = products.FirstOrDefault(x => x.ProductID == ProductType);
-            return productType;
+            return productType ?? new ProductTypeModel { ProductID = 1, ProductName="D02" };
         }
 
         /// 把产品型号名称改成产品型号ID
