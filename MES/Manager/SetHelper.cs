@@ -41,6 +41,8 @@ namespace MES.Manager
         public static string realapipath = "";
         public static string logmainpath = Environment.CurrentDirectory + "\\log\\";
 
+        public static bool isSpecialStation = false;
+
         /// <summary>
         /// MES设置
         /// </summary>
@@ -225,6 +227,7 @@ namespace MES.Manager
                 bool plcResult = dataManager.InitialzePLC();
                 ListPLCMessage.ShowInfoQueue("PLC初始化" + (plcResult ? "成功" : "失败"));
 
+                isSpecialStation= IsSpecialStation();
                 StartOk = true;
                 return true;
             }
@@ -234,7 +237,19 @@ namespace MES.Manager
             }
             return false;
         }
+        private static bool IsSpecialStation()
+        {
 
+            foreach (var station in SetHelper.StationNumber.numberGroups)
+            {
+                string stationName = station?.Name ?? string.Empty;
+                if (stationName.Contains("OP2020") || stationName.Contains("OP2030"))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         #region 配置相关
 
         public static T LoadConfig<T>(string configID, ProductTypeModel productType, string Name = "") where T : class, new()

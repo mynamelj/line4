@@ -390,6 +390,8 @@ namespace MES.Manager
                 // 将出站结果（1/2/3/4）写入PLC对应工位的"出站结果"寄存器
                 // PLC读取该值后据此控制流水线动作（如放行/停线/报警灯亮起）
                 result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "出站结果_" + number, checkOutResult);
+
+
                 SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 出站结果写{checkOutResult},{(result ? "成功" : "失败")}");
 
                 // 将PC出站流程ID写回PLC，PLC用此ID与进站流程ID配对校验流程完整性

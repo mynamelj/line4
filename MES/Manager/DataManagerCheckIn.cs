@@ -17,7 +17,6 @@ namespace MES.Manager
             string scanSN = string.IsNullOrWhiteSpace(SN) ? ScanManager.SNCode : SN.Trim();
             FormulaSend();
 
-
             try
             {
 
@@ -130,12 +129,13 @@ namespace MES.Manager
  
                         // FeedingSNCodeLen > 0 时才触发，说明该工位需要先校验条码合法性
                         // 确认该条码是否属于当前工单/产品类型
-                        if (SetHelper.MesSetting.ListGroup[iNumber].FeedingSNCodeLen > 0)
+                        if (SetHelper.MesSetting.ListGroup[iNumber].FeedingSNCodeLen > 1)
                         {
-
+                            SetHelper.ListOEEMessage.ShowInfoQueue("触发feedingcheck");
                             // 调用MES的FeedingCheck接口，校验扫码的SN码是否合法
                             (bool, string, string) response0 = await SetHelper.mesManager.FeedingCheck(
-                                snCode.GetFeedingCheck(iNumber), iNumber);
+                               snCode.GetFeedingCheck(iNumber), iNumber);
+                            // 调用MES的FeedingCheck接口，校验扫码的SN码是否合法
 
                             // 更新界面进站结果显示（消息页面左侧的进站:OK/NG）
                             SetHelper.resultModel[iNumber].Result1 = response0.Item1 ? "OK" : "NG";

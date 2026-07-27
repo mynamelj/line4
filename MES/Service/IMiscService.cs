@@ -15,5 +15,7 @@ namespace MES.Service
 
         void SaveSettings();
 
+        int ResolveStationIndex(int hardIndex, string str);
+
     }
 }

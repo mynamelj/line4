@@ -94,6 +94,8 @@ namespace MES.ViewModel
         public int SelectId { get; set; } = 0;
         public static bool IsSimulate { get; set; }
         public string ButtonText { get; set; } = "MES已开启";
+        public Visibility SpecialStationVisibility =>
+            SetHelper.isSpecialStation ? Visibility.Visible : Visibility.Collapsed;
 
         public ICommand ClickCommand => new RelayCommand(() =>
         {

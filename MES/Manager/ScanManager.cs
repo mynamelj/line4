@@ -30,58 +30,19 @@ namespace MES.Manager
 
         private List<HardWare_ScanBar> scanBar = new List<HardWare_ScanBar>();
 
-        private Dictionary<string, string> ruleDict = new Dictionary<string, string>();
 
-        private readonly Dictionary<string, PrefixStationTarget> prefixTargetMap = new Dictionary<string, PrefixStationTarget>(StringComparer.OrdinalIgnoreCase);
-        private readonly HashSet<string> ambiguousPrefixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        private enum ScanComponentType
-        {
-            Unknown,
-            OutputShaft,
-            Differential,
-            InputShaft,
-            IntermediateShaft,
-        }
-
-        private class PrefixStationTarget
-        {
-            public ScanComponentType ComponentType { get; set; }
-            public string Name { get; set; } = "";
-        }
 
         public ScanManager()
         {
             miscService = CreateMiscService();
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = Path.Combine(baseDirectory, "misc.json");
-            if(File.Exists(filePath))
-            {
-                try
-                {
-                    string jsonStr = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
-                    JObject jo = JObject.Parse(jsonStr);
-                    ruleDict = jo["扫码匹配规则"]?.ToObject<Dictionary<string, string>>() ?? ruleDict;
-
-                }
-                catch (Exception ex)
-                {
-                    SetHelper.ListOEEMessage.ShowInfoQueue(ex.Message);
-                }
-            }
-            ReloadPrefixMappings();
-
         }
-
-
         public bool InitializeScan()
         {
             try
             {
-                ReloadPrefixMappings();
 
                 int i = 0;
-
                 foreach (var item in scanBar)
                 {
                     if (item != null && item.IsConnect)
@@ -122,6 +83,7 @@ namespace MES.Manager
                     scanBar.Add(scan);
                     i++;
                 }
+                
                 SetHelper.ListScanMessage.ShowInfoQueue("扫码枪初始化成功！");
                 return true;
             }
@@ -149,8 +111,7 @@ namespace MES.Manager
 
             SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 扫描到条码为" + str.ToString());
 
-
-            int stationIndex = ResolveStationIndex(hardIndex, str);
+            int stationIndex = SetHelper.isSpecialStation ? miscService.ResolveStationIndex(hardIndex, str) : hardIndex;
             if (stationIndex < 0)
             {
                 return;
@@ -269,7 +230,6 @@ namespace MES.Manager
                 if (SetHelper.MesSetting.ListGroup[hardIndex].FeedingSNCodeLen > 0 && SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen <= 0
                         && !SetHelper.IsOpen[hardIndex])//如果linkcomp中，则不触发
                 {
-                    int feedingResult = 2;
                     if (str.Trim().Length == SetHelper.MesSetting.ListGroup[hardIndex].FeedingSNCodeLen)
                     {
                         string rule = SetHelper.MesSetting.ListGroup[hardIndex].CodeRule;
@@ -344,6 +304,7 @@ namespace MES.Manager
             }
             catch
             {
+                throw;
             }
 
             Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "configs"));
@@ -353,185 +314,6 @@ namespace MES.Manager
 
 
 
-        private bool IsSpecialStationPc(string stationName)
-        {
-            string firstStationName = SetHelper.StationNumber.numberGroups.FirstOrDefault()?.Name ?? string.Empty;
-            return ContainsStation(firstStationName, stationName);
-        }
 
-        public void ReloadPrefixMappings()
-        {
-            prefixTargetMap.Clear();
-            ambiguousPrefixes.Clear();
-
-            try
-            {
-                miscService.ReloadSettings();
-            }
-            catch (Exception ex)
-            {
-                ShowScanMessage($"重新加载SN前缀配置失败:{ex.Message}");
-            }
-
-            SNprefixMapStations();
-        }
-
-        private int ResolveStationIndex(int hardIndex, string scanStr)
-        {
-            bool isOp2020 = IsSpecialStationPc("OP2020");
-            bool isOp2030 = IsSpecialStationPc("OP2030");
-            if (!isOp2020 && !isOp2030)
-            {
-                return hardIndex;
-            }
-
-            if (prefixTargetMap.Count == 0)
-            {
-                SetHelper.ListScanMessage.ShowInfoQueue("SN前缀映射未配置,使用扫码枪序号匹配工站");
-                return IsValidStationIndex(hardIndex) ? hardIndex : -1;
-            }
-
-            if (!TryResolvePrefixTarget(scanStr, out PrefixStationTarget target))
-            {
-                SetHelper.ListScanMessage.ShowInfoQueue($"扫码{scanStr}未匹配到SN前缀,不触发进站");
-                return -1;
-            }
-
-            int stationIndex = isOp2020
-                ? ResolveOp2020StationIndex(target)
-                : ResolveOp2030StationIndex(target, hardIndex);
-
-            if (stationIndex < 0)
-            {
-                SetHelper.ListScanMessage.ShowInfoQueue($"扫码{scanStr}匹配到{target.Name},但当前扫码枪无法确定工站,不触发进站");
-                return -1;
-            }
-
-            if (!IsValidStationIndex(stationIndex))
-            {
-                SetHelper.ListScanMessage.ShowInfoQueue($"扫码{scanStr}解析到工站序号{stationIndex + 1}无效,不触发进站");
-                return -1;
-            }
-
-            return stationIndex;
-        }
-
-        private int ResolveOp2020StationIndex(PrefixStationTarget target)
-        {
-            return target.ComponentType switch
-            {
-                ScanComponentType.OutputShaft => 0,
-                ScanComponentType.Differential => 1,
-                _ => -1,
-            };
-        }
-
-        private int ResolveOp2030StationIndex(PrefixStationTarget target, int hardIndex)
-        {
-            // OP2030PC固定硬件布置：index=0扫码枪扫压装，index=1扫码枪扫啮合。
-            bool isBearingPress = hardIndex == 0;
-            bool isMeshing = hardIndex == 1;
-
-            return target.ComponentType switch
-            {
-                ScanComponentType.InputShaft when isMeshing => 0,
-                ScanComponentType.InputShaft when isBearingPress => 1,
-                ScanComponentType.IntermediateShaft when isMeshing => 2,
-                ScanComponentType.IntermediateShaft when isBearingPress => 3,
-                _ => -1,
-            };
-        }
-
-        private bool TryResolvePrefixTarget(string scanStr, out PrefixStationTarget target)
-        {
-            foreach (var prefix in ambiguousPrefixes)
-            {
-                if (scanStr.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-                {
-                    SetHelper.ListScanMessage.ShowInfoQueue($"SN前缀{prefix}配置重复,无法判断工站");
-                    target = null;
-                    return false;
-                }
-            }
-
-            foreach (var kvp in prefixTargetMap.OrderByDescending(x => x.Key.Length))
-            {
-                if (scanStr.StartsWith(kvp.Key, StringComparison.OrdinalIgnoreCase))
-                {
-                    target = kvp.Value;
-                    return true;
-                }
-            }
-
-            target = null;
-            return false;
-        }
-
-        private static bool IsValidStationIndex(int stationIndex)
-        {
-            return stationIndex >= 0 && stationIndex < SetHelper.StationNumber.numberGroups.Count;
-        }
-
-        private static bool ContainsStation(string stationName, string key)
-        {
-            return stationName?.IndexOf(key, StringComparison.OrdinalIgnoreCase) >= 0;
-        }
-
-        private void SNprefixMapStations()
-        {
-            foreach (var Sn in miscService.SNPrefixes ?? new ObservableCollection<SNPrefix>())
-            {
-                if (string.IsNullOrWhiteSpace(Sn.Name) || string.IsNullOrWhiteSpace(Sn.Value)) continue;
-
-                // 包含 outputShaft 映射为 0
-                if (Sn.Name.Contains("outputShaft"))
-                {
-                    AddStationPrefix(Sn.Value, ScanComponentType.OutputShaft, Sn.Name);
-                }
-                // 包含 differential 或 inputShaft 映射为 1
-                else if (Sn.Name.Contains("differential"))
-                {
-                    AddStationPrefix(Sn.Value, ScanComponentType.Differential, Sn.Name);
-                }
-                else if (Sn.Name.Contains("inputShaft"))
-                {
-                    AddStationPrefix(Sn.Value, ScanComponentType.InputShaft, Sn.Name);
-                }
-                // 包含 intermediateShaft 映射为 3
-                else if (Sn.Name.Contains("intermediateShaft"))
-                {
-                    AddStationPrefix(Sn.Value, ScanComponentType.IntermediateShaft, Sn.Name);
-                }
-            }
-        }
-
-        private void AddStationPrefix(string prefix, ScanComponentType componentType, string name)
-        {
-            prefix = prefix.Trim();
-            if (prefixTargetMap.TryGetValue(prefix, out PrefixStationTarget existingTarget))
-            {
-                if (existingTarget.ComponentType != componentType)
-                {
-                    prefixTargetMap.Remove(prefix);
-                    ambiguousPrefixes.Add(prefix);
-                    ShowScanMessage($"SN前缀{prefix}同时配置到{existingTarget.Name}和{name},已禁用该前缀");
-                }
-                return;
-            }
-
-            if (!ambiguousPrefixes.Contains(prefix))
-            {
-                prefixTargetMap[prefix] = new PrefixStationTarget
-                {
-                    ComponentType = componentType,
-                    Name = name,
-                };
-            }
-        }
-
-        private static void ShowScanMessage(string message)
-        {
-            SetHelper.ListScanMessage?.ShowInfoQueue(message);
-        }
     }
 }

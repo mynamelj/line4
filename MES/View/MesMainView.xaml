@@ -794,7 +794,8 @@
                         <Button Height="30"
                                 Margin="10"
                                 Command="{Binding OpenMiscWindowCommand}"
-                                Content="特殊站配置" />
+                                Content="特殊站配置"
+                                Visibility="{Binding SpecialStationVisibility}" />
                     </StackPanel>
                 </ScrollViewer>
             </GroupBox>

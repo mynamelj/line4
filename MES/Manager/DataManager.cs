@@ -123,7 +123,7 @@ namespace MES.Manager
                 Number = match.Value;
             }
 
-            Thread.Sleep(100);
+            await Task.Delay(100);
             string ItemName = "";
             if (TagName.LastIndexOf('_') > 0)
             {
