@@ -126,6 +126,12 @@ namespace MES.Service
         public void SaveSettings()
         {
             string miscFilePath = Path.Combine(basePath, "configs", "misc.json");
+
+            foreach (var item in SNPrefixes)
+            {
+                item.Value = (item.Value ?? string.Empty).Replace('，', ',');
+            }
+
             string jsonContent = Newtonsoft.Json.JsonConvert.SerializeObject(SNPrefixes, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(miscFilePath, jsonContent);
             MapSNPrefixDic();

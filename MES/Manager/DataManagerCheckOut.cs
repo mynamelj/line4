@@ -4,6 +4,7 @@ using MES.MesModel.Response;
 using MES.SetModel;
 using MES.View;
 using MES.ViewModel;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Windows;
 using DateTime = System.DateTime;
@@ -139,7 +140,8 @@ namespace MES.Manager
                         {
                             for (int i = 0; i < datarray.Length; i++)
                             {
-                                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到{TagNameList[i]}为{datarray[i]}");
+                                var value = Convert.ToSingle(datarray[i]).ToString("0.############################", System.Globalization.CultureInfo.InvariantCulture);
+                                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到{TagNameList[i]}为{value}");
                                 PLCTag tag = SetHelper.PLCSetting.ListGroup.FirstOrDefault(x => x.GroupType == PLCGroupName.CheckOutGroup.ToString())?.ListTag.FirstOrDefault(x => TagNameList[i].Contains(x.TagName));
                                 if (tag?.DataType.ToLower() == "string")
                                 {
@@ -150,7 +152,7 @@ namespace MES.Manager
                                     DC_Info dC_Info = new DC_Info()
                                     {
                                         Item = TagNameList[i].Substring(0, TagNameList[i].LastIndexOf('_')),//去掉下划线
-                                        Value = datarray[i].ToString(),
+                                        Value = Convert.ToSingle(datarray[i]).ToString("0.############################", System.Globalization.CultureInfo.InvariantCulture),
                                         Result = "Pass",
                                     };
                                     dcInfoList.Add(dC_Info);

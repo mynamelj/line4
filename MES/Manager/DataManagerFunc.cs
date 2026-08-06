@@ -531,9 +531,9 @@ namespace MES.Manager
         /// <summary>
         /// 专属工位状态高效防抖与监控线程（按 ListenPLC 状态机标准重写）
         /// </summary>
-        private Task StartIndividualStationMonitorAsync(int iNumber, string[] lastSentAlarms, CancellationToken token)
+        private  Task  StartIndividualStationMonitorAsync(int iNumber, string[] lastSentAlarms, CancellationToken token)
         {
-            return Task.Run(async () =>
+            return   Task.Run(async () =>
             {
                 string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
                 string tagItem = "设备运行状态_" + (iNumber + 1);
@@ -541,7 +541,7 @@ namespace MES.Manager
                 // 核心通信及控制参数（可根据项目实际需求微调）
                 int heartbeatInterval = 15 * 1000; // 客户要求的 15 秒定时心跳周期
                 int pollInterval = 200;           // 高频采样间隔 200ms
-                int debounceDuration = 800;       // 防抖稳定所需时间 800ms
+                int debounceDuration = 400;       // 防抖稳定所需时间 400ms
                 int requiredCount = Math.Max(1, debounceDuration / pollInterval); // 稳定所需的连续相同采样次数
 
                 int? lastConfirmedValue = null;   // 最终成功上报给 MES 端的、已确认的稳定状态旧值
@@ -572,7 +572,7 @@ namespace MES.Manager
                                 if (pendingValue.HasValue && intValue == pendingValue.Value)
                                 {
                                     stableCount++;
-                                    // 信号持续稳定时间达到了 requiredCount (800ms)
+                                    // 信号持续稳定时间达到了 requiredCount (400ms)
                                     if (stableCount >= requiredCount)
                                     {
                                         // 检查这个稳定的新状态是否与上一次成功上报的值不同
@@ -662,118 +662,6 @@ namespace MES.Manager
             }
         }
 
-        private Dictionary<int, int> NumberAndTime = new Dictionary<int, int>();
-
-        /// <summary>
-        /// 设备状态自动上传MES-客户建议15秒上传一次
-        /// </summary>
-        public void UploadStatusStart()
-        {
-            try
-            {
-                Stopwatch[] sws = new Stopwatch[SetHelper.StationNumber.numberGroups.Count];
-
-                int[] Status_old = new int[SetHelper.StationNumber.numberGroups.Count];
-
-                for (int i = 0; i < SetHelper.StationNumber.numberGroups.Count; i++)
-                {
-                    int time = SetHelper.MesSetting.ListGroup[i].StatusUploadTime;
-                    if (time == 0)
-                    {
-                        continue;//0秒则不开启当前工位上传功能
-                    }
-                    NumberAndTime.Add(i, time);
-                    sws[i] = new Stopwatch();
-                    sws[i].Restart();
-                }
-                //开启上传的工位循环上传，默认每个工位间隔时间相同
-                Task.Run(async () =>
-                {
-                    while (NumberAndTime.Count > 0)
-                    {
-                        Thread.Sleep(10);
-                        if (SetHelper.StartOk)
-                        {
-                            Parallel.ForEach(NumberAndTime, async item =>
-                            {
-                                if (status[item.Key] == Status_old[item.Key] && status[item.Key] != 0)//如果和上一次循环的值一样
-                                {
-                                    if (sws[item.Key].ElapsedMilliseconds > item.Value * 1000) //时间大于设定值
-                                    {
-                                        //上传
-                                        // (bool, string) reuslt = await SetHelper.mesManager.EQStatus(StatusModelHelper.GetStatusModel(status[item.Key].ToString(), item.Key), item.Key);
-                                        // await UploadStatus(item.Key);
-                                        sws[item.Key].Restart();//重启计时器
-                                    }
-                                }
-                                else //设备状态变化了，直接上传
-                                {
-                                    //(bool, string) reuslt = await SetHelper.mesManager.EQStatus(StatusModelHelper.GetStatusModel(status[item.Key].ToString(), item.Key), item.Key);
-                                    sws[item.Key].Restart();//重启计时器
-                                }
-                                Status_old[item.Key] = status[item.Key];
-                            });
-                            Thread.Sleep(50);
-
-                            //foreach (var item in NumberAndTime)
-                            //{
-                            //    await UploadStatus(item.Key);
-                            //    Thread.Sleep((item.Value * 1000) / NumberAndTime.Count);
-                            //}
-                        }
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                SetHelper.ListMesMessage.ShowInfoQueue("设备状态自动更新上传MES异常失败:" + ex, false);
-            }
-        }
-
-        public async Task UploadStatus(int i)
-        {
-            int AlarmId = 0;
-            //判断当前工位有无报警，有报警要把最先报警的序号拼接上去 例如设备状态为2，报警序号为3，结果为2_3
-            foreach (var tagItem in dicAlarms)
-            {
-                Match match = Regex.Match(tagItem.Key, @"(\d+)$");
-                //默认是1
-                string Number = "1";
-                if (match.Success)
-                {
-                    Number = match.Value;
-                }
-                int iNumber = Convert.ToInt32(Number) - 1;
-                if (iNumber == i)
-                {
-                    // 查找Dt最小且不为DateTime.MinValue的成员
-                    var alarmWithMinDt = tagItem.Value
-                        .Where(a => a.DtStart != DateTime.MinValue)  // 排除DateTime.MinValue
-                        .OrderBy(a => a.DtStart)  // 按Dt升序排序，最小的在前
-                        .FirstOrDefault();  // 获取最小的一个，若不存在返回null
-                    if (alarmWithMinDt != null)
-                    {
-                        AlarmId = alarmWithMinDt.Id;
-                    }
-                }
-            }
-
-            string statusNow = "";
-            if (AlarmId == 0)
-            {
-                statusNow = status[i].ToString();
-            }
-            else
-            {
-                statusNow = status[i].ToString() + "_" + AlarmId.ToString();
-            }
-            //statusNow = "1";//测试用
-            //(bool, string) reuslt = await SetHelper.mesManager.EQStatus(StatusModelHelper.GetStatusModel(statusNow, i), i);
-            //if (!reuslt.Item1)
-            //{
-            //SetHelper.ListMesMessage.ShowInfoQueue(SetHelper.StationNumber.numberGroups[i].Name + "设备状态更新上传MES失败:" + reuslt.Item2);
-            //}
-        }
 
         private Dictionary<string, List<Alarm>> dicAlarms = new Dictionary<string, List<Alarm>>();
         private PopupWindow popupWindow;
@@ -886,13 +774,6 @@ namespace MES.Manager
         }
 
         public static bool[] ScanSuccess;
-
-        /// <summary>
-        /// 进站
-        /// </summary>
-        /// <param name="stationNumber"></param>
-
-
 
 
         public async void AlarmUpload(string number)

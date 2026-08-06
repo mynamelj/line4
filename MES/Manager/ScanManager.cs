@@ -155,71 +155,64 @@ namespace MES.Manager
                     {
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 3=>");
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 5=>{hardIndex} {str.Trim().Length} {SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen}");
-                        if (str.Trim().Length == SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen)
+                        if (str.Trim().Length == SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen||stationName.ToUpper().Contains("OP2030")|| stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2035"))
                         {    //弹窗未关闭
                             if (DataManager.IsOP1010ViewOpen)
                             {
 
+                                SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 4=>{str}");
+                                SNCode = str;
 
-
-                                if (str.Trim().Length == SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen)
+                                if ((stationName.ToUpper().Contains("OP2020M") || stationName.ToUpper().Contains("OP2030M")) && SetHelper.NowProduct.ProductID==25)
                                 {
-                                    SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 4=>{str}");
-                                    SNCode = str;
 
-                                    if ((stationName.ToUpper().Contains("OP2020M") || stationName.ToUpper().Contains("OP2030M")) && SetHelper.NowProduct.ProductID==25)
+
+                                    (bool, string, string) response0 =
+                                        await SetHelper.mesManager.FeedingCheck(SNCode.GetFeedingCheck(hardIndex), hardIndex);
+
+                                    SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "产品SN" + "_" + (hardIndex + 1).ToString(), SNCode);
+
+                                    SetHelper.resultModel[hardIndex].Result1 = response0.Item1 switch
                                     {
+                                        true => "OK",
+                                        false => "NG",
+                                    };
+                                    SetHelper.resultModel[hardIndex].CheckInSN = SNCode;
 
-
-                                        (bool, string, string) response0 =
-                                            await SetHelper.mesManager.FeedingCheck(SNCode.GetFeedingCheck(hardIndex), hardIndex);
-
-                                        SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "产品SN" + "_" + (hardIndex + 1).ToString(), SNCode);
-
-                                        SetHelper.resultModel[hardIndex].Result1 = response0.Item1 switch
-                                        {
-                                            true => "OK",
-                                            false => "NG",
-                                        };
-                                        SetHelper.resultModel[hardIndex].CheckInSN = SNCode;
-
-                                        if (!response0.Item1)
-                                        {
-                                            SetHelper.ListMesMessage.ShowInfoQueue(
-                                                $"{stationName} FeedingCheck失败：{response0.Item2}");
-                                            var result0 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + (hardIndex + 1), 2);
-                                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {SNCode}--{stationName} 进站结果{hardIndex + 1}写{2}" +
-                                                $"{(result0 ? "成功" : "失败")}");
-                                        }
+                                    if (!response0.Item1)
+                                    {
+                                        SetHelper.ListMesMessage.ShowInfoQueue(
+                                            $"{stationName} FeedingCheck失败：{response0.Item2}");
+                                        var result0 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + (hardIndex + 1), 2);
+                                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {SNCode}--{stationName} 进站结果{hardIndex + 1}写{2}" +
+                                            $"{(result0 ? "成功" : "失败")}");
+                                    }
+                                    return;
+                                }
+                                object res = null;
+                                if (SetHelper.siemens.ReadItem(PLCGroupName.TriggerGroup, "产品进站启动_" + (hardIndex + 1), ref res))
+                                {
+                                    if (res.ObjToBool() == false)
+                                    {
+                                        SetHelper.ListPLCMessage.ShowInfoQueue($"产品进站启动__{hardIndex + 1}值为 {res}");
                                         return;
                                     }
-                                    //object res = null;
-                                    //if (SetHelper.siemens.ReadItem(PLCGroupName.TriggerGroup, "产品进站启动_" + (hardIndex + 1), ref res))
-                                    //{
-                                    //    if (res.ObjToBool() == false)
-                                    //    {
-                                    //        SetHelper.ListPLCMessage.ShowInfoQueue($"产品进站启动__{hardIndex + 1}值为 {res}");
-                                    //        return;
-                                    //    }
-                                    //}
-                                    SetHelper.ListPLCMessage.ShowInfoQueue($"扫码触发 产品进站启动_{hardIndex + 1} True");
-                                    SetHelper.dataManager.ProductCheckIn((hardIndex + 1).ToString(), str.Trim());
-
                                 }
-                                else
+                                SetHelper.ListPLCMessage.ShowInfoQueue($"扫码触发 产品进站启动_{hardIndex + 1} True");
+                                SetHelper.dataManager.ProductCheckIn((hardIndex + 1).ToString(), str.Trim());
+   
+                                if (!SetHelper.IsOpen[hardIndex])
                                 {
-                                    if (!SetHelper.IsOpen[hardIndex])
-                                    {
-                                        SetHelper.ListScanMessage.ShowInfoQueue($"{stationName} 扫码长度:{str.Trim().Length} 与设定SN码长度:{SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen}不符,不触发进站");
-                                    }
+                                    SetHelper.ListScanMessage.ShowInfoQueue($"{stationName} 扫码长度:{str.Trim().Length} 与设定SN码长度:{SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen}不符,不触发进站");
                                 }
+
                             }
                             else
                             {
                                 SetHelper.ListScanMessage.ShowInfoQueue($"{stationName} 扫码SN码窗口已经关闭,扫码不触发进站");
                             }
                         }
-                        if (str.Trim().Length != SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen && DataManager.IsOP1010ViewOpen)
+                        if (str.Trim().Length != SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen && DataManager.IsOP1010ViewOpen && !stationName.ToUpper().Contains("OP2030"))
                         {
                             SetHelper.ListScanMessage.ShowInfoQueue($"{stationName} 扫码长度:{str.Trim().Length} 与设定SN码长度:{SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen}不符,不触发进站");
                         }
