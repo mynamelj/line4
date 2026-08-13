@@ -38,7 +38,6 @@ namespace MES.Manager
         public static bool RepairFlag = false;//维修标志位
         public static int specialRepairFlag = 0;//维修标志位
         public static int RepairStation = 0;//维修站志位
-        private List<string> repairDataList=new List<string>();
         public DataManager()
         {
             SetHelper.siemens.OnDataChange += Siemens_OnDataChange;
@@ -46,21 +45,6 @@ namespace MES.Manager
             PictureUploadAsync();
             string baseDirectory=AppDomain.CurrentDomain.BaseDirectory;
             string filePath = Path.Combine(baseDirectory, "misc.json");
-            if (File.Exists(filePath))
-            {
-                try
-                {
-                    string jsonStr = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
-                    JObject jo = JObject.Parse(jsonStr);
-                    repairDataList = jo["返修读取数据"]?.ToObject<List<string>>() ?? repairDataList;
-                }
-                catch (Exception ex)
-                {
-                    SetHelper.ListOEEMessage.ShowInfoQueue(ex.Message);
-                }
-            }
-
-
         }
 
         private bool isFirstStart = true;

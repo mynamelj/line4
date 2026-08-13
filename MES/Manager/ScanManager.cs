@@ -189,15 +189,15 @@ namespace MES.Manager
                                     }
                                     return;
                                 }
-                                object res = null;
-                                if (SetHelper.siemens.ReadItem(PLCGroupName.TriggerGroup, "产品进站启动_" + (hardIndex + 1), ref res))
-                                {
-                                    if (res.ObjToBool() == false)
-                                    {
-                                        SetHelper.ListPLCMessage.ShowInfoQueue($"产品进站启动__{hardIndex + 1}值为 {res}");
-                                        return;
-                                    }
-                                }
+                                //object res = null;
+                                //if (SetHelper.siemens.ReadItem(PLCGroupName.TriggerGroup, "产品进站启动_" + (hardIndex + 1), ref res))
+                                //{
+                                //    if (res.ObjToBool() == false)
+                                //    {
+                                //        SetHelper.ListPLCMessage.ShowInfoQueue($"产品进站启动__{hardIndex + 1}值为 {res}");
+                                //        return;
+                                //    }
+                                //}
                                 SetHelper.ListPLCMessage.ShowInfoQueue($"扫码触发 产品进站启动_{hardIndex + 1} True");
                                 SetHelper.dataManager.ProductCheckIn((hardIndex + 1).ToString(), str.Trim());
    

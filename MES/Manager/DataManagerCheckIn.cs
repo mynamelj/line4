@@ -10,12 +10,14 @@ namespace MES.Manager
 {
     public partial class DataManager
     {
+
         public async void ProductCheckIn(string stationNumber, string SN = "")
         {
             int iNumber = Convert.ToInt32(stationNumber) - 1;
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
             string scanSN = string.IsNullOrWhiteSpace(SN) ? ScanManager.SNCode : SN.Trim();
             FormulaSend();
+
 
             try
             {
@@ -491,61 +493,11 @@ namespace MES.Manager
                     if (response.Item1 == true)
                     {
                         #region 机型一致性校验（1/22新增）
-
-                        // 从MES消息中提取产品型号名称，转换为本地配置的ProductID
-                        ProductTypeModel MESData = SetHelper.GetProductName(response.Item2) ?? new ProductTypeModel();
-                        result = SetHelper.siemens.WriteItem(
-                            PLCGroupName.WriteGroup,
-                            "MES机型信息_" + stationNumber,
-                            MESData.ProductID); // 将型号ID（如2）写给PLC
-                        SetHelper.ListPLCMessage.ShowInfoQueue(
-                            $"{stationName} MES机型信息{stationNumber}写{MESData.ProductID}{(result ? "成功" : "失败")}");
-
-
-                        int PLCReturnValue = 0; // PLC当前实际设定的机型ID
-                        int ReturnValue = 0;    // PLC机型一致性校验结果（1=一致，2=不一致）
-
-                        // 读取PLC当前的机型信息（PLC设备当前配置的型号）
-                        if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "PLC机型信息_" + stationNumber, ref obj))
-                        {
-                            PLCReturnValue = obj.Obj2Int();
-                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到PLC机型信息为{PLCReturnValue}");
-                        }
-                        else
-                        {
-                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} PLC机型信息读取失败");
-                        }
-
-                        // 读取PLC机型一致性校验结果寄存器
-                        if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "机型一致信息_" + stationNumber, ref obj))
-                        {
-                            ReturnValue = obj.Obj2Int();
-                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到机型一致信息为{ReturnValue}");
-
-                            // 获取PLC当前配置的产品型号完整信息（用于弹窗提示）
-                            ProductTypeModel PLCData = SetHelper.GetProductType(PLCReturnValue) ?? new ProductTypeModel();
-
-                            // ReturnValue==2 且 MES进站成功时，说明机型不匹配（进站通过但型号错误）
-                            // 强制将进站结果改为失败，阻止加工
-                            if (ReturnValue == 2)
-                            {
-                                if (PLCReturnValue != MESData.ProductID)
-                                {
-                                    response.Item1 = false;
-                                    msg = $" 设备机型和产品机型不匹配\r\n" +
-                                          $" 当前设备机型：{PLCData.ProductName}，MES返回产品机型：{response.Item2}。";
-
-                                }
-                                // 后续会弹窗提示操作员，并且response.Item1=false会触发弹窗逻辑
-                            }
-                        }
-                        else
-                        {
-                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 核对地址读取失败");
-                        }
-                    }
+                        // 不等待延迟校验，进站主流程继续执行。
+                        // 仅把本次MES返回的机型消息快照传给后台流程，避免共享进站方法中的局部变量。
+                        _ = CheckProductTypeDelayedAsync(stationNumber, stationName, response.Item2);
                         #endregion
-
+                    }
 
                     #endregion 判断结果发送PLC
 
@@ -569,6 +521,95 @@ namespace MES.Manager
             {
                 SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 产品进站出错--{ex.ToString()}");
             }
+        }
+
+        /// <summary>
+        /// 延迟向PLC写入MES机型并进行一致性校验，不阻塞产品进站主流程。
+        /// </summary>
+        private async Task CheckProductTypeDelayedAsync(
+            string stationNumber,
+            string stationName,
+            string mesProductName)
+        {
+            try
+            {
+                // PLC进站后还会执行其他内部业务，延迟写入可避免覆盖或触发错误时序。
+                // ConfigureAwait(false)确保后续PLC通信不切回UI线程。
+                await Task.Delay(3000).ConfigureAwait(false);
+                ProductTypeModel MESData =
+                    SetHelper.GetProductName(mesProductName) ?? new ProductTypeModel();
+                SetHelper.siemens.WriteItem(
+                    PLCGroupName.WriteGroup,
+                    "MES机型信息_" + stationNumber,
+                    MESData.ProductID);
+
+                int PLCReturnValue = 0; // PLC当前实际设定的机型ID
+                int ReturnValue = 0;    // PLC机型一致性校验结果（1=一致，2=不一致）
+                object plcProductValue = new object();
+
+                // 读取PLC当前的机型信息（PLC设备当前配置的型号）
+                if (SetHelper.siemens.ReadItem(
+                        PLCGroupName.ReadGroup,
+                        "PLC机型信息_" + stationNumber,
+                        ref plcProductValue))
+                {
+                    PLCReturnValue = plcProductValue.Obj2Int();
+                    SetHelper.ListPLCMessage.ShowInfoQueue(
+                        $"{stationName} 读到PLC机型信息为{PLCReturnValue}");
+                }
+                else
+                {
+                    SetHelper.ListPLCMessage.ShowInfoQueue(
+                        $"{stationName} PLC机型信息读取失败");
+                }
+
+                object typeValue = new object();
+
+                // 读取PLC机型一致性校验结果寄存器
+                if (SetHelper.siemens.ReadItem(
+                        PLCGroupName.ReadGroup,
+                        "机型一致信息_" + stationNumber,
+                        ref typeValue))
+                {
+                    ReturnValue = typeValue.Obj2Int();
+                    SetHelper.ListPLCMessage.ShowInfoQueue(
+                        $"{stationName} 读到机型一致信息为{ReturnValue}");
+
+                    // ReturnValue==2且两个机型ID不同，提示操作员机型不匹配。
+                    if (ReturnValue == 2 && PLCReturnValue != MESData.ProductID)
+                    {
+                        ProductTypeModel PLCData =
+                            SetHelper.GetProductType(PLCReturnValue) ?? new ProductTypeModel();
+                        string warning = $" 设备机型和产品机型不匹配\r\n" +
+                                         $" 当前设备机型：{PLCData.ProductName}，" +
+                                         $"MES返回产品机型：{mesProductName}。";
+
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName}{warning}");
+
+                        await Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (SetHelper.IsMsgWindowOpen)
+                            {
+                                popupWindow.Close();
+                            }
+                            popupWindow = new PopupWindow(warning);
+                            popupWindow.Show();
+                        });
+                    }
+                }
+                else
+                {
+                    SetHelper.ListPLCMessage.ShowInfoQueue(
+                        $"{stationName} 核对地址读取失败");
+                }
+            }
+            catch (Exception ex)
+            {
+                // 后台任务不会被进站方法的try/catch等待，因此必须在这里自行记录异常。
+                SetHelper.ListPLCMessage.ShowInfoQueue(
+                    $"{stationName} 延迟机型一致性校验异常--{ex}");
+            }
+
         }
     }
 }

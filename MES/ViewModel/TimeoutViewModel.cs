@@ -17,29 +17,6 @@ namespace MES.ViewModel
         public string Password { get; set; } = "123456";
         private readonly string passwordPath;
 
-        public TimeoutViewModel()
-        {
-            passwordPath = System.AppDomain.CurrentDomain.BaseDirectory;
-            if (System.IO.File.Exists(passwordPath + "misc.json"))
-            {
-                try
-                {
-                    string json = System.IO.File.ReadAllText(passwordPath + "misc.json");
-                    var jo = JObject.Parse(json);
-                    string savedPassword = jo["Password"]?.ToString();
-                    if (!string.IsNullOrEmpty(savedPassword))
-                    {
-                        Password = savedPassword;
-                    }
-                    
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("读取密码文件失败: " + ex.Message);
-                }
-            }
-        }
-
         public ICommand ConfirmCommand => new RelayCommand<object>((obj) =>
         {
             

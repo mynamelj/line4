@@ -536,7 +536,8 @@ namespace MES.Manager
             return   Task.Run(async () =>
             {
                 string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
-                string tagItem = "设备运行状态_" + (iNumber + 1);
+                string statusTagItem = "设备运行状态_" + (iNumber + 1);
+                string alarmTagItem = "设备报警_" + (iNumber + 1);
 
                 // 核心通信及控制参数（可根据项目实际需求微调）
                 int heartbeatInterval = 15 * 1000; // 客户要求的 15 秒定时心跳周期
@@ -544,7 +545,8 @@ namespace MES.Manager
                 int debounceDuration = 400;       // 防抖稳定所需时间 400ms
                 int requiredCount = Math.Max(1, debounceDuration / pollInterval); // 稳定所需的连续相同采样次数
 
-                int? lastConfirmedValue = null;   // 最终成功上报给 MES 端的、已确认的稳定状态旧值
+                int? lastConfirmedStatus = null;   // 最终成功上报给 MES 端的、已确认的稳定状态旧值
+                string lastConfirmedAlarm = "";
                 int? pendingValue = null;          // 当前处于防抖观测期的候选状态值
                 int stableCount = 0;               // 连续相同值计数器
 
@@ -558,13 +560,15 @@ namespace MES.Manager
                 {
                     try
                     {
-                        object temp = null;
+                        object tempStatus = null;
+                        object tempAlarm = null;
                         // 从 PLC 中高频同步读取该工位状态
-                        bool readSuccess = SetHelper.siemens.ReadItem(PLCGroupName.TriggerGroup, tagItem, ref temp);
+                        bool readStatus = SetHelper.siemens.ReadItem(PLCGroupName.TriggerGroup, statusTagItem, ref tempStatus);
+                        bool readAlarm = SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, alarmTagItem, ref tempAlarm);
 
-                        if (readSuccess)
+                        if (readStatus)
                         {
-                            int intValue = temp.Obj2Int();
+                            int intValue = tempStatus.Obj2Int();
 
                             if (intValue != 0)
                             {
@@ -576,9 +580,9 @@ namespace MES.Manager
                                     if (stableCount >= requiredCount)
                                     {
                                         // 检查这个稳定的新状态是否与上一次成功上报的值不同
-                                        if (intValue != lastConfirmedValue)
+                                        if (intValue != lastConfirmedStatus)
                                         {
-                                            lastConfirmedValue = intValue;
+                                            lastConfirmedStatus = intValue;
 
                                             // 极速沿响应：检测到状态真正切换（如 1运行->2停止），立刻绕过心跳计时上报MES！
                                             SetHelper.ListOEEMessage.ShowInfoQueue($"工位 {stationName} 检测到状态安全跳变至: {intValue}");
@@ -601,14 +605,25 @@ namespace MES.Manager
                         }
                         else
                         {
-                            SetHelper.ListPLCMessage.ShowInfoQueue($"读取PLC节点 {tagItem} 失败", false, "PLC_Error");
+                            SetHelper.ListPLCMessage.ShowInfoQueue($"读取PLC节点 {statusTagItem} 失败", false, "PLC_Error");
+                        }
+
+
+                        if (readAlarm && lastConfirmedStatus == 2)
+                        { 
+                            string currentAlarm = tempAlarm.Obj2String();
+                            if (currentAlarm != lastConfirmedAlarm)
+                            {
+                                lastConfirmedAlarm = currentAlarm;
+                                await UploadStatusAlarmInfoAsync(2, iNumber, lastSentAlarms, true, currentAlarm);
+                            }
                         }
 
                         //定时心跳上报逻辑
                         if (heartbeatWatch.ElapsedMilliseconds + initialOffset > heartbeatInterval)
                         {
                             // 优先选取已经防抖确认的稳定状态，如果没有，则拿 pendingValue 做保底，确保不会漏发
-                            int statusToSend = lastConfirmedValue ?? (pendingValue ?? 0);
+                            int statusToSend = lastConfirmedStatus ?? (pendingValue ?? 0);
 
                             if (statusToSend != 0)
                             {
@@ -640,25 +655,30 @@ namespace MES.Manager
         }
 
         // 改变了函数签名，新增了一个string警报数组参数
-        public async Task UploadStatusAlarmInfoAsync(int status, int iNumber, string[] lastAlarms, bool AlarmChange = false)
+        public async Task UploadStatusAlarmInfoAsync(int status, int iNumber, string[] lastAlarms, bool AlarmChange = false, string currentAlarmId = "")
         {
-
-            object o = new object();
-            bool res = SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "设备报警_" + (iNumber + 1), ref o);
-            string currentAlarm = o.Obj2String();
-            await SetHelper.mesManager.EQStatus((status == 2 ? (status.ToString() + "_" + currentAlarm) : status.ToString()).GetStatusModel(iNumber), iNumber);
-
-            if (status != 2) return; 
-
-            // 处理报警逻辑
-            object obj = new object();
-            bool result = SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "设备报警_" + (iNumber + 1), ref obj);
-            string currentAlarmId = obj.Obj2String();
-            // 使用 lastAlarms[iNumber] 比较，确保每个工位数据独立
-            if (result && !string.IsNullOrEmpty(currentAlarmId) && lastAlarms[iNumber] != currentAlarmId)
+            if(!AlarmChange)
             {
-                await SetHelper.mesManager.EQAlarm(currentAlarmId.GetAlarmModel(iNumber), iNumber);
-                lastAlarms[iNumber] = currentAlarmId; // 记录该工位已经发送过的报警
+                object o = new object();
+                bool res = SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "设备报警_" + (iNumber + 1), ref o);
+                string currentAlarm = o.Obj2String();
+                await SetHelper.mesManager.EQStatus((status == 2 ? (status.ToString() + "_" + currentAlarm) : status.ToString()).GetStatusModel(iNumber), iNumber);
+            }
+            if (status == 2)
+            {
+                // 处理报警逻辑
+                if (string.IsNullOrEmpty(currentAlarmId))
+                {
+                    object obj = new object();
+                    SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "设备报警_" + (iNumber + 1), ref obj);
+                    currentAlarmId = obj.Obj2String();
+                }
+                // 使用 lastAlarms[iNumber] 比较，确保每个工位数据独立
+                if (!string.IsNullOrEmpty(currentAlarmId) && lastAlarms[iNumber] != currentAlarmId)
+                {
+                    await SetHelper.mesManager.EQAlarm(currentAlarmId.GetAlarmModel(iNumber), iNumber);
+                    lastAlarms[iNumber] = currentAlarmId; // 记录该工位已经发送过的报警
+                }
             }
         }
 
