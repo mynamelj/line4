@@ -29,7 +29,6 @@ namespace MES.Manager
     public delegate void MaterialOffline(string code);
 
 
-
     public partial class DataManager
     {
         public ChangeParamsDelegate ChangeParamsAction;
@@ -76,12 +75,6 @@ namespace MES.Manager
         /// 设备运行状态
         /// </summary>
         private int[] status;
-        private CancellationTokenSource timeoutStatus = new CancellationTokenSource();
-        private CancellationTokenSource HeatingfinishedSource = new CancellationTokenSource();
-        private CancellationTokenSource HeatingcheckSource = new CancellationTokenSource();
-        private CancellationTokenSource HeatingfinishedSource2 = new CancellationTokenSource();
-        private CancellationTokenSource HeatingcheckSource2 = new CancellationTokenSource();
-        private int flag = 0;
         public async void Siemens_OnDataChange(string TagName, int Address, int Bit, object TagValue)
         {
             if (!TagName.Contains("心跳") && !TagName.Contains("设备运行状态") && Address > 0)
@@ -117,8 +110,6 @@ namespace MES.Manager
             {
                 ItemName = TagName;
             }
-
-
 
             switch (ItemName)
             {

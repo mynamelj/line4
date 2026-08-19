@@ -17,8 +17,6 @@ namespace MES.Manager
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
             string scanSN = string.IsNullOrWhiteSpace(SN) ? ScanManager.SNCode : SN.Trim();
             FormulaSend();
-
-
             try
             {
 
@@ -492,11 +490,7 @@ namespace MES.Manager
 
                     if (response.Item1 == true)
                     {
-                        #region 机型一致性校验（1/22新增）
-                        // 不等待延迟校验，进站主流程继续执行。
-                        // 仅把本次MES返回的机型消息快照传给后台流程，避免共享进站方法中的局部变量。
                         _ = CheckProductTypeDelayedAsync(stationNumber, stationName, response.Item2);
-                        #endregion
                     }
 
                     #endregion 判断结果发送PLC

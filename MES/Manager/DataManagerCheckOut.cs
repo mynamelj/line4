@@ -21,8 +21,11 @@ namespace MES.Manager
 
         Dictionary<string, string> lightDic = new Dictionary<string, string>
         {
+            //80
             { "灯号1", "输入轴" },
+            //90
             { "灯号2", "中间轴" },
+            //100
             { "灯号3", "差速器" }
         };
 
@@ -112,6 +115,7 @@ namespace MES.Manager
                 int checkOutResult = 1;
                 List<DC_Info> dcInfoList = new List<DC_Info>();
                 List<CompList> compList = new List<CompList>();
+                List<MaterailModel> outMaterials = new List<MaterailModel>();
 
                 //string json = File.ReadAllText(SetHelper.materialpath);
                 ObservableCollection<MaterailModel> materails = SetHelper.ReadSys<ObservableCollection<MaterailModel>>(SetHelper.materialpath);
@@ -235,6 +239,7 @@ namespace MES.Manager
                                             CompID = item.GlueCode,
                                             Qty = item.UseCountOnce
                                         });
+                                        outMaterials.Add(item);
                                     }
                                 }
 
@@ -306,7 +311,6 @@ namespace MES.Manager
                     #endregion 获取compList物料信息 放批次号及使用的数量
                 }
 
-
                 #region 数据上传MES
 
                 // PictureUploadAsync();
@@ -336,6 +340,7 @@ namespace MES.Manager
                 // 例如：三相螺栓数量不足但尚未断料，提醒操作员及时补料
                 if (response.Item2.Contains("物料不足") && response.Item2.Contains("预警"))
                 {
+                    string materialShortageMsg = GetMaterialShortageMsg(response.Item2, outMaterials);
                     // 出站结果置为3（约定：1=OK, 2=NG, 3=物料不足预警, 4=物料不足报警）
                     checkOutResult = 3;
                     // 必须切回UI线程操作界面（WPF规定）
@@ -345,7 +350,7 @@ namespace MES.Manager
                         {
                             // 预警弹窗未打开，直接新建并显示（橙色文字）
                             materialWarnView = new MaterialWarnView("");
-                            materialWarnView.Msg = msg; // msg 包含工站名、SN码、MES完整返回信息
+                            materialWarnView.Msg = msg + materialShortageMsg; // msg 包含工站名、SN码、MES完整返回信息
                             materialWarnView.Show();
                         }
                         else
@@ -354,7 +359,7 @@ namespace MES.Manager
                             // 保证界面显示的是最新预警信息
                             materialWarnView.Close();
                             materialWarnView = new MaterialWarnView("");
-                            materialWarnView.Msg = msg;
+                            materialWarnView.Msg = msg + materialShortageMsg;
                             materialWarnView.Show();
                         }
                     });
@@ -365,14 +370,14 @@ namespace MES.Manager
                 {
                     // 出站结果置为4
                     checkOutResult = 4;
-
+                    string materialShortageMsg = GetMaterialShortageMsg(response.Item2, outMaterials);
                     await Application.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (!MaterialAlarmView.IsOpened)
                         {
                             // 报警弹窗未打开，直接新建并显示（红色文字，标题"Alarm!报警!"）
                             materialAlarmView = new MaterialAlarmView("");
-                            materialAlarmView.Msg = msg;
+                            materialAlarmView.Msg = msg + materialShortageMsg;
                             materialAlarmView.Show();
                         }
                         else
@@ -380,7 +385,7 @@ namespace MES.Manager
                             // 报警弹窗已打开，关闭旧的再显示新的
                             materialAlarmView.Close();
                             materialAlarmView = new MaterialAlarmView("");
-                            materialAlarmView.Msg = msg;
+                            materialAlarmView.Msg = msg + materialShortageMsg;
                             materialAlarmView.Show();
                         }
                     });
@@ -455,5 +460,31 @@ namespace MES.Manager
                 SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 产品出站出错--{ex.ToString()}");
             }
         }
+
+
+
+        private string GetMaterialShortageMsg(string mesMsg, List<MaterailModel> outMaterials)
+        {
+            string info = GetMaterialShortageName(mesMsg, outMaterials);
+            return string.IsNullOrEmpty(info) ? "" : $"\r\n不足的物料名称：{info}";
+        }
+
+        private string GetMaterialShortageName(string mesMsg, List<MaterailModel> outMaterials)
+        {
+            if (string.IsNullOrEmpty(mesMsg) || outMaterials == null)
+            {
+                return "";
+            }
+            if (!mesMsg.Contains("_80") && !mesMsg.Contains("_90") && !mesMsg.Contains("_100"))
+            {
+                return "";
+            }
+
+            string shimName = mesMsg.Contains("_80") ? "输入轴" : mesMsg.Contains("_90") ? "中间轴" : "差速器";
+            var material = outMaterials.FirstOrDefault(m => !string.IsNullOrEmpty(m.MaterialName)
+                && m.MaterialName.Contains(shimName));
+            return material == null ? "" : $"{material.MaterialName}\r\n料号:{material.GlueCode}";
+        }
+
     }
 }
