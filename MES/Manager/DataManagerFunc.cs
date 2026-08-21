@@ -278,6 +278,12 @@ namespace MES.Manager
         /// <returns></returns>
         public async void ChangeProductType(int ProductType, int Number)
         {
+            if (!SetHelper.IsFirstStart && SetHelper.NowProduct != null && SetHelper.NowProduct.ProductID == ProductType)
+            {
+                SetHelper.ListMesMessage.ShowInfoQueue($"当前机型已为{ProductType}，无需重复切型，已忽略本次切型请求", true, EnumLogType.log.ToString(), true);
+                return;
+            }
+
             var Type = SetHelper.GetProductType(ProductType);
             if (Type == null)
             {
@@ -527,7 +533,6 @@ namespace MES.Manager
 
             }, token);
         }
-
         /// <summary>
         /// 专属工位状态高效防抖与监控线程（按 ListenPLC 状态机标准重写）
         /// </summary>
@@ -683,7 +688,9 @@ namespace MES.Manager
         }
 
 
-        private Dictionary<string, List<Alarm>> dicAlarms = new Dictionary<string, List<Alarm>>();
+
+
+
         private PopupWindow popupWindow;
         private PopupWindowGreen popupWindowGreen;
         public static OP1010View op1010View;

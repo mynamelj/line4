@@ -203,7 +203,7 @@ namespace MES.Manager
    
                                 if (!SetHelper.IsOpen[hardIndex])
                                 {
-                                    SetHelper.ListScanMessage.ShowInfoQueue($"{stationName} 扫码长度:{str.Trim().Length} 与设定SN码长度:{SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen}不符,不触发进站");
+                                    SetHelper.ListScanMessage.ShowInfoQueue($"{stationName} 工位未开启(IsOpen=false),不触发进站");
                                 }
 
                             }

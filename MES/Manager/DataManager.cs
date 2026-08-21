@@ -153,7 +153,7 @@ namespace MES.Manager
                     break;
 
                 case "产品型号切换":
-                    if (TagValue.Obj2Int() != 0)
+                    if (TagValue.Obj2Int() != 0 && (SetHelper.NowProduct == null || SetHelper.NowProduct.ProductID != TagValue.Obj2Int()))
                     {
                         ChangeProductType(TagValue.Obj2Int(), Number.Obj2Int());
                     }

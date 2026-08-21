@@ -385,14 +385,9 @@ namespace MES.Manager
                     bool result = false; // PLC写入操作结果
 
 
-                    result = SetHelper.siemens.WriteItem(
-                        PLCGroupName.WriteGroup,
-                        "产品SN_" + stationNumber,
-                        response.Item3); // MES确认的SN码
-                    SetHelper.ListPLCMessage.ShowInfoQueue(
-                        $"{stationName} {carryID}--{stationName} 产品SN_{stationNumber}写{response.Item3}" +
-                        $"{(result ? "成功" : "失败")}");
-
+                    result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"产品SN_" + stationNumber,response.Item3); // MES确认的SN码
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {carryID}--{stationName} 产品SN_{stationNumber}写{response.Item3}" 
+                        +$"{(result ? "成功" : "失败")}");
 
                     string readCode = "";
                     if (!string.IsNullOrEmpty(response.Item3)) // 只有MES返回了SN码才校验
@@ -408,54 +403,37 @@ namespace MES.Manager
                                 if (readCode.Trim() != response.Item3.Trim())
                                 {
                                     // 读回的码与写入的码不一致，记录警告继续重试
-                                    SetHelper.ListPLCMessage.ShowInfoQueue(
-                                        $"{stationName} 读取PLC内部SN{readCode} 与进站返回SN{response.Item3} 不同");
+                                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读取PLC内部SN{readCode} 与进站返回SN{response.Item3} 不同");
                                 }
                                 else
                                 {
                                     // 验证成功，SN码已正确写入，跳出重试循环
-                                    SetHelper.ListPLCMessage.ShowInfoQueue(
-                                        $"{stationName} 确认SN码{response.Item3} 给PLC已写入成功");
+                                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 确认SN码{response.Item3} 给PLC已写入成功");
                                     break;
                                 }
                             }
                             else
                             {
-                                SetHelper.ListPLCMessage.ShowInfoQueue(
-                                    $"{stationName} 读取写给PLC的产品码信息失败{response.Item3}");
+                                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读取写给PLC的产品SN失败{response.Item3}");
                             }
                         }
                     }
 
 
-                    result = SetHelper.siemens.WriteItem(
-                        PLCGroupName.WriteGroup,
-                        "进站结果_" + stationNumber,
-                        checkInResult);
-                    SetHelper.ListPLCMessage.ShowInfoQueue(
-                        $"{stationName} {carryID}--{stationName} 进站结果{stationNumber}写{checkInResult}" +
+                    result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"进站结果_" + stationNumber,checkInResult);
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {carryID}--{stationName} 进站结果{stationNumber}写{checkInResult}" +
                         $"{(result ? "成功" : "失败")}");
 
-                    result = SetHelper.siemens.WriteItem(
-                        PLCGroupName.WriteGroup,
-                        "PC进站流程ID_" + stationNumber,
-                        SeqID);
-                    SetHelper.ListPLCMessage.ShowInfoQueue(
-                        $"{stationName} {carryID}--{stationName} PC进站流程ID{stationNumber}写{SeqID}" +
+                    result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"PC进站流程ID_" + stationNumber,SeqID);
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {carryID}--{stationName} PC进站流程ID{stationNumber}写{SeqID}" +
                         $"{(result ? "成功" : "失败")}");
-
-
 
                     if (SetHelper.MesSetting.ListGroup[iNumber].ScanMaterialCount == 0
                         && (checkInResult == 1 || checkInResult == 4))
                     {
-                        result = SetHelper.siemens.WriteItem(
-                            PLCGroupName.WriteGroup,
-                            "扫描材料码结果_" + stationNumber,
-                            1); // 1=扫码完成
-                        SetHelper.ListPLCMessage.ShowInfoQueue(
-                            $"{stationName} {carryID}--{stationName} 工位无精追码。扫描材料码结果_{stationNumber}写{checkInResult}" +
-                            $"{(result ? "成功" : "失败")}");
+                        result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"扫描材料码结果_" + stationNumber,1); // 1=扫码完成
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {carryID}--{stationName} 工位无精追码。" +
+                            $"扫描材料码结果_{stationNumber}写{checkInResult}" +$"{(result ? "成功" : "失败")}");
                     }
 
                     if (checkInResult == 1 || checkInResult == 4)
@@ -469,12 +447,8 @@ namespace MES.Manager
                             response.Item1 = false; // 强制标记进站失败
                             msg = $" 工站:{stationName}\r\n胶水未上料，进站失败!!!\r\n\r\n请扫描胶水码上料后重新进站";
                             // 给PLC发材料合法性结果=2（失败），阻止机器开始加工
-                            result = SetHelper.siemens.WriteItem(
-                                PLCGroupName.WriteGroup,
-                                "检查材料合法性结果_" + stationNumber,
-                                2);
-                            SetHelper.ListPLCMessage.ShowInfoQueue(
-                                $"{stationName} 材料合法性校验结果写{2},{(result ? "成功" : "失败")}");
+                            result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"检查材料合法性结果_" + stationNumber,2);
+                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 材料合法性校验结果写{2},{(result ? "成功" : "失败")}");
                         }
 
                         // 遍历已上料的胶水列表，对属于当前工位的胶水码做FeedingCheck
@@ -529,55 +503,55 @@ namespace MES.Manager
             {
                 // PLC进站后还会执行其他内部业务，延迟写入可避免覆盖或触发错误时序。
                 // ConfigureAwait(false)确保后续PLC通信不切回UI线程。
-                await Task.Delay(3000).ConfigureAwait(false);
-                ProductTypeModel MESData =
-                    SetHelper.GetProductName(mesProductName) ?? new ProductTypeModel();
-                SetHelper.siemens.WriteItem(
-                    PLCGroupName.WriteGroup,
-                    "MES机型信息_" + stationNumber,
-                    MESData.ProductID);
+                await Task.Delay(2000).ConfigureAwait(false);
+                ProductTypeModel MESData =SetHelper.GetProductName(mesProductName) ?? new ProductTypeModel();       
+                if (SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "MES机型信息_" + stationNumber, MESData.ProductID))
+                {
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} MES机型信息_{stationNumber}写入{MESData.ProductID}成功");
+                }
+                else
+                {
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} MES机型信息_{stationNumber}写入{MESData.ProductID}失败");
+                }
+
+                if (SetHelper.siemens.WriteItem( PLCGroupName.WriteGroup,"产品型号_" + stationNumber,MESData.ProductID))
+                {
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 产品型号_{stationNumber}写入{MESData.ProductID}成功");
+                }
+                else
+                {
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 产品型号_{stationNumber}写入{MESData.ProductID}失败");
+                }
 
                 int PLCReturnValue = 0; // PLC当前实际设定的机型ID
                 int ReturnValue = 0;    // PLC机型一致性校验结果（1=一致，2=不一致）
                 object plcProductValue = new object();
 
                 // 读取PLC当前的机型信息（PLC设备当前配置的型号）
-                if (SetHelper.siemens.ReadItem(
-                        PLCGroupName.ReadGroup,
-                        "PLC机型信息_" + stationNumber,
-                        ref plcProductValue))
+                if (SetHelper.siemens.ReadItem( PLCGroupName.ReadGroup,"PLC机型信息_" + stationNumber,ref plcProductValue))
                 {
-                    PLCReturnValue = plcProductValue.Obj2Int();
-                    SetHelper.ListPLCMessage.ShowInfoQueue(
-                        $"{stationName} 读到PLC机型信息为{PLCReturnValue}");
+                    PLCReturnValue = plcProductValue.Obj2Int();SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到PLC机型信息为{PLCReturnValue}");
                 }
                 else
                 {
-                    SetHelper.ListPLCMessage.ShowInfoQueue(
-                        $"{stationName} PLC机型信息读取失败");
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} PLC机型信息读取失败");
                 }
 
                 object typeValue = new object();
 
                 // 读取PLC机型一致性校验结果寄存器
-                if (SetHelper.siemens.ReadItem(
-                        PLCGroupName.ReadGroup,
-                        "机型一致信息_" + stationNumber,
-                        ref typeValue))
+                if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup,"机型一致信息_" + stationNumber,ref typeValue))
                 {
                     ReturnValue = typeValue.Obj2Int();
-                    SetHelper.ListPLCMessage.ShowInfoQueue(
-                        $"{stationName} 读到机型一致信息为{ReturnValue}");
+                    SetHelper.ListPLCMessage.ShowInfoQueue( $"{stationName} 读到机型一致信息为{ReturnValue}");
 
                     // ReturnValue==2且两个机型ID不同，提示操作员机型不匹配。
                     if (ReturnValue == 2 && PLCReturnValue != MESData.ProductID)
                     {
-                        ProductTypeModel PLCData =
-                            SetHelper.GetProductType(PLCReturnValue) ?? new ProductTypeModel();
+                        ProductTypeModel PLCData =SetHelper.GetProductType(PLCReturnValue) ?? new ProductTypeModel();
                         string warning = $" 设备机型和产品机型不匹配\r\n" +
                                          $" 当前设备机型：{PLCData.ProductName}，" +
                                          $"MES返回产品机型：{mesProductName}。";
-
                         SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName}{warning}");
 
                         await Application.Current.Dispatcher.BeginInvoke(() =>
