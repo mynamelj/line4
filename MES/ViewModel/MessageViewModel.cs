@@ -2,6 +2,7 @@
 using MES.Manager;
 using MES.MesModel.Request;
 using MES.SetModel;
+using MES.View;
 using PropertyChanged;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace MES.ViewModel
         public static ObservableCollection<MessageModel> ListScanMessage { get; set; } = new ObservableCollection<MessageModel>();
         public static ObservableCollection<MessageModel> ListOEEMessage { get; set; } = new ObservableCollection<MessageModel>();
         public static ObservableCollection<MessageModel> ListOtherMessage { get; set; } = new ObservableCollection<MessageModel>();
-        public Visibility IsSpoutOil { get; set; } = Visibility.Collapsed;
+        public Visibility IsLogin { get; set; } = Visibility.Collapsed;
         public string Content { get; set; } = "喷油开启";
         //public Visibility LinkVis { get; set; } = SetHelper.MesSetting.ListGroup[0].MaterialCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 
@@ -65,9 +66,7 @@ namespace MES.ViewModel
         public string ButtonTime { get; set; } = "";
         public string PlcHeart { get; set; } = "";
         public string ProductType { get; set; } = "";
-        public string RepairStatus { get; set; }
-        public Brush RepairStatusColor { get; set; } = Brushes.Green;
-        public Visibility RepairStationVisibility { get; set; } = Visibility.Collapsed;
+
         public static string PlcHeartStatic { get; set; } = "";
         private OPID[] oldOpid;
 
@@ -96,6 +95,12 @@ namespace MES.ViewModel
 
         });
 
+        public ICommand OpenBoxCommand => new RelayCommand<string>((s) =>
+        {
+            var passwordView = new QualityPasswordView();
+            passwordView.ShowDialog();
+        });
+
         private void ShowMessage()
         {
             Task.Run(() =>
@@ -104,18 +109,6 @@ namespace MES.ViewModel
                 {
                     PlcHeart = PlcHeartStatic;
                     ProductType = SetHelper.NowProduct?.ProductName;
-
-                    if (DataManager.RepairStation==2)
-                    {
-                        RepairStatus = DataManager.specialRepairFlag == 5 ? "返修状态:打散" : (DataManager.specialRepairFlag == 6 ? "返修状态:合装" : "返修关闭");
-                    }
-                    else if(DataManager.RepairStation==1) 
-                    {
-                        RepairStatus= DataManager.RepairFlag == true ? "返修开启" : "返修关闭";
-                    }
-                    
-                    RepairStatusColor = DataManager.specialRepairFlag > 1 ? Brushes.Red : Brushes.Green;
-                    RepairStationVisibility = DataManager.RepairStation > 0 ? Visibility.Visible : Visibility.Collapsed;
                     if (Application.Current != null)
                     {
                         Application.Current.Dispatcher.BeginInvoke(new Action(() =>
@@ -207,11 +200,11 @@ namespace MES.ViewModel
 
                         if (SetHelper.IsAdmin)
                         {
-                            IsSpoutOil = Visibility.Visible;
+                            IsLogin = Visibility.Visible;
                         }
                         else
                         {
-                            IsSpoutOil = Visibility.Collapsed;
+                            IsLogin = Visibility.Collapsed;
                         }
                     }
 

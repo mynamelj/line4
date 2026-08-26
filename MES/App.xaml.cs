@@ -72,7 +72,7 @@ namespace MES
             //  misc.json 配置文件
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
             string filePath = Path.Combine(baseDirectory, "configs\\misc.json");
-
+            string repairPath = Path.Combine(baseDirectory, "configs\\repair.json");
             try
             {
                 if (!File.Exists(filePath))
@@ -81,19 +81,21 @@ namespace MES
 
                     string jsonString = JsonConvert.SerializeObject(new ObservableCollection<SNPrefix>
                     {
-                        new SNPrefix { Name = "XP2020outputShaftSNPrefix", Value = "X1"},
-                        new SNPrefix { Name = "XP2020differentialSNPrefix", Value = "X2" },
-                        new SNPrefix { Name = "QR2020outputShaftSNPrefix", Value = "X3" },
-                        new SNPrefix { Name = "QR2020differentialSNPrefix", Value = "X4" },
+
                         new SNPrefix { Name = "XP2030inputShaftSNPrefix", Value = "X5" },
                         new SNPrefix { Name = "XP2030intermediateShaftSNPrefix", Value = "X6" },
                         new SNPrefix { Name = "QR2030inputShaftSNPrefix", Value = "X7" },
                         new SNPrefix { Name = "QR2030intermediateShaftSNPrefix", Value = "X8" }
                     }, Formatting.Indented);
-
                     File.WriteAllText(filePath, jsonString, Encoding.UTF8);
                 }
-
+                if (!File.Exists(repairPath))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(repairPath));
+                    List<string> ExcludedDatas = new List<string>() { "HeatTemp_1", "CoverPressDisplace_1", "CoverPressForce_1" };
+                    string repairJsonString = JsonConvert.SerializeObject(ExcludedDatas, Formatting.Indented);
+                    File.WriteAllText(repairPath, repairJsonString, Encoding.UTF8);
+                }
             }
             catch (Exception ex)
             {

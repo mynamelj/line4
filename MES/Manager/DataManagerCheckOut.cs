@@ -18,7 +18,7 @@ namespace MES.Manager
         /// <param name="number"></param>
         /// <returns></returns>
         /// 
-
+        
         Dictionary<string, string> lightDic = new Dictionary<string, string>
         {
             //80
@@ -124,7 +124,8 @@ namespace MES.Manager
                 ObservableCollection<MaterailOnOffModel> glueMaterails = SetHelper.ReadSys<ObservableCollection<MaterailOnOffModel>>(SetHelper.gluepath);
 
                 //只有返修状态（5或6）且工站为 OP5005 或 OP2010 时才不上传，其余全部上传。
-                if (true)
+                if (!(CheckInResult == 5  && (stationName.ToUpper().Contains("OP2010")
+                    || stationName.ToUpper().Contains("OP1080") || stationName.ToUpper().Contains("OP5005"))))
                 {
                     #region 读取产品需要上传MES的数据
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
@@ -132,6 +133,11 @@ namespace MES.Manager
                     var dic = SetHelper.siemens.DicDataItems[PLCGroupName.CheckOutGroup.ToString()];//<TagName,DataItem>                                                                    //读取对应工位的参数
                     dic = dic.Where(it => it.Key.Contains("_" + number)).ToDictionary(it => it.Key, it => it.Value);
 
+                    if (stationName.ToUpper().Contains("OP3040") && CheckInResult == 6)
+                    {
+                            dic = dic.Where(it => repairDataList.Any(x => string.Equals(x, it.Key, StringComparison.OrdinalIgnoreCase)))
+                             .ToDictionary(it => it.Key, it => it.Value);
+                    }
                     if ( dic.Count != 0)
                     {
                         List<string> TagNameList = dic.Keys.ToList();
@@ -144,10 +150,11 @@ namespace MES.Manager
                         {
                             for (int i = 0; i < datarray.Length; i++)
                             {
-                                var value = Convert.ToSingle(datarray[i]).ToString("0.############################", System.Globalization.CultureInfo.InvariantCulture);
-                                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到{TagNameList[i]}为{value}");
                                 PLCTag tag = SetHelper.PLCSetting.ListGroup.FirstOrDefault(x => x.GroupType == PLCGroupName.CheckOutGroup.ToString())?.ListTag.FirstOrDefault(x => TagNameList[i].Contains(x.TagName));
-                                if (tag?.DataType.ToLower() == "string")
+                                bool isStringType = tag?.DataType.ToLower() == "string";
+                                var value = isStringType ? datarray[i]?.ToString() : Convert.ToSingle(datarray[i]).ToString("0.############################", System.Globalization.CultureInfo.InvariantCulture);
+                                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到{TagNameList[i]}为{value}");
+                                if (isStringType)
                                 {
                                     compList.Add(new CompList() { CompID = datarray[i].ToString(), Qty = 1 });
                                 }
@@ -156,7 +163,7 @@ namespace MES.Manager
                                     DC_Info dC_Info = new DC_Info()
                                     {
                                         Item = TagNameList[i].Substring(0, TagNameList[i].LastIndexOf('_')),//去掉下划线
-                                        Value = Convert.ToSingle(datarray[i]).ToString("0.############################", System.Globalization.CultureInfo.InvariantCulture),
+                                        Value = value,
                                         Result = "Pass",
                                     };
                                     dcInfoList.Add(dC_Info);
@@ -329,8 +336,6 @@ namespace MES.Manager
                 SetHelper.ListOEEMessage.ShowInfoQueue($"item1:{response.Item1},item2:{response.Item2},item4:{response.Item4}");
 
 
-
-
                 #endregion 数据上传MES
 
                 #region 写出站完成
@@ -387,6 +392,31 @@ namespace MES.Manager
                             materialAlarmView = new MaterialAlarmView("");
                             materialAlarmView.Msg = msg + materialShortageMsg;
                             materialAlarmView.Show();
+                        }
+                    });
+                }
+
+
+                if (response.Item2.ToUpper().Contains("NVH"))
+                {
+
+                    await Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (!MaterialWarnView.IsOpened)
+                        {
+                            // 预警弹窗未打开，直接新建并显示（橙色文字）
+                            materialWarnView = new MaterialWarnView("");
+                            materialWarnView.Msg = response.Item2; // msg 包含工站名、SN码、MES完整返回信息
+                            materialWarnView.Show();
+                        }
+                        else
+                        {
+                            // 预警弹窗已打开（可能是上一条消息），先关闭旧的再打开新的
+                            // 保证界面显示的是最新预警信息
+                            materialWarnView.Close();
+                            materialWarnView = new MaterialWarnView("");
+                            materialWarnView.Msg = response.Item2;
+                            materialWarnView.Show();
                         }
                     });
                 }

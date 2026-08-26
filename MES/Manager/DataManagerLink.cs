@@ -304,7 +304,7 @@ namespace MES.Manager
             string mesReturn = $"请扫精追码上传MES,共{tatolNumber}个，当前第{currentNumber}个";
             while (!SetHelper.IsRestart[iNumber])
             {
-                Thread.Sleep(10);
+                Thread.Sleep(100);
 
                 if (Application.Current != null)
                 {

@@ -18,10 +18,6 @@ namespace MES.Service
         [ObservableProperty]
         private ObservableCollection<SNPrefix> _sNPrefixes = new ObservableCollection<SNPrefix>
         {
-            new SNPrefix { Name = "XP2020outputShaftSNPrefix", Value = string.Empty },
-            new SNPrefix { Name = "XP2020differentialSNPrefix", Value = string.Empty },
-            new SNPrefix { Name = "QR2020outputShaftSNPrefix", Value = string.Empty },
-            new SNPrefix { Name = "QR2020differentialSNPrefix", Value = string.Empty },
             new SNPrefix { Name = "XP2030inputShaftSNPrefix", Value = string.Empty },
             new SNPrefix { Name = "XP2030intermediateShaftSNPrefix", Value = string.Empty },
             new SNPrefix { Name = "QR2030inputShaftSNPrefix", Value = string.Empty },
@@ -194,18 +190,6 @@ namespace MES.Service
             if (name.IndexOf("intermediateShaft", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 stationIndex = 3;
-                return true;
-            }
-
-            if (name.IndexOf("outputShaft", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                stationIndex = 0;
-                return true;
-            }
-
-            if (name.IndexOf("differential", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                stationIndex = 1;
                 return true;
             }
 

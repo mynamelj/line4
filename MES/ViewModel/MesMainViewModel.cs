@@ -58,9 +58,6 @@ namespace MES.ViewModel
             SelectNumber = Numbers;
             SelectId = 0;
 
-
-
-
         }
 
         private int selectNumber = 0;

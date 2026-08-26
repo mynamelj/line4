@@ -649,11 +649,19 @@
 
 
                                 </WrapPanel>
-                                <Button Width="100"
-                                        Visibility="{Binding IsSpoutOil}"
-                                        Content="{Binding Content}"
-                                        HorizontalAlignment="Right"
-                                        Command="{Binding SpoutOilCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self},Path=Content}" />
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button Width="100" 
+                                            Visibility="{Binding IsLogin}"
+                                            Content="{Binding Content}"
+                                            Command="{Binding SpoutOilCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self},Path=Content}" />
+
+                                    <Button Width="100" Margin="20,0"
+                                            Visibility="{Binding IsLogin}"
+                                            Content="开箱"
+                                            Command="{Binding OpenBoxCommand}" />
+                                    </StackPanel>
+
                             </Grid>
 
                         </Grid>

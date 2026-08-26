@@ -35,6 +35,7 @@ namespace MES
             Initial();
         }
 
+
         public ICommand Loaded => new RelayCommand(() =>
         {
         });
@@ -42,39 +43,9 @@ namespace MES
         public async void Initial()
         {
             SetHelper.InitializedSetting();
-
-            ClearUploadState();
         }
 
-        private void ClearUploadState()
-        {
-            var x = Task.Run(() =>
-            {
-                while (true)
-                {
-                    //if (CheckInOrOut)
-                    //{
-                    //    SetHelper.IsAdmin = false;
-                    //    Msg = "用户未登录";
-                    //    SetHelper.NowUser = "";
-                    //    CheckInOrOut = false;
-                    //}
-                    if (SetHelper.IsAdmin)
-                    {
-                        object obj = new object();
-                        bool result = SetHelper.siemens.ReadItem(SetModel.PLCGroupName.WriteGroup, "操作权限_1", ref obj);
-                        if (obj.ObjToBool() == false && result)
-                        {
-                            SetHelper.IsAdmin = false;
-                            Msg = "用户未登录";
-                            SetHelper.NowUser = "";
-                            CheckInOrOut = false;
-                        }
-                    }
-                    Thread.Sleep(100);
-                }
-            });
-        }
+
 
         public WindowState WindowState { get; set; } = WindowState.Normal;
         public string Msg { get; set; } = "用户未登录";

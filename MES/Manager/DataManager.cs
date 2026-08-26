@@ -34,16 +34,31 @@ namespace MES.Manager
         public ChangeParamsDelegate ChangeParamsAction;
         public MaterialOffline MaterialOfflineAction;
         public ListenPLC listenPLC = new ListenPLC();
-        public static bool RepairFlag = false;//维修标志位
-        public static int specialRepairFlag = 0;//维修标志位
-        public static int RepairStation = 0;//维修站志位
+        private List<string> repairDataList = new List<string>();
+
         public DataManager()
         {
             SetHelper.siemens.OnDataChange += Siemens_OnDataChange;
             GetStatusInfo();
             PictureUploadAsync();
             string baseDirectory=AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = Path.Combine(baseDirectory, "misc.json");
+            string  repairPath = Path.Combine(baseDirectory, "configs\\repair.json");
+            try
+            {
+                if (File.Exists(repairPath))
+                {
+                    string json = File.ReadAllText(repairPath);
+                    repairDataList = JArray.Parse(json).ToObject<List<string>>();
+                }
+                else
+                {
+                    repairDataList = new List<string>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Newtonsoft 读取 JSON 失败: {ex.Message}", ex);
+            }
         }
 
         private bool isFirstStart = true;
@@ -173,7 +188,7 @@ namespace MES.Manager
                         //4130不再扫码
                         if ((stationName.ToUpper().Contains("OP1010")|| stationName.ToUpper().Contains("OP3040")|| stationName.ToUpper().Contains("OP2035") ||
                             (stationName.ToUpper().Contains("OP4020")||stationName.ToUpper().Contains("OP2020")|| 
-                            stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("1NG_IO")) && Address != 0)) //0为扫码触发
+                            stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("NG_IO")) && Address != 0)) //0为扫码触发
                         {
                             if (stationName.ToUpper().Contains("OP2035") && stationName.Contains("4"))
                             {

@@ -41,22 +41,17 @@ namespace MES.Manager
 
                 int SeqID = 0;
 
-                if (stationName.ToUpper().Contains("1NG_IO"))
+                if (stationName.ToUpper().Contains("NG_IO"))
                 {
                     // 优先使用本次扫码传入的SN，避免多工位同时扫码时被全局SN覆盖。
                     // 操作员人工将NG产品的条码对准扫码枪后，扫码结果存在这里
-                    SetHelper.ListPLCMessage.ShowInfoQueue(
-                        $"{stationName} 扫描到的SN码为{scanSN}");
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 扫描到的SN码为{scanSN}");
 
                     // 此 snCode 在后续进站逻辑中会被用到（如上报MES的参数）
                     snCode = scanSN;
                     // 目的：让PLC知道当前进站的产品是哪一个，
                     //       PLC后续可以根据此SN码做流程控制（如联锁、指示灯等）
-                    bool Result0 = SetHelper.siemens.WriteItem(
-                        PLCGroupName.WriteGroup,
-                        "产品SN_" + stationNumber,  // 对应当前工位编号的SN寄存器
-                        snCode                       // 人工扫码得到的NG产品SN码
-                    );
+                    bool Result0 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"产品SN_" + stationNumber,  snCode);
 
                     SetHelper.ListPLCMessage.ShowInfoQueue(
                         $"{stationName} {carryID}--{stationName} 产品SN_{stationNumber}" +
@@ -66,15 +61,10 @@ namespace MES.Manager
                     {
                         // SN码写入成功  给PLC发送"进站结果=1（进站成功/OK）"
                         // PLC收到1后会执行放行动作（如绿灯亮、传送带继续运行）
-                        bool Result1 = SetHelper.siemens.WriteItem(
-                            PLCGroupName.WriteGroup,
-                            "进站结果_" + stationNumber,  // 对应工位的进站结果寄存器
-                            1                              // 1 = 进站成功
-                        );
+                        bool Result1 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"进站结果_" + stationNumber,1);
 
-                        SetHelper.ListPLCMessage.ShowInfoQueue(
-                            $"{stationName} {snCode}--{stationName} 进站结果{stationNumber}" +
-                            $"写{1}{(Result1 ? "成功" : "失败")}");
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {snCode}--{stationName} 进站结果{stationNumber}" +
+                        $"写{1}{(Result1 ? "成功" : "失败")}");
                     }
                     else // SN码写入PLC失败
                     {
@@ -86,7 +76,6 @@ namespace MES.Manager
                             "进站结果_" + stationNumber,  // 对应工位的进站结果寄存器
                             2                              // 2 = 进站失败
                         );
-
 
                         SetHelper.ListPLCMessage.ShowInfoQueue(
                             $"{stationName} {snCode}--{stationName} 进站结果{stationNumber}" +

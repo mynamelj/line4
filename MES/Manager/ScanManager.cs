@@ -151,7 +151,7 @@ namespace MES.Manager
                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 2=>");
                     if (stationName.ToUpper().Contains("OP1010") || stationName.ToUpper().Contains("OP3040")|| 
                         stationName.ToUpper().Contains("OP4020")|| stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2035")
-                        || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("1NG_IO"))
+                        || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("NG_IO"))
                     {
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 3=>");
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 5=>{hardIndex} {str.Trim().Length} {SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen}");
