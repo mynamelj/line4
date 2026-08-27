@@ -494,6 +494,9 @@ namespace MES.Manager
                 // ConfigureAwait(false)确保后续PLC通信不切回UI线程。
                 await Task.Delay(2000).ConfigureAwait(false);
                 ProductTypeModel MESData =SetHelper.GetProductName(mesProductName) ?? new ProductTypeModel();       
+
+                NotifyIfVendorChanged(stationName, MESData.ProductID);
+
                 if (SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "MES机型信息_" + stationNumber, MESData.ProductID))
                 {
                     SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} MES机型信息_{stationNumber}写入{MESData.ProductID}成功");
@@ -567,6 +570,41 @@ namespace MES.Manager
                     $"{stationName} 延迟机型一致性校验异常--{ex}");
             }
 
+        }
+
+        /// <summary>
+        /// 当进站机型的厂商(奇瑞/小鹏)与上一次进站不同时，弹窗提示操作员确认。
+        /// 25为奇瑞型号，其余均为小鹏型号。
+        /// </summary>
+        private void NotifyIfVendorChanged(string stationName, int currentProductID)
+        {
+            try
+            {
+                int lastProductID = SetHelper.LastCheckInProductID;
+                if (lastProductID != int.MinValue)
+                {
+                    bool wasQiRui = lastProductID == SetHelper.QiRuiProductID;
+                    bool isQiRui = currentProductID == SetHelper.QiRuiProductID;
+                    if (wasQiRui != isQiRui)
+                    {
+                        string msg = $"{stationName} 检测到进站机型厂商发生切换：\r\n" +
+                                     $"上一机型：{(wasQiRui ? "奇瑞" : "小鹏")}\r\n" +
+                                     $"当前机型：{(isQiRui ? "奇瑞" : "小鹏")}\r\n" +
+                                     $"请确认！";
+                        SetHelper.ListPLCMessage.ShowInfoQueue(msg);
+                        Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            var confirmWindow = new ModelChangeConfirmWindow(msg);
+                            confirmWindow.Show();
+                        });
+                    }
+                }
+                SetHelper.LastCheckInProductID = currentProductID;
+            }
+            catch (Exception ex)
+            {
+                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 机型厂商切换校验异常--{ex}");
+            }
         }
     }
 }

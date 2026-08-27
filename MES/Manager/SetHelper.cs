@@ -111,6 +111,16 @@ namespace MES.Manager
         public static ObservableCollection<ProductTypeModel> products = new ObservableCollection<ProductTypeModel>();
         public static ProductTypeModel NowProduct = new ProductTypeModel();
 
+        /// <summary>
+        /// 记录上一次进站MES返回的机型ID(如25=奇瑞,其余=小鹏)，用于检测厂商切换。int.MinValue表示尚未记录。
+        /// </summary>
+        public static int LastCheckInProductID = int.MinValue;
+
+        /// <summary>
+        /// 奇瑞机型ID
+        /// </summary>
+        public const int QiRuiProductID = 25;
+
         public static DateTime DateStart = new DateTime();
         public static DateTime DateEnd = new DateTime();
 

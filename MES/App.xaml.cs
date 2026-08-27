@@ -130,7 +130,6 @@ namespace MES
             base.OnStartup(e);
         }
 
-
         protected override void OnExit(ExitEventArgs e)
         {
             if (_ownsSingleInstanceMutex)
