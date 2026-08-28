@@ -124,8 +124,7 @@ namespace MES.Manager
                 ObservableCollection<MaterailOnOffModel> glueMaterails = SetHelper.ReadSys<ObservableCollection<MaterailOnOffModel>>(SetHelper.gluepath);
 
                 //只有返修状态（5或6）且工站为 OP5005 或 OP2010 时才不上传，其余全部上传。
-                if (!(CheckInResult == 5  && (stationName.ToUpper().Contains("OP2010")
-                    || stationName.ToUpper().Contains("OP1080") || stationName.ToUpper().Contains("OP5005"))))
+                if (!(CheckInResult == 5  &&  stationName.ToUpper().Contains("OP5005")))
                 {
                     #region 读取产品需要上传MES的数据
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
@@ -330,6 +329,12 @@ namespace MES.Manager
                 string msg = $"{stationName} 载具码:{carryID} \r\n\r\nSN码:{SN}  产品出站结果：{response.Item1},\r\n\r\nMES返回消息：{response.Item2}\r\n\r\nMES返回完整信息:\r\n{response.Item4}";
                 SetHelper.ListMesMessage.ShowInfoQueue(msg);
                 checkOutResult = response.Item1 ? 1 : 2;
+
+                if (stationName.Contains("OP5001T") && response.Item2.Contains("产品流程异常"))
+                {
+                    response.Item1 = true;
+                    checkOutResult = 1;
+                }
                 //将结果保存到结果Model中，供界面显示
                 SetHelper.resultModel[iNumber].Result3 = response.Item1 ? "OK" : "NG";
                 SetHelper.resultModel[iNumber].CheckOutSN = SN;
@@ -397,9 +402,9 @@ namespace MES.Manager
                 }
 
 
-                if (response.Item2.ToUpper().Contains("NVH"))
+                if (checkOutResult==1 && response.Item2.ToUpper().Contains("NVH"))
                 {
-
+                    
                     await Application.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (!MaterialWarnView.IsOpened)

@@ -1,23 +1,12 @@
 ﻿using MES.Comm;
 using MES.MesModel.Request;
-using MES.MesModel.Response;
 using MES.SetModel;
 using MES.View;
 using MES.ViewModel;
 using Newtonsoft.Json.Linq;
-using S7.Net.Types;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
-using System.IO.Ports;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Media.Media3D;
-using static MES.Extension;
-using DateTime = System.DateTime;
-
 
 namespace MES.Manager
 {
@@ -67,6 +56,7 @@ namespace MES.Manager
 
         public bool InitialzePLC()
         {
+
             bool plcResult = SetHelper.siemens.InitailzePLC();
             status = new int[SetHelper.StationNumber.numberGroups.Count];
             ScanSuccess = new bool[SetHelper.StationNumber.numberGroups.Count];
@@ -380,6 +370,11 @@ namespace MES.Manager
                             }
                         }
                     }
+                    break;
+
+
+                case "返修模式切换":
+                    TriggerRepairMode((bool)TagValue);
                     break;
 
                 default:

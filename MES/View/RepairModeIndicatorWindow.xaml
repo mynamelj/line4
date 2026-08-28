@@ -1,0 +1,26 @@
+<Window x:Class="MES.View.RepairModeIndicatorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:MES.View"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="RepairModeIndicatorWindow"
+        Width="60"
+        Height="16"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStyle="None"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        Topmost="True"
+        WindowStartupLocation="Manual"
+        mc:Ignorable="d">
+    <Grid>
+        <TextBlock Text="返修模式"
+                   FontSize="15"
+                   FontWeight="Bold"
+                   Foreground="Red"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
+    </Grid>
+</Window>

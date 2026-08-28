@@ -41,6 +41,14 @@ namespace MES.Manager
 
                 int SeqID = 0;
 
+                if ((stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2030")) && SetHelper.IsRepairMode == true)
+                {
+                    snCode = ScanManager.SNCode;
+                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品SN_" + stationNumber, snCode);
+                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, 1);
+                    return;
+                }
+
                 if (stationName.ToUpper().Contains("NG_IO"))
                 {
                     // 优先使用本次扫码传入的SN，避免多工位同时扫码时被全局SN覆盖。
@@ -594,8 +602,12 @@ namespace MES.Manager
                         SetHelper.ListPLCMessage.ShowInfoQueue(msg);
                         Application.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            var confirmWindow = new ModelChangeConfirmWindow(msg);
-                            confirmWindow.Show();
+                            if (SetHelper.IsMsgWindowOpen)
+                            {
+                                popupWindow.Close();
+                            }
+                            popupWindow = new PopupWindow(msg);
+                            popupWindow.Show();
                         });
                     }
                 }

@@ -40,7 +40,7 @@ namespace MES.Manager
         public static bool IsMsgGreenWindowOpen = false;
         public static string realapipath = "";
         public static string logmainpath = Environment.CurrentDirectory + "\\log\\";
-
+        public static bool IsRepairMode = false;
         public static bool isSpecialStation = false;
 
         /// <summary>
