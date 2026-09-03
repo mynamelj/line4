@@ -41,11 +41,13 @@ namespace MES.Manager
 
                 int SeqID = 0;
 
-                if ((stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2030")) && SetHelper.IsRepairMode == true)
+                if (stationName.ToUpper().Contains("OP2020B")&& SetHelper.IsRepairMode == true)
                 {
                     snCode = ScanManager.SNCode;
                     SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品SN_" + stationNumber, snCode);
                     SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, 1);
+                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + stationNumber, 5);
+                    SetHelper.resultModel[iNumber].Result1 = "OK-返修件";
                     return;
                 }
 

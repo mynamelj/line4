@@ -330,6 +330,27 @@ namespace MES.Manager
                 SetHelper.ListMesMessage.ShowInfoQueue(msg);
                 checkOutResult = response.Item1 ? 1 : 2;
 
+                if (response.Item1 && response.Item2.ToUpper().Contains("NVH")&&stationName.Contains("OP5150"))
+                {
+                    checkOutResult = 5;
+
+                    await Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (SetHelper.IsMsgWindowOpen)
+                        {
+                            popupWindow.Close();
+                            popupWindow = new PopupWindow(response.Item2);
+                            popupWindow.Show();
+                        }
+                        else
+                        {
+                            popupWindow = new PopupWindow(response.Item2);
+                            popupWindow.Show();
+                        }
+                    });
+                }
+
+
                 if (stationName.Contains("OP5001T") && response.Item2.Contains("产品流程异常"))
                 {
                     response.Item1 = true;
@@ -402,29 +423,7 @@ namespace MES.Manager
                 }
 
 
-                if (checkOutResult==1 && response.Item2.ToUpper().Contains("NVH"))
-                {
-                    
-                    await Application.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (!MaterialWarnView.IsOpened)
-                        {
-                            // 预警弹窗未打开，直接新建并显示（橙色文字）
-                            materialWarnView = new MaterialWarnView("");
-                            materialWarnView.Msg = response.Item2; // msg 包含工站名、SN码、MES完整返回信息
-                            materialWarnView.Show();
-                        }
-                        else
-                        {
-                            // 预警弹窗已打开（可能是上一条消息），先关闭旧的再打开新的
-                            // 保证界面显示的是最新预警信息
-                            materialWarnView.Close();
-                            materialWarnView = new MaterialWarnView("");
-                            materialWarnView.Msg = response.Item2;
-                            materialWarnView.Show();
-                        }
-                    });
-                }
+
 
                 // 向PLC写出站结果
                 bool result = false;
