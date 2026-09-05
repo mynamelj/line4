@@ -377,6 +377,10 @@ namespace MES.Manager
                     TriggerRepairMode((bool)TagValue);
                     break;
 
+                case "油位报警":
+                    TriggerOilLevelAlarm((bool)TagValue);
+                    break;
+
                 default:
                     SetHelper.ListPLCMessage.ShowInfoQueue($"未找到PLC触发信号标签--{TagName}");
                     break;
