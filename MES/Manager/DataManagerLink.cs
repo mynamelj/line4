@@ -11,6 +11,30 @@ namespace MES.Manager
     {
         private bool[] LinkCompRunning;
         private object[] LinkCompLocks;
+
+        /// <summary>
+        /// 写入扫码结果；首次写入失败时，等待PLC连接稳定后重试一次。
+        /// </summary>
+        private async Task<bool> WriteScanMaterialResultWithRetryAsync(
+            string stationNumber, string stationName, int value)
+        {
+            string tagName = "扫描材料码结果_" + stationNumber;
+            bool result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, tagName, value);
+            if (result)
+            {
+                return true;
+            }
+
+            SetHelper.ListPLCMessage.ShowInfoQueue(
+                $"{stationName} {tagName}首次写{value}失败，1秒后重试");
+            await Task.Delay(1000);
+
+            result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, tagName, value);
+            SetHelper.ListPLCMessage.ShowInfoQueue(
+                $"{stationName} {tagName}重试写{value}{(result ? "成功" : "失败")}");
+            return result;
+        }
+
         public async Task LinkCompStart(string stationNumber)
         {
             //20250401让PLC触发扫码，避免扫码NG无法关弹窗放行
@@ -125,7 +149,7 @@ namespace MES.Manager
                             SetHelper.resultModel[iNumber].Result2 = ScanSuccess[iNumber] == true ? "OK" : "NG";
                             bool result_new = false;
                             int value_new = ScanSuccess[iNumber] == true ? 1 : 2;
-                            result_new = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, value_new);
+                            result_new = await WriteScanMaterialResultWithRetryAsync(stationNumber, stationName, value_new);
                             SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 全部码扫描完成。扫描材料码结果_{stationNumber}写{value_new}{(result_new ? "成功" : "失败")}");
                         }
                         catch (Exception ex)
@@ -165,7 +189,7 @@ namespace MES.Manager
                         SetHelper.resultModel[iNumber].Result2 = ScanSuccess[iNumber] == true ? "OK" : "NG";
                         bool result = false;
                         int value = ScanSuccess[iNumber] == true ? 1 : 2;
-                        result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, value);
+                        result = await WriteScanMaterialResultWithRetryAsync(stationNumber, stationName, value);
                         SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 全部码扫描完成。扫描材料码结果_{stationNumber}写{value}{(result ? "成功" : "失败")}");
                     }
 

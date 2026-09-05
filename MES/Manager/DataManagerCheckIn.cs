@@ -469,7 +469,17 @@ namespace MES.Manager
                     #endregion 判断结果发送PLC
 
 
-                    if (!response.Item1)
+                    if (response.Item1)
+                    {
+                        await Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (SetHelper.IsMsgWindowOpen)
+                            {
+                                popupWindow.Close();
+                            }
+                        });
+                    }
+                    else
                     {
                         await Application.Current.Dispatcher.BeginInvoke(() =>
                         {
