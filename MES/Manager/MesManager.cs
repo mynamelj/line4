@@ -684,7 +684,7 @@ namespace MES.Manager
         #endregion
 
         #region 上料校验
-        public async Task<(bool, string, string)> FeedingCheck(FeedingCheckModel feedingCheckModel, int number)
+        public async Task<(bool, string, string)> FeedingCheck(FeedingCheckModel feedingCheckModel, int number, bool retryTransport = true)
         {
             (bool, string, string) result = (false, "", "");
             DateTime dtStart = DateTime.Now;
@@ -701,7 +701,11 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].FeedingCheck, jsonString);
+                if (!retryTransport) client.Timeout = TimeSpan.FromSeconds(30);
+                string url = SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].FeedingCheck;
+                using HttpResponseMessage resultData = retryTransport
+                    ? await client.PollyPostJsonAsync(url, jsonString)
+                    : await client.PostAsync(url, stringContent);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 

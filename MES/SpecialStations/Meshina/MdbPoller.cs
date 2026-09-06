@@ -1,6 +1,4 @@
-using System.Globalization;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace MES.SpecialStations.Meshina
 {
@@ -30,21 +28,11 @@ namespace MES.SpecialStations.Meshina
                     WrittenUtc = f.LastWriteTimeUtc, Length = f.Length }).ToList();
         }
 
-        public List<MdbFile> Candidates(MeshinaJob job, IEnumerable<string> processed)
+        public List<MdbFile> Candidates(MeshinaJob job)
         {
-            var excluded = new HashSet<string>(job.BaselineFiles.Concat(processed), StringComparer.OrdinalIgnoreCase);
-            return Snapshot().Where(f => !excluded.Contains(f.Path) && f.CreatedUtc > job.ScanTimeUtc
-                && HasCurrentMeasurementTime(f.Path, job.ScanTimeUtc)).ToList();
-        }
-
-        public static bool HasCurrentMeasurementTime(string path, DateTime scanUtc)
-        {
-            var match = Regex.Match(System.IO.Path.GetFileName(path), @"_(\d{8}_\d{6})\.mdb$", RegexOptions.IgnoreCase);
-            if (!match.Success || !DateTime.TryParseExact(match.Groups[1].Value, "yyyyMMdd_HHmmss",
-                CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime measured)) return false;
-            // 文件名只有秒精度，允许扫码同一秒；新建时间仍要求严格晚于扫码时间。
-            var localScan = scanUtc.ToLocalTime();
-            return measured >= localScan.AddTicks(-(localScan.Ticks % TimeSpan.TicksPerSecond));
+            var excluded = new HashSet<string>(job.BaselineFiles, StringComparer.OrdinalIgnoreCase);
+            return Snapshot().Where(f => !excluded.Contains(f.Path) && f.CreatedUtc > job.ScanTimeUtc)
+                .OrderBy(f => f.CreatedUtc).ThenBy(f => f.Path).ToList();
         }
 
         public bool IsStable(MdbFile file, int requiredCount)

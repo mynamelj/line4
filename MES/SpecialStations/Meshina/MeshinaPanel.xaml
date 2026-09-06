@@ -3,16 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border BorderBrush="#B8CDD8" BorderThickness="1" Background="#F0F7FA" Padding="10" Margin="5">
         <StackPanel>
-            <TextBlock Text="2020Meshina · 线外啮合" FontSize="18" FontWeight="Bold" />
+            <TextBlock Text="OP2020M · 线外啮合" FontSize="18" FontWeight="Bold" />
             <TextBlock x:Name="StatusText" TextWrapping="Wrap" FontSize="16" Margin="0,5" />
             <TextBlock x:Name="JobText" TextWrapping="Wrap" />
             <WrapPanel Margin="0,5,0,0">
                 <Button x:Name="RetryButton" Content="重试原任务" Click="RetryClick" Padding="10,5" Margin="0,0,8,0" />
-                <Button x:Name="AcceptedButton" Content="已核实MES接收" Click="AcceptedClick" Padding="10,5" Margin="0,0,8,0" />
-                <Button x:Name="NotAcceptedButton" Content="已核实MES未接收" Click="NotAcceptedClick" Padding="10,5" Margin="0,0,8,0" />
-                <Button x:Name="CancelButton" Content="异常结束本件" Click="CancelClick" Padding="10,5" />
             </WrapPanel>
-            <TextBlock Text="扫码 → 进站OK后啮合 → 等待自动出站OK → 扫下一件。异常恢复由技术人员处理。"
+            <TextBlock Text="扫码 → 进站OK后啮合 → 等待自动出站OK → 扫下一件。MES失败后可重试原任务。"
                        TextWrapping="Wrap" Margin="0,5,0,0" Foreground="#456070" />
         </StackPanel>
     </Border>

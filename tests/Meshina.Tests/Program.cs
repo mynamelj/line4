@@ -17,9 +17,8 @@ internal static class Program
             await Recovery();
             await FileGuards();
             await ConcurrentScans();
-            CorruptState();
-            Check(MeshinaSettings.IsStationName("2020Meshina") && MeshinaSettings.IsStationName("op2020meshina"), "station aliases");
-            Check(!MeshinaSettings.IsStationName("OP2020M") && !MeshinaSettings.IsStationName("OP2030Meshina"), "other stations unchanged");
+            Check(MeshinaSettings.IsStationName("OP2020M") && MeshinaSettings.IsStationName("op2020meshina"), "station aliases");
+            Check(!MeshinaSettings.IsStationName("OP2020B") && !MeshinaSettings.IsStationName("OP2030Meshina"), "other stations unchanged");
             if (args.Length > 0)
             {
                 var value = new MdbReader(args.Length > 1 ? args[1] : "Microsoft.ACE.OLEDB.12.0").Read(Path.GetFullPath(args[0]));
@@ -32,7 +31,7 @@ internal static class Program
         }
         catch (Exception ex) { Console.Error.WriteLine(ex); return 1; }
     }
-    private static MeshinaJob Request() => new MeshinaJob { CheckInRequest = new SNCheckINModel(), CheckOutRequest = new SNCheckoutModel() };
+    private static MeshinaJob Request() => new MeshinaJob { FeedingCheckRequest = new FeedingCheckModel(), CheckOutRequest = new SNCheckoutModel() };
     private static void VerifyMdbGuards(string sample, string provider)
     {
         string copy = Path.Combine(Root, "reader-test.mdb");
@@ -103,7 +102,7 @@ internal static class Program
         var f = new Fixture();
         f.Gateway.InOutcome = MeshinaMesOutcome.Rejected;
         await f.Service.ScanAsync("A", Request);
-        Check(f.Service.CanRetry && f.Service.Current.Stage == MeshinaStage.CheckInRejected, "retains failed checkin");
+        Check(f.Service.CanRetry && f.Service.Current.Stage == MeshinaStage.FeedingCheckRejected, "retains failed checkin");
         f.File("test", DateTime.UtcNow.AddSeconds(1));
         await f.Service.TickAsync(); await f.Service.TickAsync();
         Check(f.Gateway.OutCount == 0, "no checkout before successful checkin");
@@ -115,52 +114,25 @@ internal static class Program
         var payload = f.Gateway.LastOut;
         f.Gateway.OutOutcome = MeshinaMesOutcome.Unknown;
         await f.Service.RetryAsync();
-        Check(f.Service.NeedsConfirmation && !f.Service.CanRetry, "unknown result cannot blindly retry");
+        Check(f.Service.CanRetry, "unknown result retains data for operator retry");
         int calls = f.Gateway.OutCount;
-        await f.Service.TickAsync(); await f.Service.RetryAsync();
-        Check(f.Gateway.OutCount == calls, "polling and retry cannot resend unknown request");
-        await f.Service.ResolveUnknownAsync(false, f.Service.Current.Id);
+        await f.Service.TickAsync();
+        Check(f.Gateway.OutCount == calls, "unknown request is not automatically repeated");
         f.Gateway.OutOutcome = MeshinaMesOutcome.Accepted;
         await f.Service.RetryAsync();
         Check(ReferenceEquals(payload, f.Gateway.LastOut) && f.Service.Current == null, "retries same payload after confirmation");
-        var g = new Fixture();
-        g.Gateway.InOutcome = MeshinaMesOutcome.Unknown;
-        await g.Service.ScanAsync("B", Request);
-        Check(g.Service.NeedsConfirmation, "unknown checkin locked");
-        await g.Service.ResolveUnknownAsync(true, g.Service.Current.Id);
-        Check(g.Service.Current.Stage == MeshinaStage.WaitingForMdb, "confirmed checkin resumes");
-        await g.Service.CancelAsync("previous-job-id");
-        Check(g.Service.Current != null, "stale operator confirmation cannot cancel a different job");
-        await g.Service.CancelAsync(g.Service.Current.Id);
-        Check(g.Service.Current == null && g.Service.LastFinished.Stage == MeshinaStage.Cancelled, "manual cancellation archives job");
     }
     private static async Task Recovery()
     {
         var f = new Fixture();
-        await f.Service.ScanAsync("RECOVER", Request);
-        f.File("test", DateTime.UtcNow.AddSeconds(1));
+        await f.Service.ScanAsync("A", Request);
         f.Restart();
-        await f.Service.TickAsync(); await f.Service.TickAsync();
-        Check(f.Service.Current == null && f.Gateway.InCount == 1 && f.Gateway.OutCount == 1, "recovers waiting job without repeating checkin");
-        var g = new Fixture();
-        await g.Service.ScanAsync("CRASH", Request);
-        g.Gateway.OutOutcome = MeshinaMesOutcome.Rejected;
-        g.File("test", DateTime.UtcNow.AddSeconds(1));
-        await g.Service.TickAsync(); await g.Service.TickAsync();
-        var state = g.Store.Load();
-        state.Current.Stage = MeshinaStage.CheckOutSending;
-        g.Store.Save(state); g.Restart();
-        Check(g.Service.Current.Stage == MeshinaStage.CheckOutUncertain, "crash during send requires reconciliation");
-        await g.Service.TickAsync();
-        Check(g.Gateway.OutCount == 1, "restart does not resend uncertain checkout");
+        Check(f.Service.Current == null, "restart begins an empty single-station session");
     }
     private static async Task FileGuards()
     {
         var f = new Fixture();
         await f.Service.ScanAsync("A", Request);
-        f.File("old-copy", DateTime.UtcNow.AddMinutes(-2), DateTime.UtcNow.AddSeconds(1));
-        await f.Service.TickAsync(); await f.Service.TickAsync();
-        Check(f.Gateway.OutCount == 0, "rejects old measurement newly copied into directory");
         string path = f.File("new", DateTime.UtcNow.AddSeconds(1));
         await f.Service.TickAsync();
         File.AppendAllText(path, "still writing");
@@ -176,7 +148,7 @@ internal static class Program
         await g.Service.ScanAsync("B", Request);
         g.File("one", DateTime.UtcNow.AddSeconds(1)); g.File("two", DateTime.UtcNow.AddSeconds(1));
         await g.Service.TickAsync(); await g.Service.TickAsync();
-        Check(g.Gateway.OutCount == 0 && g.Service.Status.Contains("2个"), "ambiguous files do not auto bind");
+        Check(g.Gateway.OutCount == 1, "uses first new measurement in time order");
     }
     private static async Task ConcurrentScans()
     {
@@ -185,41 +157,26 @@ internal static class Program
         var first = f.Service.ScanAsync("FIRST", Request);
         await f.Service.ScanAsync("SECOND", Request);
         Check(f.Gateway.InCount == 1 && f.Service.Current.SN == "FIRST", "concurrent scans cannot replace SN");
-        Check(!f.Service.TryStopForConfiguration(), "blocks configuration change during checkin");
         f.File("during-checkin", DateTime.UtcNow.AddSeconds(1));
         f.Gateway.InWait.SetResult(true); await first;
         await f.Service.TickAsync(); await f.Service.TickAsync();
         Check(f.Gateway.OutCount == 1, "file created during checkin not lost");
-        Check(f.Service.TryStopForConfiguration(), "idle service allows configuration change");
+        f.Service.Stop();
         await f.Service.ScanAsync("AFTER-STOP", Request);
         Check(f.Gateway.InCount == 1, "stopped service refuses scans");
-    }
-    private static void CorruptState()
-    {
-        string path = Path.Combine(Root, "corrupt.json");
-        File.WriteAllText(path, "{broken");
-        bool rejected = false;
-        try { new MeshinaStateStore(path).Load(); } catch { rejected = true; }
-        Check(rejected, "corrupt state fails closed");
-        File.WriteAllText(path, "{}");
-        rejected = false;
-        try { new MeshinaStateStore(path).Load(); } catch { rejected = true; }
-        Check(rejected, "missing state properties fail closed");
     }
     private sealed class Fixture
     {
         public readonly string DirectoryPath = Path.Combine(Root, Guid.NewGuid().ToString("N"));
         public readonly Gateway Gateway = new Gateway();
         public readonly Reader Reader = new Reader();
-        public MeshinaStateStore Store;
         public MeshinaStationService Service;
-        public Fixture() { Directory.CreateDirectory(DirectoryPath); Store = new MeshinaStateStore(Path.Combine(DirectoryPath, "state.json")); Restart(); }
+        public Fixture() { Directory.CreateDirectory(DirectoryPath); Restart(); }
         public void Restart()
         {
             Service?.Stop();
             var settings = new MeshinaSettings { DataDirectory = DirectoryPath, StablePollCount = 2 };
-            Service = new MeshinaStationService(settings, new MdbPoller(DirectoryPath), Reader, Gateway, Store, "test", _ => { })
-            { ArchiveDirectory = Path.Combine(DirectoryPath, "history") };
+            Service = new MeshinaStationService(settings, new MdbPoller(DirectoryPath), Reader, Gateway, _ => { });
         }
         public string File(string prefix, DateTime measuredUtc, DateTime? createdUtc = null)
         {
@@ -244,7 +201,7 @@ internal static class Program
         public MeshinaMesOutcome InOutcome = MeshinaMesOutcome.Accepted, OutOutcome = MeshinaMesOutcome.Accepted;
         public SNCheckoutModel LastOut;
         public TaskCompletionSource<bool> InWait;
-        public async Task<MeshinaMesReply> CheckInAsync(SNCheckINModel request)
+        public async Task<MeshinaMesReply> FeedingCheckAsync(FeedingCheckModel request)
         {
             InCount++;
             if (InWait != null) await InWait.Task;

@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using MES.MesModel.Request;
 using MES.Service;
 using MES.SetModel;
@@ -107,9 +107,9 @@ namespace MES.Manager
         {
             string str = string.Join("", listBar);
             // 线外啮合站扫码直接进站，不依赖弹窗、SN前缀映射或PLC。
-            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsStation(hardIndex))
+            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
             {
-                await MES.SpecialStations.Meshina.MeshinaRuntime.ScanAsync(hardIndex, str);
+                await MES.SpecialStations.Meshina.MeshinaRuntime.ScanAsync(str);
                 return;
             }
             string stationName = "";
@@ -169,32 +169,6 @@ namespace MES.Manager
                                 SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 4=>{str}");
                                 SNCode = str;
 
-                                if ((stationName.ToUpper().Contains("OP2020M") || stationName.ToUpper().Contains("OP2030M")) && SetHelper.NowProduct.ProductID==25)
-                                {
-
-
-                                    (bool, string, string) response0 =
-                                        await SetHelper.mesManager.FeedingCheck(SNCode.GetFeedingCheck(hardIndex), hardIndex);
-
-                                    SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "产品SN" + "_" + (hardIndex + 1).ToString(), SNCode);
-
-                                    SetHelper.resultModel[hardIndex].Result1 = response0.Item1 switch
-                                    {
-                                        true => "OK",
-                                        false => "NG",
-                                    };
-                                    SetHelper.resultModel[hardIndex].CheckInSN = SNCode;
-
-                                    if (!response0.Item1)
-                                    {
-                                        SetHelper.ListMesMessage.ShowInfoQueue(
-                                            $"{stationName} FeedingCheck失败：{response0.Item2}");
-                                        var result0 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + (hardIndex + 1), 2);
-                                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {SNCode}--{stationName} 进站结果{hardIndex + 1}写{2}" +
-                                            $"{(result0 ? "成功" : "失败")}");
-                                    }
-                                    return;
-                                }
                                 //object res = null;
                                 //if (SetHelper.siemens.ReadItem(PLCGroupName.TriggerGroup, "产品进站启动_" + (hardIndex + 1), ref res))
                                 //{

@@ -16,8 +16,7 @@ namespace MES.SpecialStations.Meshina
         public static bool IsStationName(string name)
         {
             name = (name ?? "").Trim();
-            return string.Equals(name, "2020Meshina", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(name, "OP2020Meshina", StringComparison.OrdinalIgnoreCase);
+            return name.ToUpper().Contains("OP2020M");
         }
 
         public static MeshinaSettings Load(string path)
@@ -27,14 +26,7 @@ namespace MES.SpecialStations.Meshina
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.WriteAllText(path, JsonConvert.SerializeObject(new MeshinaSettings(), Formatting.Indented));
             }
-            var settings = JsonConvert.DeserializeObject<MeshinaSettings>(File.ReadAllText(path))
-                ?? throw new InvalidDataException("啮合站配置为空");
-            if (!Path.IsPathRooted(settings.DataDirectory) || string.IsNullOrWhiteSpace(settings.Provider)
-                || settings.PollIntervalMilliseconds < 200 || settings.StablePollCount < 2
-                || settings.ItemNames == null || settings.RequiredFields == null
-                || settings.RequiredFields.Any(f => !MdbReader.NumericFields.Contains(f)))
-                throw new InvalidDataException("啮合站目录必须是绝对路径，轮询间隔至少200ms，稳定次数至少2次");
-            return settings;
+            return JsonConvert.DeserializeObject<MeshinaSettings>(File.ReadAllText(path));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using MES.Comm;
+using MES.Comm;
 using MES.MesModel.Request;
 using MES.MesModel.Response;
 using MES.SetModel;
@@ -278,11 +278,6 @@ namespace MES.Manager
         /// <returns></returns>
         public async void ChangeProductType(int ProductType, int Number)
         {
-            if (MES.SpecialStations.Meshina.MeshinaRuntime.BlocksConfigurationChange)
-            {
-                SetHelper.ListMesMessage.ShowInfoQueue("2020Meshina尚有未完成任务或恢复异常，禁止切型");
-                return;
-            }
             if (!SetHelper.IsFirstStart && SetHelper.NowProduct != null && SetHelper.NowProduct.ProductID == ProductType)
             {
                 SetHelper.ListMesMessage.ShowInfoQueue($"当前机型已为{ProductType}，无需重复切型，已忽略本次切型请求", true, EnumLogType.log.ToString(), true);
@@ -533,7 +528,7 @@ namespace MES.Manager
                 for (int i = 0; i < count; i++)
                 {
                     int stationIndex = i;
-                    if (MES.SpecialStations.Meshina.MeshinaRuntime.IsStation(stationIndex)) continue;
+                    if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly) continue;
                     _ = StartIndividualStationMonitorAsync(stationIndex, lastSentAlarms, token);
                 }
 

@@ -1,4 +1,4 @@
-﻿using MES.MesModel.Request;
+using MES.MesModel.Request;
 using MES.SetModel;
 using MES.View;
 using MES.ViewModel;
@@ -14,9 +14,9 @@ namespace MES.Manager
         public async void ProductCheckIn(string stationNumber, string SN = "")
         {
             int iNumber = Convert.ToInt32(stationNumber) - 1;
-            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsStation(iNumber))
+            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
             {
-                await MES.SpecialStations.Meshina.MeshinaRuntime.ScanAsync(iNumber, SN);
+                await MES.SpecialStations.Meshina.MeshinaRuntime.ScanAsync(SN);
                 return;
             }
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;

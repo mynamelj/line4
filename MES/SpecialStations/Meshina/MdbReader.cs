@@ -34,12 +34,6 @@ namespace MES.SpecialStations.Meshina
             this.requiredFields = new HashSet<string>(requiredFields ?? new[] { "Fi", "fii", "Fr" }, StringComparer.OrdinalIgnoreCase);
         }
 
-        public void ValidateProvider()
-        {
-            if (Type.GetTypeFromProgID(provider) == null)
-                throw new InvalidOperationException($"未注册{provider}，请安装与当前{(Environment.Is64BitProcess ? 64 : 32)}位程序匹配的Access数据库引擎");
-        }
-
         public MeshinaMeasurement Read(string path)
         {
             var builder = new OleDbConnectionStringBuilder

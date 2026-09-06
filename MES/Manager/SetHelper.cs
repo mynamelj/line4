@@ -1,4 +1,4 @@
-﻿using DAL;
+using DAL;
 using MES.Comm;
 using MES.SetModel;
 using MES.ViewModel;
@@ -141,11 +141,7 @@ namespace MES.Manager
 
         public static bool InitializedSetting(int ProductType = 1)
         {
-            if (!MES.SpecialStations.Meshina.MeshinaRuntime.TryStopForConfiguration())
-            {
-                ListMesMessage.ShowInfoQueue("2020Meshina尚有未完成任务或恢复异常，禁止切型/重载配置");
-                return false;
-            }
+            MES.SpecialStations.Meshina.MeshinaRuntime.Stop();
             try
             {
                 Users = ReadSys<List<UserModel>>(userpath, "用户");

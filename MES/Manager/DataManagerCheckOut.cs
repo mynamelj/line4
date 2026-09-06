@@ -1,4 +1,4 @@
-﻿using MES.Comm;
+using MES.Comm;
 using MES.MesModel.Request;
 using MES.MesModel.Response;
 using MES.SetModel;
@@ -34,7 +34,7 @@ namespace MES.Manager
         public async Task ProductCheckOutAsync(string number)
         {
             int iNumber = Convert.ToInt32(number) - 1;
-            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsStation(iNumber))
+            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
             {
                 SetHelper.ListMesMessage.ShowInfoQueue("2020Meshina出站由新增MDB自动触发，请在啮合站面板处理原任务");
                 return;
