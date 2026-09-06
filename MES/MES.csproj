@@ -92,4 +92,26 @@
 	  </Page>
 	</ItemGroup>
 
+	<!-- SDK自动包含源文件；这里显式声明IDE显示信息，避免重复Compile Include。 -->
+	<ItemGroup>
+	  <Folder Include="SpecialStations\Meshina\" />
+	  <Compile Update="SpecialStations\Meshina\*.cs">
+	    <Visible>true</Visible>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="SpecialStations\Meshina\MeshinaPanel.xaml.cs">
+	    <DependentUpon>MeshinaPanel.xaml</DependentUpon>
+	  </Compile>
+	  <Page Update="SpecialStations\Meshina\MeshinaPanel.xaml">
+	    <Visible>true</Visible>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <None Update="SpecialStations\Meshina\meshina.example.json">
+	    <Visible>true</Visible>
+	  </None>
+	  <None Include="..\docs\2020Meshina\*.md">
+	    <Link>SpecialStations\Meshina\文档\%(Filename)%(Extension)</Link>
+	  </None>
+	</ItemGroup>
+
 </Project>

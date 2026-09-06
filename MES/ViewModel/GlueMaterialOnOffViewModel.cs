@@ -20,7 +20,7 @@ using System.Xml.Linq;
 namespace MES.ViewModel
 {
     [AddINotifyPropertyChangedInterface]
-    public class GlueMaterialOnOffViewModel
+    public class GlueMaterialOnOffViewModel : ProductChangeBase
     {
         public GlueMaterialOnOffViewModel()
         {
@@ -47,6 +47,29 @@ namespace MES.ViewModel
             SetHelper.scanManager.OnScanOpenBox += ScanManager_OnScanOpenBox;
             GlueOnLineList = SetHelper.GlueOnLineList;
             UpdateRestTime();
+        }
+
+        public override void GetParams(ProductTypeModel productType)
+        {
+            // 上下料始终使用当前生产配置，实际切型后同步列表。
+            void RefreshCurrentProduct()
+            {
+                LocationList.Clear();
+                for (int i = 0; i < SetHelper.StationNumber.numberGroups.Count && i < SetHelper.MesSetting.ListGroup.Count; i++)
+                {
+                    if (SetHelper.MesSetting.ListGroup[i].IsGlueStation == "1")
+                        LocationList.Add(SetHelper.StationNumber.numberGroups[i].Name);
+                }
+                LocationNo = "";
+                LocationIndex = -1;
+                GlueCode = "";
+                BoxNo = "";
+                ErrorMsg = "";
+                GlueOnLineList = SetHelper.GlueOnLineList ?? new ObservableCollection<MaterailOnOffModel>();
+            }
+            if (Application.Current?.Dispatcher != null)
+                Application.Current.Dispatcher.Invoke(RefreshCurrentProduct);
+            else RefreshCurrentProduct();
         }
 
         /// <summary>

@@ -22,7 +22,7 @@
             <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
 
-        <GroupBox Header="产品型号切换"
+        <GroupBox Header="当前产品型号"
                   BorderBrush="Black"
                   BorderThickness="1"
                   Visibility="Collapsed">
@@ -45,27 +45,15 @@
                                Content="!"
                                FontSize="10"
                                FontWeight="Bold"
-                               ToolTip="仅供修改参数使用,不影响实际产品型号" />
+                               ToolTip="胶水上下料使用当前生产机型配置" />
                     </Grid>
                 </WrapPanel>
 
-                <ComboBox Grid.Column="2" 
-                          Height="30"
-                          Margin="10"
-                          HorizontalContentAlignment="Center"
-                          VerticalContentAlignment="Center"
-                          DisplayMemberPath="ProductName"
-                          ItemsSource="{Binding productTypes}"
-                          SelectedItem="{Binding ProductType}"
-                          SelectedValuePath="ProductID">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding ProductTypeChange}"
-                                                   CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ComboBox}}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-
-                </ComboBox>
+                <TextBlock Grid.Column="2"
+                           Margin="10"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Text="{Binding ProductType.ProductName}" />
             </DockPanel>
         </GroupBox>
 

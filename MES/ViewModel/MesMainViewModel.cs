@@ -22,7 +22,7 @@ namespace MES.ViewModel
     public partial class MesMainViewModel :  ProductChangeBase
     {
         public ICommand SelectionChangedCommand { get; }
-        private DispatcherTimer timer;
+        private readonly DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
         private readonly IWindowService _windowService;
 
         public MesMainViewModel(IWindowService windowService)
@@ -37,7 +37,19 @@ namespace MES.ViewModel
             mesSettingmodel = SetHelper.MesSetting;
             apiSettingmodel = SetHelper.ApiSetting;
             OnSelectionChanged(0);
+            CanEdit = SetHelper.IsAdmin;
+            timer.Tick += (_, __) => CanEdit = SetHelper.IsAdmin;
         }
+
+        public bool CanEdit { get; private set; }
+
+        public void StartPermissionUpdates()
+        {
+            CanEdit = SetHelper.IsAdmin;
+            timer.Start();
+        }
+
+        public void StopPermissionUpdates() => timer.Stop();
 
         object lockobj = new object();
         public override void GetParams(ProductTypeModel product)

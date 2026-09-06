@@ -66,6 +66,9 @@ namespace MES.ViewModel
         public string ButtonTime { get; set; } = "";
         public string PlcHeart { get; set; } = "";
         public string ProductType { get; set; } = "";
+        public string RepairStatus { get; private set; } = "";
+        public Brush RepairStatusColor { get; private set; } = Brushes.Red;
+        public Visibility RepairStationVisibility { get; private set; } = Visibility.Collapsed;
 
         public static string PlcHeartStatic { get; set; } = "";
         private OPID[] oldOpid;
@@ -113,6 +116,10 @@ namespace MES.ViewModel
                     {
                         Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
+                            // 跟随实际返修模式刷新；退出返修时同步隐藏提示。
+                            bool repairMode = SetHelper.IsRepairMode;
+                            RepairStatus = repairMode ? "返修模式" : "";
+                            RepairStationVisibility = repairMode ? Visibility.Visible : Visibility.Collapsed;
                             MessageModel message = new MessageModel();
                             if (SetHelper.ListPLCMessage.TryDequeue(out message))
                             {

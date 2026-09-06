@@ -25,6 +25,8 @@ namespace MES.View
         {
             InitializeComponent();
             this.DataContext = viewModel;
+            Loaded += (_, __) => viewModel.StartPermissionUpdates();
+            Unloaded += (_, __) => viewModel.StopPermissionUpdates();
         }
     }
 }
