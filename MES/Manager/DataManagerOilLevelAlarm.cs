@@ -8,9 +8,9 @@ namespace MES.Manager
     {
         private static OilLevelAlarmWindow oilLevelAlarmWindow;
 
-        public void TriggerOilLevelAlarm(bool target)
+        public void TriggerOilLevelAlarm(bool target,string product)
         {
-            SetHelper.ListPLCMessage.ShowInfoQueue(target ? "油位报警：油位低" : "油位报警解除");
+            SetHelper.ListPLCMessage.ShowInfoQueue(target ? $"液位低报警：{product}油位低" : $"油位报警解除：{product}");
             Application.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (target)

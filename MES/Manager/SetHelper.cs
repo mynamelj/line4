@@ -141,6 +141,11 @@ namespace MES.Manager
 
         public static bool InitializedSetting(int ProductType = 1)
         {
+            if (!MES.SpecialStations.Meshina.MeshinaRuntime.TryStopForConfiguration())
+            {
+                ListMesMessage.ShowInfoQueue("2020Meshina尚有未完成任务或恢复异常，禁止切型/重载配置");
+                return false;
+            }
             try
             {
                 Users = ReadSys<List<UserModel>>(userpath, "用户");
@@ -231,6 +236,7 @@ namespace MES.Manager
 
                 PLCSetting = ReadSys<PLCSettingModel>(plcpath, "PLC");
 
+                MES.SpecialStations.Meshina.MeshinaRuntime.Initialize();
                 bool scanResult = scanManager.InitializeScan();
                 ListScanMessage.ShowInfoQueue("扫码枪初始化" + (scanResult ? "成功" : "失败"));
 

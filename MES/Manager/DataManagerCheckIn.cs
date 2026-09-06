@@ -14,6 +14,11 @@ namespace MES.Manager
         public async void ProductCheckIn(string stationNumber, string SN = "")
         {
             int iNumber = Convert.ToInt32(stationNumber) - 1;
+            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsStation(iNumber))
+            {
+                await MES.SpecialStations.Meshina.MeshinaRuntime.ScanAsync(iNumber, SN);
+                return;
+            }
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
             string scanSN = string.IsNullOrWhiteSpace(SN) ? ScanManager.SNCode : SN.Trim();
             FormulaSend();

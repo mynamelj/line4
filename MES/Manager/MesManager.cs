@@ -363,7 +363,7 @@ namespace MES.Manager
         /// </summary>
         /// <param name="checkINModel"></param>
         /// <returns></returns>
-        public async Task<(bool, string, string, string, string)> CheckIn(SNCheckINModel checkINModel, int number)
+        public async Task<(bool, string, string, string, string)> CheckIn(SNCheckINModel checkINModel, int number, bool retryTransport = true)
         {
             (bool, string, string, string, string) result = (false, "", "", "", "");
             DateTime dtStart = DateTime.Now;
@@ -380,7 +380,11 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CheckINApi, jsonString);
+                if (!retryTransport) client.Timeout = TimeSpan.FromSeconds(30);
+                string url = SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CheckINApi;
+                using HttpResponseMessage resultData = retryTransport
+                    ? await client.PollyPostJsonAsync(url, jsonString)
+                    : await client.PostAsync(url, stringContent);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -518,7 +522,7 @@ namespace MES.Manager
         #endregion
 
         #region 出站
-        public async Task<(bool, string, SN_InfoItem[], string)> CheckOut(SNCheckoutModel checkoutModel, int number)
+        public async Task<(bool, string, SN_InfoItem[], string)> CheckOut(SNCheckoutModel checkoutModel, int number, bool retryTransport = true)
         {
             (bool, string, SN_InfoItem[], string) result = (false, "", null, "");
             DateTime dtStart = DateTime.Now;
@@ -538,7 +542,11 @@ namespace MES.Manager
 
                 StringContent stringContent = new(jsonString, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage resultData = await client.PollyPostJsonAsync(SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CheckOutApi, jsonString);
+                if (!retryTransport) client.Timeout = TimeSpan.FromSeconds(30);
+                string url = SetHelper.ApiSetting.ListGroup[number].BaseUrl + SetHelper.ApiSetting.ListGroup[number].CheckOutApi;
+                using HttpResponseMessage resultData = retryTransport
+                    ? await client.PollyPostJsonAsync(url, jsonString)
+                    : await client.PostAsync(url, stringContent);
 
                 @string = await resultData.Content.ReadAsStringAsync().ConfigureAwait(false);
 

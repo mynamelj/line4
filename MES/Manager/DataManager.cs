@@ -377,8 +377,12 @@ namespace MES.Manager
                     TriggerRepairMode((bool)TagValue);
                     break;
 
-                case "油位报警":
-                    TriggerOilLevelAlarm((bool)TagValue);
+                case "小鹏液位低报警":
+                    TriggerOilLevelAlarm((bool)TagValue,"小鹏型号");
+                    break;
+
+                case "奇瑞液位低报警":
+                    TriggerOilLevelAlarm((bool)TagValue,"奇瑞型号");
                     break;
 
                 default:

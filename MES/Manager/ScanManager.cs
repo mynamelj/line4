@@ -106,6 +106,12 @@ namespace MES.Manager
         public async void ScanBar_OnReadBar(List<string> listBar, int hardIndex)
         {
             string str = string.Join("", listBar);
+            // 线外啮合站扫码直接进站，不依赖弹窗、SN前缀映射或PLC。
+            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsStation(hardIndex))
+            {
+                await MES.SpecialStations.Meshina.MeshinaRuntime.ScanAsync(hardIndex, str);
+                return;
+            }
             string stationName = "";
             OnScanOpenBox?.Invoke(str);//将各个页面的码更新
 

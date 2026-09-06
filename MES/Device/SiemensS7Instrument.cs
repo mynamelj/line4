@@ -57,6 +57,11 @@ namespace DAL
             }
 
             FormulaData.Clear();
+            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
+            {
+                SetHelper.ListPLCMessage.ShowInfoQueue("2020Meshina为无PLC工位，跳过PLC连接与轮询");
+                return true;
+            }
             //DataInitVal.Clear();
             bool PLCRun = Init();
             PLCRun = InitPara();

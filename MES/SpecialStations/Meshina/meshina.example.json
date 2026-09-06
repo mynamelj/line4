@@ -1,0 +1,8 @@
+{
+  "DataDirectory": "D:\\盘齿轮双啮检测系统\\结果\\统计",
+  "Provider": "Microsoft.ACE.OLEDB.12.0",
+  "PollIntervalMilliseconds": 1000,
+  "StablePollCount": 3,
+  "RequiredFields": ["Fi", "fii", "Fr"],
+  "ItemNames": {}
+}

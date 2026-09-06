@@ -134,10 +134,14 @@ namespace MES
         {
             if (_ownsSingleInstanceMutex)
             {
+                MES.SpecialStations.Meshina.MeshinaRuntime.Stop();
                 try 
                 {
-                    SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_2", false);
-                    SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_1", false);
+                    if (!MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
+                    {
+                        SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_2", false);
+                        SetHelper.siemens.WriteItem(SetModel.PLCGroupName.WriteGroup, "操作权限_1", false);
+                    }
                 }
                 catch 
                 {
