@@ -54,6 +54,12 @@ namespace MES.Manager
                 }
                 scanBar.Clear();
 
+                if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
+                {
+                    SetHelper.ListScanMessage.ShowInfoQueue("OP2020M使用USB键盘扫码，请在消息页扫码输入框中扫描；跳过串口初始化");
+                    return true;
+                }
+
                 foreach (var item in SetHelper.ScanSetting)
                 {
                     HardWare_ScanBar scan = null;

@@ -19,7 +19,8 @@ namespace MES.SpecialStations.Meshina
         public string Status => status;
         public MeshinaJob Current { get; private set; }
         public MeshinaJob LastFinished { get; private set; }
-        public bool CanRetry => Current != null &&
+        public bool CanAbort => Current != null && !Current.AbortRequested;
+        public bool CanRetry => Current != null && !Current.AbortRequested &&
             (Current.Stage == MeshinaStage.FeedingCheckRejected || Current.Stage == MeshinaStage.CheckOutRejected);
 
         public MeshinaStationService(MeshinaSettings settings, MdbPoller poller, IMdbReader reader,
@@ -68,12 +69,31 @@ namespace MES.SpecialStations.Meshina
 
         public void Stop() { stopped = true; }
 
+        public async Task AbortAsync()
+        {
+            var job = Current;
+            if (job == null) return;
+            // 先停止后续步骤，再等当前读文件/MES调用返回，避免旧回调影响下一件。
+            job.AbortRequested = true;
+            await gate.WaitAsync();
+            try
+            {
+                if (Current != job) return;
+                job.Stage = MeshinaStage.Cancelled;
+                LastFinished = job;
+                Current = null;
+                poller.Reset();
+                Report($"SN:{job.SN} 本次流程已终止，可以扫描新齿轮。请确保旧件不再保存检测文件。");
+            }
+            finally { gate.Release(); }
+        }
+
         public async Task TickAsync()
         {
             if (!await gate.WaitAsync(0)) return;
             try
             {
-                if (stopped || Current == null) return;
+                if (stopped || Current == null || Current.AbortRequested) return;
                 if (Current.Stage == MeshinaStage.WaitingForMdb)
                 {
                     var files = poller.Candidates(Current);
@@ -81,6 +101,7 @@ namespace MES.SpecialStations.Meshina
                     var file = files[0];
                     if (!poller.IsStable(file, settings.StablePollCount)) return;
                     var measurement = reader.Read(file.Path);
+                    if (Current.AbortRequested) return;
                     var after = poller.Candidates(Current);
                     if (after.Count == 0 || after[0].Path != file.Path || after[0].Stamp != file.Stamp)
                     { poller.Reset(); return; }
@@ -101,7 +122,7 @@ namespace MES.SpecialStations.Meshina
                     Current.Stage = MeshinaStage.ReadyForCheckOut;
                     Report($"SN:{Current.SN} 已绑定MDB:{Path.GetFileName(file.Path)}，准备自动出站");
                 }
-                if (Current?.Stage == MeshinaStage.ReadyForCheckOut && !stopped) await SendCheckOutAsync();
+                if (Current?.Stage == MeshinaStage.ReadyForCheckOut && !stopped && !Current.AbortRequested) await SendCheckOutAsync();
             }
             catch (Exception ex) { Report($"SN:{Current?.SN} 暂停处理：{ex.Message}"); }
             finally { gate.Release(); }
@@ -127,6 +148,7 @@ namespace MES.SpecialStations.Meshina
             MeshinaMesReply reply;
             try { reply = await gateway.FeedingCheckAsync(Current.FeedingCheckRequest); }
             catch (Exception ex) { reply = new MeshinaMesReply { Outcome = MeshinaMesOutcome.Unknown, Message = ex.Message }; }
+            if (Current.AbortRequested) return;
             Current.Stage = reply.Outcome == MeshinaMesOutcome.Accepted ? MeshinaStage.WaitingForMdb
                 : MeshinaStage.FeedingCheckRejected;
             Current.Message = reply.Message;
@@ -141,6 +163,11 @@ namespace MES.SpecialStations.Meshina
             MeshinaMesReply reply;
             try { reply = await gateway.CheckOutAsync(Current.CheckOutRequest); }
             catch (Exception ex) { reply = new MeshinaMesReply { Outcome = MeshinaMesOutcome.Unknown, Message = ex.Message }; }
+            if (Current.AbortRequested)
+            {
+                log($"SN:{Current.SN} 终止期间MES出站返回:{reply.Outcome}，{reply.Message}；已发送请求无法撤回。");
+                return;
+            }
             Current.Message = reply.Message;
             if (reply.Outcome == MeshinaMesOutcome.Accepted) { Finish(); return; }
             Current.Stage = MeshinaStage.CheckOutRejected;

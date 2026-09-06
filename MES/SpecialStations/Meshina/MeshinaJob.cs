@@ -3,7 +3,7 @@ using MES.MesModel.Request;
 namespace MES.SpecialStations.Meshina
 {
     public enum MeshinaStage { FeedingCheckSending, FeedingCheckRejected, WaitingForMdb,
-        ReadyForCheckOut, CheckOutSending, CheckOutRejected, Completed }
+        ReadyForCheckOut, CheckOutSending, CheckOutRejected, Completed, Cancelled }
 
     public sealed class MeshinaJob
     {
@@ -16,5 +16,6 @@ namespace MES.SpecialStations.Meshina
         public FeedingCheckModel FeedingCheckRequest { get; set; }
         public SNCheckoutModel CheckOutRequest { get; set; }
         public string Message { get; set; }
+        public volatile bool AbortRequested;
     }
 }

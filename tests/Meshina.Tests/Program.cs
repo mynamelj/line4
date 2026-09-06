@@ -17,6 +17,7 @@ internal static class Program
             await Recovery();
             await FileGuards();
             await ConcurrentScans();
+            await AbortFlow();
             Check(MeshinaSettings.IsStationName("OP2020M") && MeshinaSettings.IsStationName("op2020meshina"), "station aliases");
             Check(!MeshinaSettings.IsStationName("OP2020B") && !MeshinaSettings.IsStationName("OP2030Meshina"), "other stations unchanged");
             if (args.Length > 0)
@@ -165,6 +166,47 @@ internal static class Program
         await f.Service.ScanAsync("AFTER-STOP", Request);
         Check(f.Gateway.InCount == 1, "stopped service refuses scans");
     }
+    private static async Task AbortFlow()
+    {
+        var f = new Fixture();
+        await f.Service.ScanAsync("OLD", Request);
+        f.File("old", DateTime.UtcNow.AddSeconds(1));
+        await f.Service.AbortAsync();
+        Check(f.Service.Current == null && f.Service.LastFinished.Stage == MeshinaStage.Cancelled, "abort releases waiting SN");
+        await f.Service.ScanAsync("NEW", Request);
+        await f.Service.TickAsync(); await f.Service.TickAsync();
+        Check(f.Service.Current.SN == "NEW" && f.Gateway.OutCount == 0, "new scan excludes old file already present");
+        f.File("new", DateTime.UtcNow.AddSeconds(2));
+        await f.Service.TickAsync(); await f.Service.TickAsync();
+        Check(f.Gateway.LastOut.SNInfo[0].SN == "NEW", "new gear checks out after abort");
+
+        var g = new Fixture();
+        g.Gateway.InWait = new TaskCompletionSource<bool>();
+        var scan = g.Service.ScanAsync("PENDING", Request);
+        var abort = g.Service.AbortAsync();
+        Check(!abort.IsCompleted && !g.Service.CanRetry && !g.Service.CanAbort, "abort waits for in-flight FeedingCheck");
+        await g.Service.ScanAsync("TOO-EARLY", Request);
+        Check(g.Gateway.InCount == 1, "new scan waits for old request to finish");
+        g.Gateway.InWait.SetResult(true);
+        await scan; await abort;
+        Check(g.Service.Current == null && g.Gateway.OutCount == 0, "late FeedingCheck does not resume aborted job");
+        await g.Service.ScanAsync("AFTER", Request);
+        Check(g.Service.Current.SN == "AFTER", "scan works after in-flight abort");
+
+        var h = new Fixture();
+        await h.Service.ScanAsync("OUT-PENDING", Request);
+        h.File("out", DateTime.UtcNow.AddSeconds(1));
+        await h.Service.TickAsync();
+        h.Gateway.OutWait = new TaskCompletionSource<bool>();
+        var checkout = h.Service.TickAsync();
+        var abortOut = h.Service.AbortAsync();
+        Check(!abortOut.IsCompleted, "abort waits for in-flight checkout");
+        h.Gateway.OutWait.SetResult(true);
+        await checkout; await abortOut;
+        Check(h.Service.Current == null && h.Service.LastFinished.Stage == MeshinaStage.Cancelled, "late checkout response cannot restart old job");
+        await h.Service.ScanAsync("NEXT", Request);
+        Check(h.Service.Current.SN == "NEXT" && h.Gateway.OutCount == 1, "next SN stays separate from old checkout");
+    }
     private sealed class Fixture
     {
         public readonly string DirectoryPath = Path.Combine(Root, Guid.NewGuid().ToString("N"));
@@ -201,16 +243,18 @@ internal static class Program
         public MeshinaMesOutcome InOutcome = MeshinaMesOutcome.Accepted, OutOutcome = MeshinaMesOutcome.Accepted;
         public SNCheckoutModel LastOut;
         public TaskCompletionSource<bool> InWait;
+        public TaskCompletionSource<bool> OutWait;
         public async Task<MeshinaMesReply> FeedingCheckAsync(FeedingCheckModel request)
         {
             InCount++;
             if (InWait != null) await InWait.Task;
             return new MeshinaMesReply { Outcome = InOutcome };
         }
-        public Task<MeshinaMesReply> CheckOutAsync(SNCheckoutModel request)
+        public async Task<MeshinaMesReply> CheckOutAsync(SNCheckoutModel request)
         {
             OutCount++; LastOut = request;
-            return Task.FromResult(new MeshinaMesReply { Outcome = OutOutcome });
+            if (OutWait != null) await OutWait.Task;
+            return new MeshinaMesReply { Outcome = OutOutcome };
         }
     }
 }
