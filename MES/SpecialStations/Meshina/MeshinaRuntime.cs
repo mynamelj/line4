@@ -10,21 +10,26 @@ namespace MES.SpecialStations.Meshina
     {
         private static CancellationTokenSource cancellation;
         public static MeshinaStationService Service { get; private set; }
+        public static TestMdbGenerator TestGenerator { get; private set; }
         public static string InitializationError { get; private set; }
-        // OP2020M独立PC只有工位0；共用程序仅需区分普通PLC站。
-        public static bool IsOfflineOnly => MeshinaSettings.IsStationName(
-            SetHelper.StationNumber.numberGroups.FirstOrDefault()?.Name);
+        // 三个线外啮合站均独占PC并固定使用工位0。
+        public static string StationName =>
+            SetHelper.StationNumber.numberGroups.FirstOrDefault()?.Name ?? "Meshina";
+        public static bool IsOfflineOnly => MeshinaSettings.IsStationName(StationName);
+        public static bool UsesUsbScanner => MeshinaSettings.IsUsbScannerStationName(StationName);
+        public static bool UsesSerialScanner => MeshinaSettings.IsSerialScannerStationName(StationName);
 
         public static void Initialize()
         {
             Stop();
-            Service = null; InitializationError = null;
+            Service = null; TestGenerator = null; InitializationError = null;
             if (!IsOfflineOnly) return;
             try
             {
                 var settings = MeshinaSettings.Load(Path.Combine(SetHelper.mainpath, "meshina.json"));
                 Service = new MeshinaStationService(settings, new MdbPoller(settings.DataDirectory),
                     new MdbReader(settings.Provider, settings.RequiredFields), new MeshinaMesGateway(), Log);
+                TestGenerator = new TestMdbGenerator(settings.DataDirectory, settings.Provider);
                 cancellation = new CancellationTokenSource();
                 var token = cancellation.Token;
                 var service = Service;
@@ -61,9 +66,14 @@ namespace MES.SpecialStations.Meshina
             cancellation = null;
         }
 
+        public static void WriteLog(string message)
+        {
+            Log(message);
+        }
+
         private static void Log(string message)
         {
-            SetHelper.ListMesMessage.ShowInfoQueue("[OP2020M] " + message);
+            SetHelper.ListMesMessage.ShowInfoQueue("[" + StationName + "] " + message);
         }
     }
 }

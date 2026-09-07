@@ -17,8 +17,7 @@ namespace MES.SpecialStations.Meshina
             Loaded += (_, __) =>
             {
                 Refresh(); timer.Start();
-                if (MeshinaRuntime.IsOfflineOnly)
-                    Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => UsbScanInput.Focus()));
+                FocusScannerInput();
             };
             Unloaded += (_, __) => timer.Stop();
         }
@@ -35,6 +34,8 @@ namespace MES.SpecialStations.Meshina
         private void Refresh()
         {
             Visibility = MeshinaRuntime.IsOfflineOnly ? Visibility.Visible : Visibility.Collapsed;
+            StationTitle.Text = MeshinaRuntime.StationName + " · 线外啮合";
+            UsbScanPanel.Visibility = MeshinaRuntime.UsesUsbScanner ? Visibility.Visible : Visibility.Collapsed;
             var service = MeshinaRuntime.Service;
             StatusText.Text = MeshinaRuntime.InitializationError ?? service?.Status ?? "啮合流程未启动";
             if (service?.Current?.AbortRequested == true) StatusText.Text = "正在终止本次流程，等待当前操作结束…";
@@ -43,6 +44,7 @@ namespace MES.SpecialStations.Meshina
                 + (string.IsNullOrEmpty(job.MdbPath) ? "" : $"\n检测文件：{System.IO.Path.GetFileName(job.MdbPath)}");
             RetryButton.IsEnabled = !busy && service?.CanRetry == true;
             AbortButton.IsEnabled = service?.CanAbort == true;
+            TestMdbButton.IsEnabled = !busy && service?.CanGenerateTestMdb == true;
             int index = 0;
             if (job == null || index < 0 || SetHelper.resultModel == null || index >= SetHelper.resultModel.Length) return;
             var result = SetHelper.resultModel[index];
@@ -67,14 +69,38 @@ namespace MES.SpecialStations.Meshina
             await abort;
             UsbScanInput.Clear();
             Refresh();
-            UsbScanInput.Focus();
+            FocusScannerInput();
+        }
+        private void TestMdbClick(object sender, RoutedEventArgs e)
+        {
+            if (busy || MeshinaRuntime.Service?.CanGenerateTestMdb != true || MeshinaRuntime.TestGenerator == null) return;
+            if (MessageBox.Show("将生成一份测试MDB，并触发当前扫码SN自动出站。是否继续？", MeshinaRuntime.StationName + "测试",
+                MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+            try
+            {
+                string path = MeshinaRuntime.TestGenerator.Create();
+                StatusText.Text = "测试MDB已生成：" + System.IO.Path.GetFileName(path);
+                MeshinaRuntime.WriteLog("测试MDB已生成：" + path);
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = "生成测试MDB失败：" + ex.Message;
+                MeshinaRuntime.WriteLog("生成测试MDB失败：" + ex.Message);
+            }
+            finally { FocusScannerInput(); }
         }
         private async Task ExecuteAsync(Func<MeshinaStationService, Task> action)
         {
             if (busy || MeshinaRuntime.Service == null) return;
             busy = true; Refresh();
             try { await action(MeshinaRuntime.Service); }
-            finally { busy = false; Refresh(); UsbScanInput.Focus(); }
+            finally { busy = false; Refresh(); FocusScannerInput(); }
+        }
+
+        private void FocusScannerInput()
+        {
+            if (!MeshinaRuntime.UsesUsbScanner) return;
+            Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => UsbScanInput.Focus()));
         }
     }
 }

@@ -20,6 +20,8 @@ namespace MES.SpecialStations.Meshina
         public MeshinaJob Current { get; private set; }
         public MeshinaJob LastFinished { get; private set; }
         public bool CanAbort => Current != null && !Current.AbortRequested;
+        public bool CanGenerateTestMdb => Current != null && !Current.AbortRequested
+            && Current.Stage == MeshinaStage.WaitingForMdb;
         public bool CanRetry => Current != null && !Current.AbortRequested &&
             (Current.Stage == MeshinaStage.FeedingCheckRejected || Current.Stage == MeshinaStage.CheckOutRejected);
 

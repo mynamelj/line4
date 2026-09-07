@@ -36,7 +36,8 @@ namespace MES.Manager
             int iNumber = Convert.ToInt32(number) - 1;
             if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
             {
-                SetHelper.ListMesMessage.ShowInfoQueue("2020Meshina出站由新增MDB自动触发，请在啮合站面板处理原任务");
+                SetHelper.ListMesMessage.ShowInfoQueue(
+                    MES.SpecialStations.Meshina.MeshinaRuntime.StationName + "出站由新增MDB自动触发，请在啮合站面板处理原任务");
                 return;
             }
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;

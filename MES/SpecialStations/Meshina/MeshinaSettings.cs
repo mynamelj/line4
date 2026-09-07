@@ -15,8 +15,19 @@ namespace MES.SpecialStations.Meshina
 
         public static bool IsStationName(string name)
         {
-            name = (name ?? "").Trim();
-            return name.ToUpper().Contains("OP2020M");
+            return IsUsbScannerStationName(name) || IsSerialScannerStationName(name);
+        }
+
+        public static bool IsUsbScannerStationName(string name)
+        {
+            string stationName = (name ?? "").Trim().ToUpperInvariant();
+            return stationName.Contains("OP2020M") || stationName.Contains("2020MESHINA");
+        }
+
+        public static bool IsSerialScannerStationName(string name)
+        {
+            string stationName = (name ?? "").Trim().ToUpperInvariant();
+            return stationName.Contains("2030MESHINA1") || stationName.Contains("2030MESHINA2");
         }
 
         public static MeshinaSettings Load(string path)

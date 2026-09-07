@@ -18,14 +18,21 @@ internal static class Program
             await FileGuards();
             await ConcurrentScans();
             await AbortFlow();
-            Check(MeshinaSettings.IsStationName("OP2020M") && MeshinaSettings.IsStationName("op2020meshina"), "station aliases");
-            Check(!MeshinaSettings.IsStationName("OP2020B") && !MeshinaSettings.IsStationName("OP2030Meshina"), "other stations unchanged");
+            Check(MeshinaSettings.IsStationName("OP2020M") && MeshinaSettings.IsStationName("op2020meshina"), "2020 station aliases");
+            Check(MeshinaSettings.IsStationName("2030Meshina1") && MeshinaSettings.IsStationName("OP2030Meshina2"), "2030 meshing stations");
+            Check(MeshinaSettings.IsUsbScannerStationName("OP2020M")
+                && !MeshinaSettings.IsUsbScannerStationName("2030Meshina1"), "USB scanner station selection");
+            Check(MeshinaSettings.IsSerialScannerStationName("2030Meshina1")
+                && MeshinaSettings.IsSerialScannerStationName("2030Meshina2"), "serial scanner station selection");
+            Check(!MeshinaSettings.IsStationName("OP2020B") && !MeshinaSettings.IsStationName("OP2030Meshina")
+                && !MeshinaSettings.IsStationName("2030Meshina3"), "other stations unchanged");
             if (args.Length > 0)
             {
                 var value = new MdbReader(args.Length > 1 ? args[1] : "Microsoft.ACE.OLEDB.12.0").Read(Path.GetFullPath(args[0]));
                 Check(value.Values.Count + value.EmptyFields.Count == 20, "real MDB accounts for 20 numeric fields");
                 Console.WriteLine("REAL MDB: " + string.Join(", ", value.Values.Select(v => v.Key + "=" + v.Value.ToString(CultureInfo.InvariantCulture))) + "; Result=" + value.Result);
                 VerifyMdbGuards(args[0], args.Length > 1 ? args[1] : "Microsoft.ACE.OLEDB.12.0");
+                await VerifyGeneratedMdb(args.Length > 1 ? args[1] : "Microsoft.ACE.OLEDB.12.0");
             }
             Console.WriteLine($"PASS: {assertions} assertions");
             return 0;
@@ -33,6 +40,26 @@ internal static class Program
         catch (Exception ex) { Console.Error.WriteLine(ex); return 1; }
     }
     private static MeshinaJob Request() => new MeshinaJob { FeedingCheckRequest = new FeedingCheckModel(), CheckOutRequest = new SNCheckoutModel() };
+    private static async Task VerifyGeneratedMdb(string provider)
+    {
+        string directory = Path.Combine(Root, "generated");
+        Directory.CreateDirectory(directory);
+        var gateway = new Gateway();
+        var settings = new MeshinaSettings { DataDirectory = directory, Provider = provider, StablePollCount = 2 };
+        var service = new MeshinaStationService(settings, new MdbPoller(directory), new MdbReader(provider), gateway, _ => { });
+        await service.ScanAsync("GENERATED-SN", Request);
+        string path = new TestMdbGenerator(directory, provider).Create();
+        Check(System.IO.Path.GetFileName(path).StartsWith("194-001_Unknown_955555555555555555_")
+            && System.IO.Path.GetExtension(path).Equals(".mdb", StringComparison.OrdinalIgnoreCase), "test MDB filename format");
+        var data = new MdbReader(provider).Read(path);
+        Check(data.Values.Count == 20 && data.EmptyFields.Count == 0, "generated MDB contains all 20 numeric values");
+        Check(data.Values["Fi"] == 1.11m && data.Values["Cylindricity"] == 3.44m && data.Result == "PASS",
+            "generated MDB contains expected values and PASS result");
+        await service.TickAsync();
+        await service.TickAsync();
+        Check(gateway.OutCount == 1 && gateway.LastOut.SNInfo[0].SN == "GENERATED-SN",
+            "generated MDB triggers checkout for current scanned SN");
+    }
     private static void VerifyMdbGuards(string sample, string provider)
     {
         string copy = Path.Combine(Root, "reader-test.mdb");

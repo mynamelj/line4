@@ -54,9 +54,10 @@ namespace MES.Manager
                 }
                 scanBar.Clear();
 
-                if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
+                if (MES.SpecialStations.Meshina.MeshinaRuntime.UsesUsbScanner)
                 {
-                    SetHelper.ListScanMessage.ShowInfoQueue("OP2020M使用USB键盘扫码，请在消息页扫码输入框中扫描；跳过串口初始化");
+                    SetHelper.ListScanMessage.ShowInfoQueue(MES.SpecialStations.Meshina.MeshinaRuntime.StationName
+                        + "使用USB键盘扫码，请在消息页扫码输入框中扫描；跳过串口初始化");
                     return true;
                 }
 
@@ -112,9 +113,11 @@ namespace MES.Manager
         public async void ScanBar_OnReadBar(List<string> listBar, int hardIndex)
         {
             string str = string.Join("", listBar);
-            // 线外啮合站扫码直接进站，不依赖弹窗、SN前缀映射或PLC。
+            // 2030Meshina1/2沿用串口读取；读到SN后进入线外啮合专用流程。
             if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
             {
+                SetHelper.ListScanMessage.ShowInfoQueue(
+                    MES.SpecialStations.Meshina.MeshinaRuntime.StationName + " 扫描到条码为" + str);
                 await MES.SpecialStations.Meshina.MeshinaRuntime.ScanAsync(str);
                 return;
             }
