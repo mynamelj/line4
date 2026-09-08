@@ -14,13 +14,45 @@ namespace MES.Manager
     {
         private static RepairModeIndicatorWindow repairModeIndicatorWindow;
 
-        public void TriggerRepairMode(bool target)
+        private readonly Dictionary<string, bool> repairModeStatus = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase)
         {
-            if(target)
+            { "2030BearingPress1", false },
+            { "2030BearingPress2", false },
+            { "2020BearingPress", false }
+        };
+
+        private string GetStationKeyByNumber(string number)
+        {
+            switch (number?.Trim())
             {
-                SetHelper.IsRepairMode = true;
-                SetHelper.ListPLCMessage.ShowInfoQueue($"返修模式开");
-                Application.Current.Dispatcher.BeginInvoke(() =>
+                case "1":
+                    return "2030BearingPress1";
+                case "2":
+                    return "2030BearingPress2";
+                case "3":
+                    return "2020BearingPress";
+                default:
+                    return null;
+            }
+        }
+
+        public void TriggerRepairMode(bool target, string Number)
+        {
+            string stationKey = GetStationKeyByNumber(Number);
+            if (!string.IsNullOrEmpty(stationKey))
+            {
+                repairModeStatus[stationKey] = target;
+            }
+
+            // 只要有任意一个工位处于返修模式，全局即为返修模式；全为 false 时才退出
+            bool anyRepair = repairModeStatus.Values.Any(v => v);
+            SetHelper.IsRepairMode = anyRepair;
+
+            SetHelper.ListPLCMessage.ShowInfoQueue($"工位[{(stationKey ?? Number)}] 返修模式: {(target ? "开" : "关")}，整线返修状态: {(anyRepair ? "开" : "关")}");
+
+            Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (anyRepair)
                 {
                     if (repairModeIndicatorWindow == null)
                     {
@@ -28,19 +60,13 @@ namespace MES.Manager
                         repairModeIndicatorWindow.Closed += (s, e) => repairModeIndicatorWindow = null;
                         repairModeIndicatorWindow.Show();
                     }
-                });
-            }
-            else
-            {
-                SetHelper.IsRepairMode = false;
-                SetHelper.ListPLCMessage.ShowInfoQueue($"返修模式关");
-                Application.Current.Dispatcher.BeginInvoke(() =>
+                }
+                else
                 {
                     repairModeIndicatorWindow?.Close();
                     repairModeIndicatorWindow = null;
-                });
-            }
+                }
+            });
         }
-
     }
 }

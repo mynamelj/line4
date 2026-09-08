@@ -374,7 +374,7 @@ namespace MES.Manager
 
 
                 case "返修模式切换":
-                    TriggerRepairMode((bool)TagValue);
+                    TriggerRepairMode((bool)TagValue, Number);
                     break;
 
                 case "小鹏液位低报警":

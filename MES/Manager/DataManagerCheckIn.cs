@@ -46,14 +46,22 @@ namespace MES.Manager
 
                 int SeqID = 0;
 
-                if (stationName.ToUpper().Contains("OP2020B")&& SetHelper.IsRepairMode == true)
+                if (SetHelper.IsRepairMode)
                 {
-                    snCode = ScanManager.SNCode;
-                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品SN_" + stationNumber, snCode);
-                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, 1);
-                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + stationNumber, 5);
-                    SetHelper.resultModel[iNumber].Result1 = "OK-返修件";
-                    return;
+                    bool isStationInRepair = repairModeStatus.Any(kv =>
+                        kv.Value && (stationName.Equals(kv.Key, StringComparison.OrdinalIgnoreCase)
+                                  || stationName.IndexOf(kv.Key, StringComparison.OrdinalIgnoreCase) >= 0));
+
+                    if (isStationInRepair)
+                    {
+                        snCode = string.IsNullOrWhiteSpace(scanSN) ? ScanManager.SNCode : scanSN;
+                        SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品SN_" + stationNumber, snCode);
+                        SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, 1);
+                        SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + stationNumber, 5);
+                        SetHelper.resultModel[iNumber].Result1 = "OK-返修件";
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 返修模式进站完成，SN码: {snCode}");
+                        return;
+                    }
                 }
 
                 if (stationName.ToUpper().Contains("NG_IO"))
