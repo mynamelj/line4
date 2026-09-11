@@ -56,7 +56,6 @@ namespace MES.Manager
 
                 object obj = new object();
                 int SeqID = 0;
-                int CheckInResult = 0;
                 string carryID = "";
                 if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "PLC出站流程ID_" + number, ref obj))
                 {
@@ -88,16 +87,13 @@ namespace MES.Manager
                     SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读出站载具码失败");
                     //return;
                 }
-                if (SetHelper.siemens.ReadItem(PLCGroupName.WriteGroup, "进站结果_" + number, ref obj))
+
+                if (!SetHelper.CheckInResults.TryGetValue(iNumber, out int checkInResult))
                 {
-                    CheckInResult = obj.Obj2Int();
-                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到进站结果为{CheckInResult}");
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 没有本地进站结果，请重新进站，停止本次出站上传");
+                    return;
                 }
-                else
-                {
-                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读进站结果失败");
-                    //return;
-                }
+                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 本地保存的进站结果为{checkInResult}");
 
                 int outChannel = 0;
                 if (stationName.ToUpper().Contains("OP1040"))
@@ -129,8 +125,8 @@ namespace MES.Manager
                 //string jsonGlue = File.ReadAllText(SetHelper.gluepath);
                 ObservableCollection<MaterailOnOffModel> glueMaterails = SetHelper.ReadSys<ObservableCollection<MaterailOnOffModel>>(SetHelper.gluepath);
 
-                //只有返修状态（5或6）且工站为 OP5005 或 OP2010 时才不上传，其余全部上传。
-                if (!(CheckInResult == 5  &&  stationName.ToUpper().Contains("OP5005")))
+
+                if (!(checkInResult == 5  &&  stationName.ToUpper().Contains("OP5005")))
                 {
                     #region 读取产品需要上传MES的数据
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
@@ -138,10 +134,14 @@ namespace MES.Manager
                     var dic = SetHelper.siemens.DicDataItems[PLCGroupName.CheckOutGroup.ToString()];//<TagName,DataItem>                                                                    //读取对应工位的参数
                     dic = dic.Where(it => it.Key.Contains("_" + number)).ToDictionary(it => it.Key, it => it.Value);
 
-                    if (stationName.ToUpper().Contains("OP3040") && CheckInResult == 6)
+                    // 使用进站时保存的结果判断返修合装，PLC清零不影响此值。
+                    if (checkInResult == 6)
                     {
-                            dic = dic.Where(it => repairDataList.Any(x => string.Equals(x, it.Key, StringComparison.OrdinalIgnoreCase)))
-                             .ToDictionary(it => it.Key, it => it.Value);
+                        // 临时固定返修合装上传项，后续再恢复配置。
+                        var repairUploadTags = new[] { "HeatTemp_1", "CoverPressDisplace_1", "CoverPressForce_1" };
+                        dic = dic.Where(it => repairUploadTags.Contains(it.Key, StringComparer.OrdinalIgnoreCase))
+                            .ToDictionary(it => it.Key, it => it.Value);
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 本地进站结果为6，返修合装上传项：{string.Join(", ", dic.Keys)}");
                     }
                     if ( dic.Count != 0)
                     {
@@ -429,9 +429,7 @@ namespace MES.Manager
                 }
 
 
-
-
-                // 向PLC写出站结果
+                // 新增：向PLC写出站结果
                 bool result = false;
 
                 // 将出站结果（1/2/3/4）写入PLC对应工位的"出站结果"寄存器

@@ -41,6 +41,8 @@ namespace MES.Manager
         public static string realapipath = "";
         public static string logmainpath = Environment.CurrentDirectory + "\\log\\";
         public static bool IsRepairMode = false;
+        // 按工位索引保存进站结果，避免PLC清零或不同工位互相覆盖。
+        public static readonly ConcurrentDictionary<int, int> CheckInResults = new ConcurrentDictionary<int, int>();
         public static bool isSpecialStation = false;
 
         /// <summary>
