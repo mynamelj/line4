@@ -41,8 +41,7 @@ namespace MES.Manager
         public static string realapipath = "";
         public static string logmainpath = Environment.CurrentDirectory + "\\log\\";
         public static bool IsRepairMode = false;
-        // 按工位索引保存进站结果，避免PLC清零或不同工位互相覆盖。
-        public static readonly ConcurrentDictionary<int, int> CheckInResults = new ConcurrentDictionary<int, int>();
+        public static volatile bool IsOP3040RepairMode = false;
         public static bool isSpecialStation = false;
 
         /// <summary>
@@ -143,7 +142,6 @@ namespace MES.Manager
 
         public static bool InitializedSetting(int ProductType = 1)
         {
-            MES.SpecialStations.Meshina.MeshinaRuntime.Stop();
             try
             {
                 Users = ReadSys<List<UserModel>>(userpath, "用户");
@@ -234,7 +232,6 @@ namespace MES.Manager
 
                 PLCSetting = ReadSys<PLCSettingModel>(plcpath, "PLC");
 
-                MES.SpecialStations.Meshina.MeshinaRuntime.Initialize();
                 bool scanResult = scanManager.InitializeScan();
                 ListScanMessage.ShowInfoQueue("扫码枪初始化" + (scanResult ? "成功" : "失败"));
 

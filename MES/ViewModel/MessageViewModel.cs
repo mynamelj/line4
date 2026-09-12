@@ -1,4 +1,4 @@
-﻿using MES.Comm;
+using MES.Comm;
 using MES.Manager;
 using MES.MesModel.Request;
 using MES.SetModel;
@@ -117,8 +117,8 @@ namespace MES.ViewModel
                         Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
                             // 跟随实际返修模式刷新；退出返修时同步隐藏提示。
-                            bool repairMode = SetHelper.IsRepairMode;
-                            RepairStatus = repairMode ? "返修模式" : "";
+                            bool repairMode = SetHelper.IsRepairMode || SetHelper.IsOP3040RepairMode;
+                            RepairStatus = SetHelper.IsOP3040RepairMode ? "OP3040返修模式" : (repairMode ? "返修模式" : "");
                             RepairStationVisibility = repairMode ? Visibility.Visible : Visibility.Collapsed;
                             MessageModel message = new MessageModel();
                             if (SetHelper.ListPLCMessage.TryDequeue(out message))

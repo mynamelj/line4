@@ -54,12 +54,6 @@ namespace MES.Manager
                 }
                 scanBar.Clear();
 
-                if (MES.SpecialStations.Meshina.MeshinaRuntime.UsesUsbScanner)
-                {
-                    SetHelper.ListScanMessage.ShowInfoQueue(MES.SpecialStations.Meshina.MeshinaRuntime.StationName
-                        + "使用USB键盘扫码，请在消息页扫码输入框中扫描；跳过串口初始化");
-                    return true;
-                }
 
                 foreach (var item in SetHelper.ScanSetting)
                 {
@@ -113,14 +107,6 @@ namespace MES.Manager
         public async void ScanBar_OnReadBar(List<string> listBar, int hardIndex)
         {
             string str = string.Join("", listBar);
-            // 2030Meshina1/2沿用串口读取；读到SN后进入线外啮合专用流程。
-            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
-            {
-                SetHelper.ListScanMessage.ShowInfoQueue(
-                    MES.SpecialStations.Meshina.MeshinaRuntime.StationName + " 扫描到条码为" + str);
-                await MES.SpecialStations.Meshina.MeshinaRuntime.ScanAsync(str);
-                return;
-            }
             string stationName = "";
             OnScanOpenBox?.Invoke(str);//将各个页面的码更新
 

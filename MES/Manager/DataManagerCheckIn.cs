@@ -14,11 +14,6 @@ namespace MES.Manager
         public async void ProductCheckIn(string stationNumber, string SN = "")
         {
             int iNumber = Convert.ToInt32(stationNumber) - 1;
-            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
-            {
-                await MES.SpecialStations.Meshina.MeshinaRuntime.ScanAsync(SN);
-                return;
-            }
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
             string scanSN = string.IsNullOrWhiteSpace(SN) ? ScanManager.SNCode : SN.Trim();
             FormulaSend();
@@ -57,7 +52,6 @@ namespace MES.Manager
                         snCode = string.IsNullOrWhiteSpace(scanSN) ? ScanManager.SNCode : scanSN;
                         SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品SN_" + stationNumber, snCode);
                         SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, 1);
-                        SetHelper.CheckInResults[iNumber] = 5;
                         SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + stationNumber, 5);
                         SetHelper.resultModel[iNumber].Result1 = "OK-返修件";
                         SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 返修模式进站完成，SN码: {snCode}");
@@ -85,7 +79,6 @@ namespace MES.Manager
                     {
                         // SN码写入成功  给PLC发送"进站结果=1（进站成功/OK）"
                         // PLC收到1后会执行放行动作（如绿灯亮、传送带继续运行）
-                        SetHelper.CheckInResults[iNumber] = 1;
                         bool Result1 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"进站结果_" + stationNumber,1);
 
                         SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {snCode}--{stationName} 进站结果{stationNumber}" +
@@ -96,7 +89,6 @@ namespace MES.Manager
                         // SN码写入失败 给PLC发送"进站结果=2（进站失败/NG）"
                         // PLC收到2后通常会：报警提示、暂停流水线、或等待重试
                         // 根本原因：SN码都没写进去，PLC就不知道是什么产品，进站没有意义
-                        SetHelper.CheckInResults[iNumber] = 2;
                         bool Result1 = SetHelper.siemens.WriteItem(
                             PLCGroupName.WriteGroup,
                             "进站结果_" + stationNumber,  // 对应工位的进站结果寄存器
@@ -177,7 +169,6 @@ namespace MES.Manager
                                 bool result0 = false;
                                 // 直接向PLC写"进站结果=2（失败）"
                                 // PLC收到失败信号后会保持等待状态，提示操作员重新扫码
-                                SetHelper.CheckInResults[iNumber] = 2;
                                 result0 = SetHelper.siemens.WriteItem(
                                     PLCGroupName.WriteGroup,
                                     "进站结果_" + stationNumber,
@@ -436,7 +427,6 @@ namespace MES.Manager
                     }
 
 
-                    SetHelper.CheckInResults[iNumber] = checkInResult;
                     result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"进站结果_" + stationNumber,checkInResult);
                     SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {carryID}--{stationName} 进站结果{stationNumber}写{checkInResult}" +
                         $"{(result ? "成功" : "失败")}");

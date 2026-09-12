@@ -528,7 +528,6 @@ namespace MES.Manager
                 for (int i = 0; i < count; i++)
                 {
                     int stationIndex = i;
-                    if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly) continue;
                     _ = StartIndividualStationMonitorAsync(stationIndex, lastSentAlarms, token);
                 }
 

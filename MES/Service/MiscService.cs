@@ -132,7 +132,7 @@ namespace MES.Service
             File.WriteAllText(miscFilePath, jsonContent);
             MapSNPrefixDic();
         }
-        //2030站规则:index为0的扫码枪扫压装件，index为1的扫码枪扫啮合件,其中压装站的index为1,3,啮合站的index为0,2
+        // 根据扫码枪序号与SN前缀映射到对应工位。
         //20302把枪扫四个站,20201把枪扫两个站,所以2020扫码枪的index一定为0,无需额外判断直接返回映射
         //2020站只扫差速器和输出轴,2030只扫中间轴和输入轴,所以可以通过SN前缀来判断是哪个站,然后根据index来返回对应的站号
         public int ResolveStationIndex(int hardIndex, string str)

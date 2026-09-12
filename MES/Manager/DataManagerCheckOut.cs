@@ -34,12 +34,6 @@ namespace MES.Manager
         public async Task ProductCheckOutAsync(string number)
         {
             int iNumber = Convert.ToInt32(number) - 1;
-            if (MES.SpecialStations.Meshina.MeshinaRuntime.IsOfflineOnly)
-            {
-                SetHelper.ListMesMessage.ShowInfoQueue(
-                    MES.SpecialStations.Meshina.MeshinaRuntime.StationName + "出站由新增MDB自动触发，请在啮合站面板处理原任务");
-                return;
-            }
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
             try
             {
@@ -88,13 +82,6 @@ namespace MES.Manager
                     //return;
                 }
 
-                if (!SetHelper.CheckInResults.TryGetValue(iNumber, out int checkInResult))
-                {
-                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 没有本地进站结果，请重新进站，停止本次出站上传");
-                    return;
-                }
-                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 本地保存的进站结果为{checkInResult}");
-
                 int outChannel = 0;
                 if (stationName.ToUpper().Contains("OP1040"))
                 {
@@ -126,7 +113,6 @@ namespace MES.Manager
                 ObservableCollection<MaterailOnOffModel> glueMaterails = SetHelper.ReadSys<ObservableCollection<MaterailOnOffModel>>(SetHelper.gluepath);
 
 
-                if (!(checkInResult == 5  &&  stationName.ToUpper().Contains("OP5005")))
                 {
                     #region 读取产品需要上传MES的数据
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
@@ -134,14 +120,15 @@ namespace MES.Manager
                     var dic = SetHelper.siemens.DicDataItems[PLCGroupName.CheckOutGroup.ToString()];//<TagName,DataItem>                                                                    //读取对应工位的参数
                     dic = dic.Where(it => it.Key.Contains("_" + number)).ToDictionary(it => it.Key, it => it.Value);
 
-                    // 使用进站时保存的结果判断返修合装，PLC清零不影响此值。
-                    if (checkInResult == 6)
+                    // 返修模式由PLC的返修模式切换信号控制，与进站结果无关。
+                    if (SetHelper.IsOP3040RepairMode
+                        && stationName.IndexOf("OP3040", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         // 临时固定返修合装上传项，后续再恢复配置。
                         var repairUploadTags = new[] { "HeatTemp_1", "CoverPressDisplace_1", "CoverPressForce_1" };
                         dic = dic.Where(it => repairUploadTags.Contains(it.Key, StringComparer.OrdinalIgnoreCase))
                             .ToDictionary(it => it.Key, it => it.Value);
-                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 本地进站结果为6，返修合装上传项：{string.Join(", ", dic.Keys)}");
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 按返修模式出站，返修合装上传项：{string.Join(", ", dic.Keys)}");
                     }
                     if ( dic.Count != 0)
                     {
