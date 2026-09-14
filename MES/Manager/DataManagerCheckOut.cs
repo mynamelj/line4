@@ -31,7 +31,7 @@ namespace MES.Manager
 
 
 
-        public async Task ProductCheckOutAsync(string number)
+        public async Task ProductCheckOutAsync(string number, bool isRepair = false)
         {
             int iNumber = Convert.ToInt32(number) - 1;
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
@@ -120,8 +120,8 @@ namespace MES.Manager
                     var dic = SetHelper.siemens.DicDataItems[PLCGroupName.CheckOutGroup.ToString()];//<TagName,DataItem>                                                                    //读取对应工位的参数
                     dic = dic.Where(it => it.Key.Contains("_" + number)).ToDictionary(it => it.Key, it => it.Value);
 
-                    // 返修模式由PLC的返修模式切换信号控制，与进站结果无关。
-                    if (SetHelper.IsOP3040RepairMode
+                    // 返修出站或处于OP3040返修模式时，按返修合装上传项过滤（进站6逻辑）
+                    if ((isRepair || SetHelper.IsOP3040RepairMode)
                         && stationName.IndexOf("OP3040", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         // 临时固定返修合装上传项，后续再恢复配置。

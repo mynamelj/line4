@@ -28,6 +28,7 @@ namespace MES.Comm
         扫描材料码完成,
         操作权限,
         按钮时间,
+        返修出站启动,
         DEFAULT,
     }
 }

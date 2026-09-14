@@ -1,4 +1,4 @@
-﻿using MES.Comm;
+using MES.Comm;
 using MES.MesModel.Request;
 using MES.SetModel;
 using MES.View;
@@ -232,6 +232,13 @@ namespace MES.Manager
                     if ((bool)TagValue)
                     {
                         await ProductCheckOutAsync(Number);
+                    }
+                    break;
+
+                case "返修出站启动":
+                    if ((bool)TagValue)
+                    {
+                        await ProductCheckOutAsync(Number, isRepair: true);
                     }
                     break;
                 case "检查材料合法性启动":
