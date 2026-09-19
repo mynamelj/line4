@@ -31,7 +31,7 @@ namespace MES.Manager
 
 
 
-        public async Task ProductCheckOutAsync(string number, bool isRepair = false)
+        public async Task ProductCheckOutAsync(string number)
         {
             int iNumber = Convert.ToInt32(number) - 1;
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
@@ -112,7 +112,11 @@ namespace MES.Manager
                 //string jsonGlue = File.ReadAllText(SetHelper.gluepath);
                 ObservableCollection<MaterailOnOffModel> glueMaterails = SetHelper.ReadSys<ObservableCollection<MaterailOnOffModel>>(SetHelper.gluepath);
 
+                int CheckInResult = SetHelper.CheckInResult[iNumber];
+                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 本地保存的进站结果为{CheckInResult}");
 
+                // 只有返修状态（5或6）且工站为 OP5005 或 OP2010 时才不上传，其余全部上传。
+                if (!((CheckInResult == 5 || CheckInResult == 6) && (stationName.ToUpper().Contains("OP2010") || stationName.ToUpper().Contains("OP5005"))))
                 {
                     #region 读取产品需要上传MES的数据
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
@@ -121,8 +125,7 @@ namespace MES.Manager
                     dic = dic.Where(it => it.Key.Contains("_" + number)).ToDictionary(it => it.Key, it => it.Value);
 
                     // 返修出站或处于OP3040返修模式时，按返修合装上传项过滤（进站6逻辑）
-                    if ((isRepair || SetHelper.IsOP3040RepairMode)
-                        && stationName.IndexOf("OP3040", StringComparison.OrdinalIgnoreCase) >= 0)
+                    if ( SetHelper.IsOP3040RepairMode&& stationName.Contains("3040"))
                     {
                         // 临时固定返修合装上传项，后续再恢复配置。
                         var repairUploadTags = new[] { "HeatTemp_1", "CoverPressDisplace_1", "CoverPressForce_1" };

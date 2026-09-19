@@ -301,21 +301,7 @@ namespace MES.Manager
 
             string materialCode = "";
 
-            //3000.50
-            if (stationName.ToUpper().Contains("OP1030"))
-            {
-                object obj = new object();
-                if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "绑定定子码_" + number, ref obj))
-                {
-                    materialCode = obj.Obj2String();
-                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到绑定定子码为{materialCode}");
-                }
-                else
-                {
-                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读PLC绑定定子码失败");
-                    materialCode = "1";
-                }
-            }
+
 
 
 
@@ -346,9 +332,20 @@ namespace MES.Manager
                         }
                     });
                 }
-
-                if (stationName.Contains("OP1030"))
+                //3000.50
+                if (stationName.ToUpper().Contains("OP1030"))
                 {
+                    object obj = new object();
+                    if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "绑定定子码_" + number, ref obj))
+                    {
+                        materialCode = obj.Obj2String();
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到绑定定子码为{materialCode}");
+                    }
+                    else
+                    {
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读PLC绑定定子码失败");
+                        materialCode = "1";
+                    }
                     SetHelper.NowMaterialCode[iNumber] = materialCode;
                     materialCode = "";
                 }
@@ -356,7 +353,6 @@ namespace MES.Manager
                 //OP3050进行LinkComp时直接读取PLC发送的物料码信号 偏移量2630.48
                 if (stationName.Contains("OP3050")
                  || stationName.Contains("OP2040"))
-                //|| stationName.Contains("OP2045"))//20260119
                 {
                     object obj = new object();
                     if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, "物料码_" + number, ref obj))

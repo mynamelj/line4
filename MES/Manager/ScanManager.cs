@@ -164,15 +164,7 @@ namespace MES.Manager
                                 SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 4=>{str}");
                                 SNCode = str;
 
-                                //object res = null;
-                                //if (SetHelper.siemens.ReadItem(PLCGroupName.TriggerGroup, "产品进站启动_" + (hardIndex + 1), ref res))
-                                //{
-                                //    if (res.ObjToBool() == false)
-                                //    {
-                                //        SetHelper.ListPLCMessage.ShowInfoQueue($"产品进站启动__{hardIndex + 1}值为 {res}");
-                                //        return;
-                                //    }
-                                //}
+        
                                 SetHelper.ListPLCMessage.ShowInfoQueue($"扫码触发 产品进站启动_{hardIndex + 1} True");
                                 SetHelper.dataManager.ProductCheckIn((hardIndex + 1).ToString(), str.Trim());
    
@@ -222,21 +214,6 @@ namespace MES.Manager
 
                                  SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 扫描材料码写{str.Trim()},{(result1 ? "成功" : "失败")}");
 
-                                 //如果是OP3021工位，扫完油底壳码后,不校验油底壳码，需要将OP3030的胶水码进行FeedingCheck校验，给PLC完成信号
-                                 if (stationName.Contains("OP3021"))
-                                 {
-                                     //string jsonGlue = File.ReadAllText(SetHelper.gluepath);
-                                     //ObservableCollection<MaterailModel> glueMaterails = JSON.FromJson<ObservableCollection<MaterailModel>>(jsonGlue);
-                                     ObservableCollection<MaterailOnOffModel> glueMaterails = SetHelper.ReadSys<ObservableCollection<MaterailOnOffModel>>(SetHelper.gluepath);
-                                     foreach (var item in glueMaterails)
-                                     {
-                                         if (!string.IsNullOrEmpty(item.GlueCode) && item.LocationNo.ToUpper().Contains("OP3030") && stationName.Contains("OP3021"))
-                                         {
-                                            await  SetHelper.dataManager.FeedingCheckAsync((hardIndex + 1).ToString(), item.GlueCode.Trim());
-                                         }
-                                     }
-                                     return;//直接返回
-                                 }
                                  bool result = false;
                                  result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "检查材料合法性结果_" + (hardIndex + 1).ToString(), result1 == true ? 1 : 2);
                                  SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 材料合法性校验结果写{result1},{(result ? "成功" : "失败")}");

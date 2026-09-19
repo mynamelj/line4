@@ -235,12 +235,17 @@ namespace MES.Manager
                     }
                     break;
 
-                case "返修出站启动":
+                case "返修出站":
                     if ((bool)TagValue)
                     {
-                        await ProductCheckOutAsync(Number, isRepair: true);
+                        SetHelper.IsOP3040RepairMode = true;
+                    }
+                    else
+                    {
+                        SetHelper.IsOP3040RepairMode = false;
                     }
                     break;
+
                 case "检查材料合法性启动":
 
                     if ((bool)TagValue)

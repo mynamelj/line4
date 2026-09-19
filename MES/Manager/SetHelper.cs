@@ -45,6 +45,22 @@ namespace MES.Manager
         public static bool isSpecialStation = false;
 
         /// <summary>
+        /// 每个工位独立的进站结果，按工位索引（iNumber）分别维护，避免多工位相互覆盖
+        /// 支持通过 SetHelper.CheckInResult[iNumber] 读写
+        /// </summary>
+        public static readonly StationCheckInResult CheckInResult = new StationCheckInResult();
+
+        /// <summary>
+        /// 兼容旧别名
+        /// </summary>
+        public static StationCheckInResult CheckInResults => CheckInResult;
+
+        public static int GetCheckInResult(int stationIndex)
+        {
+            return CheckInResult[stationIndex];
+        }
+
+        /// <summary>
         /// MES设置
         /// </summary>
         public static MesSettingModel MesSetting = new MesSettingModel();
@@ -513,5 +529,26 @@ namespace MES.Manager
             ListPLCMessage.ShowInfoQueue($"未找到标签--{groupName}--{tagItem}");
             return null;
         }
+    }
+
+    /// <summary>
+    /// 各工位独立的进站结果管理，防止多工位并发相互覆盖
+    /// 支持 SetHelper.CheckInResult[iNumber] 直接按工位索引读写
+    /// </summary>
+    public class StationCheckInResult
+    {
+        private readonly ConcurrentDictionary<int, int> _dict = new ConcurrentDictionary<int, int>();
+
+        public int this[int stationIndex]
+        {
+            get => _dict.TryGetValue(stationIndex, out int val) ? val : 0;
+            set => _dict[stationIndex] = value;
+        }
+
+        public bool TryGetValue(int stationIndex, out int value) => _dict.TryGetValue(stationIndex, out value);
+
+        public bool ContainsKey(int stationIndex) => _dict.ContainsKey(stationIndex);
+
+        public void Clear() => _dict.Clear();
     }
 }
