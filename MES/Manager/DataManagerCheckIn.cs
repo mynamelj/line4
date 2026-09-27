@@ -23,10 +23,20 @@ namespace MES.Manager
                 SetHelper.DateStart = new DateTime();
                 SetHelper.DateEnd = new DateTime();
                 SetHelper.DateStart = DateTime.Now;
-                if (!(SetHelper.MesSetting.ListGroup[iNumber].SNCodeLen > 0))
+                if (!(SetHelper.MesSetting.ListGroup[iNumber].SNCodeLen > 0) || stationName.ToUpper().Contains("OP3040"))
                 {
-                    //增加扫码进站时，不关弹窗
+                    //增加扫码进站时，不关弹窗（OP3040除外，OP3040进站时关闭残留弹窗与精追码）
                     SetHelper.IsRestart[iNumber] = true;//关闭弹窗功能
+                    if (stationName.ToUpper().Contains("OP3040"))
+                    {
+                        SetHelper.NowMaterialCode[iNumber] = "";
+                        SetHelper.IsOpen[iNumber] = false;
+                        _ = Task.Run(async () =>
+                        {
+                            await Task.Delay(1000);
+                            SetHelper.IsRestart[iNumber] = false;
+                        });
+                    }
                 }
                 //SetHelper.MaterialCount = 0;
 

@@ -505,10 +505,7 @@ namespace MES.Manager
             {
                 SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 产品出站出错--{ex.ToString()}");
             }
-            finally 
-            {
-                SetHelper.dataManager.Siemens_OnDataChange("扫描材料码启动" + "_" + number.ToString(), -1, 0, false);
-            }
+
         }
 
 

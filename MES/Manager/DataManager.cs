@@ -175,6 +175,33 @@ namespace MES.Manager
                         //OP1010工位PLC给进站信号触发弹窗提示扫码
                         int iNumber = Convert.ToInt32(Number) - 1;
                         string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
+
+                        if (stationName.ToUpper().Contains("OP3040"))
+                        {
+                            // 针对OP3040工位：进站启动时强制中止残留的精追码流程与弹窗
+                            SetHelper.IsRestart[iNumber] = true;
+                            SetHelper.NowMaterialCode[iNumber] = "";
+                            SetHelper.IsOpen[iNumber] = false;
+                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 产品进站启动，强制中止残留精追码流程与弹窗");
+
+                            await System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                foreach (Window win in System.Windows.Application.Current.Windows)
+                                {
+                                    if (win is PopupSeqView seqView && seqView.Number == iNumber)
+                                    {
+                                        seqView.Close();
+                                    }
+                                }
+                            });
+
+                            _ = Task.Run(async () =>
+                            {
+                                await Task.Delay(1000);
+                                SetHelper.IsRestart[iNumber] = false;
+                            });
+                        }
+
                         //4130不再扫码
                         if ((stationName.ToUpper().Contains("OP1010")|| stationName.ToUpper().Contains("OP3040")|| stationName.ToUpper().Contains("OP2035") ||
                             (stationName.ToUpper().Contains("OP4020")||stationName.ToUpper().Contains("OP2020")|| 
