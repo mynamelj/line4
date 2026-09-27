@@ -61,6 +61,46 @@ namespace MES.Manager
         }
 
         /// <summary>
+        /// 固定长度20的进站结果队列，绑定SN与进站结果
+        /// </summary>
+        public static readonly FixedQueue<MES.SetModel.CheckInResult> CheckInResultQueue = new FixedQueue<MES.SetModel.CheckInResult>(20);
+
+        /// <summary>
+        /// 进站结果队列别名
+        /// </summary>
+        public static FixedQueue<MES.SetModel.CheckInResult> CheckInQueue => CheckInResultQueue;
+
+        /// <summary>
+        /// 将进站结果放入队列。如果已存在相同SN，则覆盖其进站结果，不追加队列；
+        /// 若不存在则入队，超出20自动移除最旧的一条。
+        /// </summary>
+        /// <param name="sn">产品SN</param>
+        /// <param name="result">进站结果编码</param>
+        public static void EnqueueCheckInResult(string sn, int result)
+        {
+            if (string.IsNullOrWhiteSpace(sn)) return;
+            string cleanSN = sn.Trim();
+            CheckInResultQueue.EnqueueOrUpdate(
+                x => string.Equals(x.SN?.Trim(), cleanSN, StringComparison.OrdinalIgnoreCase),
+                existing => existing.Result = result,
+                new MES.SetModel.CheckInResult(cleanSN, result)
+            );
+        }
+
+        /// <summary>
+        /// 根据产品SN检索队列中最新的进站结果，若未找到则返回null
+        /// </summary>
+        /// <param name="sn">产品SN</param>
+        /// <returns>进站结果编码，未找到返回null</returns>
+        public static int? GetCheckInResultBySN(string sn)
+        {
+            if (string.IsNullOrWhiteSpace(sn)) return null;
+            var list = CheckInResultQueue.ToList();
+            var item = list.LastOrDefault(x => string.Equals(x.SN?.Trim(), sn.Trim(), StringComparison.OrdinalIgnoreCase));
+            return item?.Result;
+        }
+
+        /// <summary>
         /// MES设置
         /// </summary>
         public static MesSettingModel MesSetting = new MesSettingModel();

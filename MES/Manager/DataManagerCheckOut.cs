@@ -7,6 +7,7 @@ using MES.ViewModel;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using DateTime = System.DateTime;
 namespace MES.Manager
 {
@@ -112,11 +113,27 @@ namespace MES.Manager
                 //string jsonGlue = File.ReadAllText(SetHelper.gluepath);
                 ObservableCollection<MaterailOnOffModel> glueMaterails = SetHelper.ReadSys<ObservableCollection<MaterailOnOffModel>>(SetHelper.gluepath);
 
-                int CheckInResult = SetHelper.CheckInResult[iNumber];
-                SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 本地保存的进站结果为{CheckInResult}");
+                // 根据出站SN在队列中匹配进站结果
+                int? queueResult = SetHelper.GetCheckInResultBySN(SN);
+                if (!queueResult.HasValue && !string.IsNullOrWhiteSpace(carryID))
+                {
+                    queueResult = SetHelper.GetCheckInResultBySN(carryID);
+                }
+
+                int checkInResult;
+                if (queueResult.HasValue)
+                {
+                    checkInResult = queueResult.Value;
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 出站SN:{SN} 匹配到队列中的进站结果为: {checkInResult}");
+                }
+                else
+                {
+                    checkInResult = SetHelper.CheckInResult[iNumber];
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 进站队列中未匹配到出站SN:{SN}，回退使用工位本地进站结果: {checkInResult}");
+                }
 
                 // 只有返修状态（5或6）且工站为 OP5005 或 OP2010 时才不上传，其余全部上传。
-                if (!((CheckInResult == 5 || CheckInResult == 6) && (stationName.ToUpper().Contains("OP2010") || stationName.ToUpper().Contains("OP5005"))))
+                if (!(checkInResult == 5 && (stationName.ToUpper().Contains("OP2010") || stationName.ToUpper().Contains("OP5005"))))
                 {
                     #region 读取产品需要上传MES的数据
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
@@ -124,16 +141,17 @@ namespace MES.Manager
                     var dic = SetHelper.siemens.DicDataItems[PLCGroupName.CheckOutGroup.ToString()];//<TagName,DataItem>                                                                    //读取对应工位的参数
                     dic = dic.Where(it => it.Key.Contains("_" + number)).ToDictionary(it => it.Key, it => it.Value);
 
+                    // 根据sn对应的结果判定读取的出站数据：
                     // 返修出站或处于OP3040返修模式时，按返修合装上传项过滤（进站6逻辑）
-                    if ( SetHelper.IsOP3040RepairMode&& stationName.Contains("3040"))
+                    if ((checkInResult == 6 || SetHelper.IsOP3040RepairMode) && stationName.Contains("3040"))
                     {
                         // 临时固定返修合装上传项，后续再恢复配置。
                         var repairUploadTags = new[] { "HeatTemp_1", "CoverPressDisplace_1", "CoverPressForce_1" };
                         dic = dic.Where(it => repairUploadTags.Contains(it.Key, StringComparer.OrdinalIgnoreCase))
                             .ToDictionary(it => it.Key, it => it.Value);
-                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 按返修模式出站，返修合装上传项：{string.Join(", ", dic.Keys)}");
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 出站SN:{SN} 进站结果为[{checkInResult}]，按返修合装模式过滤出站项：{string.Join(", ", dic.Keys)}");
                     }
-                    if ( dic.Count != 0)
+                    if (dic.Count != 0)
                     {
                         List<string> TagNameList = dic.Keys.ToList();
                         var dataItems = dic.Select(x => x.Value).ToArray();
@@ -326,7 +344,7 @@ namespace MES.Manager
                 SetHelper.ListMesMessage.ShowInfoQueue(msg);
                 checkOutResult = response.Item1 ? 1 : 2;
 
-                if (response.Item1 && response.Item2.ToUpper().Contains("NVH")&&stationName.Contains("OP5150"))
+                if (response.Item1 && response.Item2.ToUpper().Contains("NVH") && stationName.Contains("OP5150"))
                 {
                     checkOutResult = 5;
 
@@ -486,6 +504,10 @@ namespace MES.Manager
             catch (Exception ex)
             {
                 SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 产品出站出错--{ex.ToString()}");
+            }
+            finally 
+            {
+                SetHelper.dataManager.Siemens_OnDataChange("扫描材料码启动" + "_" + number.ToString(), -1, 0, false);
             }
         }
 

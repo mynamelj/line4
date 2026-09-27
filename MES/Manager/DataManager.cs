@@ -235,17 +235,6 @@ namespace MES.Manager
                     }
                     break;
 
-                case "返修出站":
-                    if ((bool)TagValue)
-                    {
-                        SetHelper.IsOP3040RepairMode = true;
-                    }
-                    else
-                    {
-                        SetHelper.IsOP3040RepairMode = false;
-                    }
-                    break;
-
                 case "检查材料合法性启动":
 
                     if ((bool)TagValue)

@@ -53,9 +53,10 @@ namespace MES.Manager
                         SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品SN_" + stationNumber, snCode);
                         SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, 1);
                         SetHelper.CheckInResult[iNumber] = 5;
+                        SetHelper.EnqueueCheckInResult(snCode, 5);
                         SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + stationNumber, 5);
                         SetHelper.resultModel[iNumber].Result1 = "OK-返修件";
-                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 返修模式进站完成，SN码: {snCode}");
+                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 返修模式进站完成，SN码: {snCode}，进站结果: 5 (已入队)");
                         return;
                     }
                 }
@@ -81,6 +82,7 @@ namespace MES.Manager
                         // SN码写入成功  给PLC发送"进站结果=1（进站成功/OK）"
                         // PLC收到1后会执行放行动作（如绿灯亮、传送带继续运行）
                         SetHelper.CheckInResult[iNumber] = 1;
+                        SetHelper.EnqueueCheckInResult(snCode, 1);
                         bool Result1 = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"进站结果_" + stationNumber,1);
 
                         SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {snCode}--{stationName} 进站结果{stationNumber}" +
@@ -92,6 +94,7 @@ namespace MES.Manager
                         // PLC收到2后通常会：报警提示、暂停流水线、或等待重试
                         // 根本原因：SN码都没写进去，PLC就不知道是什么产品，进站没有意义
                         SetHelper.CheckInResult[iNumber] = 2;
+                        SetHelper.EnqueueCheckInResult(snCode, 2);
                         bool Result1 = SetHelper.siemens.WriteItem(
                             PLCGroupName.WriteGroup,
                             "进站结果_" + stationNumber,  // 对应工位的进站结果寄存器
@@ -116,7 +119,7 @@ namespace MES.Manager
                         // 精追码弹窗打开时（LinkComp扫码进行中），禁止触发进站
                         // 精追料扫码（如螺栓批次码）弹窗未关闭时，
                         //           不能因为操作员误扫了产品码而重新触发进站，导致流程混乱
-                        if (SetHelper.IsOpen[iNumber] && SetHelper.MesSetting.ListGroup[iNumber].ScanMaterialCount > 0)
+                        if (SetHelper.IsOpen[iNumber] && SetHelper.MesSetting.ListGroup[iNumber].ScanMaterialCount > 0 && !stationName.Contains("OP3040"))
                         {
                             SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} LinkComp扫码进行中,不触发扫码进站");
                             return; // 直接退出，等待LinkComp完成后弹窗关闭
@@ -173,6 +176,7 @@ namespace MES.Manager
                                 // 直接向PLC写"进站结果=2（失败）"
                                 // PLC收到失败信号后会保持等待状态，提示操作员重新扫码
                                 SetHelper.CheckInResult[iNumber] = 2;
+                                SetHelper.EnqueueCheckInResult(snCode, 2);
                                 result0 = SetHelper.siemens.WriteItem(
                                     PLCGroupName.WriteGroup,
                                     "进站结果_" + stationNumber,
@@ -431,9 +435,11 @@ namespace MES.Manager
                     }
 
 
+                    string finalSN = !string.IsNullOrWhiteSpace(response.Item3) ? response.Item3.Trim() : (snCode ?? "").Trim();
                     SetHelper.CheckInResult[iNumber] = checkInResult;
+                    SetHelper.EnqueueCheckInResult(finalSN, checkInResult);
                     result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"进站结果_" + stationNumber,checkInResult);
-                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {carryID}--{stationName} 进站结果{stationNumber}写{checkInResult}" +
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {carryID}--{stationName} 进站结果{stationNumber}写{checkInResult}，SN:{finalSN}已存入进站结果队列" +
                         $"{(result ? "成功" : "失败")}");
 
                     result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"PC进站流程ID_" + stationNumber,SeqID);
