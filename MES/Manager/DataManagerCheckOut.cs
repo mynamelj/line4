@@ -19,18 +19,7 @@ namespace MES.Manager
         /// <param name="number"></param>
         /// <returns></returns>
         /// 
-        
-        Dictionary<string, string> lightDic = new Dictionary<string, string>
-        {
-            //80
-            { "灯号1", "输入轴" },
-            //90
-            { "灯号2", "中间轴" },
-            //100
-            { "灯号3", "差速器" }
-        };
-
-
+        //备忘:灯号1:输入轴垫片80，灯号2:中间轴垫片90，灯号3:差速器垫片100
 
         public async Task ProductCheckOutAsync(string number)
         {
@@ -218,20 +207,15 @@ namespace MES.Manager
                             // 支持配置多个灯号标签（对应多种垫片物料的情况）
                             var tags = SetHelper.PLCSetting.ListGroup
                                 .FirstOrDefault(x => x.GroupType == PLCGroupName.ReadGroup.ToString())?
-                                .ListTag.Where(x => x.TagName.Contains("灯号")).ToList();
+                                .ListTag.Where(x => x.TagName.Contains("输入")|| x.TagName.Contains("中间")|| x.TagName.Contains("差速")).ToList();
 
                             if (tags != null && tags.Count > 0)
                             {
                                 foreach (var tag in tags)
                                 {
                                     string tagName = tag.TagName;
-
-                                    if (!lightDic.TryGetValue(tagName, out string type))
-                                    {
-                                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 未配置{tagName}对应的垫片类型");
-                                        continue;
-                                    }
-
+                                    string type = tagName;
+  
                                     int lightID = 0;
 
                                     if (SetHelper.siemens.ReadItem(PLCGroupName.ReadGroup, tagName + "_" + number, ref obj))
@@ -260,6 +244,7 @@ namespace MES.Manager
                                             Qty = item.UseCountOnce
                                         });
                                         outMaterials.Add(item);
+                                        SetHelper.ListPLCMessage.ShowInfoQueue($"本次选中垫片:{item.MaterialName}");
                                     }
                                 }
 

@@ -106,6 +106,12 @@ namespace MES.Manager
 
         public async void ScanBar_OnReadBar(List<string> listBar, int hardIndex)
         {
+            if (!SetHelper.StartOk)
+            {
+                SetHelper.ListScanMessage.ShowInfoQueue("MES未启动或正在切型，忽略扫码枪数据");
+                return;
+            }
+
             string str = string.Join("", listBar);
             string stationName = "";
             OnScanOpenBox?.Invoke(str);//将各个页面的码更新

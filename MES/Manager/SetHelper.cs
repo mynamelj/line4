@@ -181,7 +181,7 @@ namespace MES.Manager
         public static DateTime DateStart = new DateTime();
         public static DateTime DateEnd = new DateTime();
 
-        public static bool StartOk = false;
+        public static volatile bool StartOk = false;
 
         public static ProductTypeModel GetProductType(int ProductType)
         {
@@ -196,7 +196,7 @@ namespace MES.Manager
             return productType;
         }
 
-        public static bool InitializedSetting(int ProductType = 1)
+        public static bool InitializedSetting(int ProductType = 1, bool markStarted = true)
         {
             try
             {
@@ -295,7 +295,10 @@ namespace MES.Manager
                 ListPLCMessage.ShowInfoQueue("PLC初始化" + (plcResult ? "成功" : "失败"));
 
                 isSpecialStation= IsSpecialStation();
-                StartOk = true;
+                if (markStarted)
+                {
+                    StartOk = true;
+                }
                 return true;
             }
             catch (Exception ex)

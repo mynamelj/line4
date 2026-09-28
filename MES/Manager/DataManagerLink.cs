@@ -26,8 +26,8 @@ namespace MES.Manager
             }
 
             SetHelper.ListPLCMessage.ShowInfoQueue(
-                $"{stationName} {tagName}首次写{value}失败，1秒后重试");
-            await Task.Delay(1000);
+                $"{stationName} {tagName}首次写{value}失败，2秒后重试");
+            await Task.Delay(2000);
 
             result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, tagName, value);
             SetHelper.ListPLCMessage.ShowInfoQueue(
@@ -37,6 +37,12 @@ namespace MES.Manager
 
         public async Task LinkCompStart(string stationNumber)
         {
+            if (!SetHelper.StartOk)
+            {
+                SetHelper.ListPLCMessage.ShowInfoQueue(
+                    $"MES未启动或正在切型，忽略{stationNumber} LinkComp流程");
+                return;
+            }
             //20250401让PLC触发扫码，避免扫码NG无法关弹窗放行
             int iNumber = Convert.ToInt32(stationNumber) - 1;
             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;

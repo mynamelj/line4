@@ -5,7 +5,9 @@ using MES.SetModel;
 using MES.View;
 using PropertyChanged;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
@@ -20,6 +22,7 @@ namespace MES.ViewModel
         public ICommand MaterialChangedCommand { get; }
 
         private string[] UploadsuccessCode = new string[] { "", "", "", "", "", "", "", "", "", "" };
+        private static readonly object ShimMaterialLogLock = new object();
 
         public MaterialOnOffViewModel()
         {
@@ -368,11 +371,12 @@ namespace MES.ViewModel
                 return;
             }
 
-            //var result = MessageBox.Show($"{MaterialNameNo}\r\n{GlueCode}\r\n是否确认上料??\r\n当前料箱号:{(BoxNo == "" ? "无" : BoxNo)}", "上料确认", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            //if (result == MessageBoxResult.No)
-            //{
-            //    return;
-            //}
+            bool isShimMaterial = MaterialNameNo.Contains("垫片");
+            if (isShimMaterial && MessageBox.Show($"确认上料物料是“{MaterialNameNo}”吗？", "垫片上料确认",
+                    MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) != MessageBoxResult.OK)
+            {
+                return;
+            }
 
             //不卡控重复物料，可重复上
             //if (GlueOnLineList.Any(x => x.GlueCode == GlueCode))
@@ -412,15 +416,14 @@ namespace MES.ViewModel
                 }
                 SetHelper.SaveSys(GlueOnLineList, SetHelper.materialpath, "批追物料");
             }
-            //下料后保存
-            //SaveSys(GlueOnLineList);
-
 
 
             ErrorMsg = $"{GlueCode}:上料正在请求MES中...";
             Color = Brushes.Green;
 
             var light = LightNumber < 1 ? 1 : LightNumber;
+            string uploadedMaterialName = MaterialNameNo;
+            string uploadedMaterialCode = GlueCode;
             var response = await SetHelper.mesManager.CompSNCheckout(GlueCode.GetCompSNCheckout(iNumber, light), iNumber);
             if (response.Item1)
             {
@@ -445,6 +448,24 @@ namespace MES.ViewModel
                 }
 
                 SetHelper.SaveSys(GlueOnLineList, SetHelper.materialpath, "批追物料");
+
+                if (isShimMaterial)
+                {
+                    try
+                    {
+                        AppendShimMaterialOnLog(DateTime.Now, uploadedMaterialName, uploadedMaterialCode);
+                    }
+                    catch (IOException ex)
+                    {
+                        ErrorMsg += $"\r\n垫片上料日志写入失败：{ex.Message}";
+                        Color = Brushes.Red;
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        ErrorMsg += $"\r\n垫片上料日志写入失败：{ex.Message}";
+                        Color = Brushes.Red;
+                    }
+                }
 
                 UploadsuccessCode[iNumber] = GlueCode;
                 foreach (var item in OpenBoxes)
@@ -476,6 +497,35 @@ namespace MES.ViewModel
             BoxNo = "";
             SetHelper.MaterailOnLineList = GlueOnLineList;
         });
+
+        private static void AppendShimMaterialOnLog(DateTime timestamp, string materialName, string materialCode)
+        {
+            lock (ShimMaterialLogLock)
+            {
+                Directory.CreateDirectory(SetHelper.logmainpath);
+                string path = Path.Combine(SetHelper.logmainpath,
+                    $"垫片上料-{timestamp.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}.csv");
+                bool writeHeader = !File.Exists(path) || new FileInfo(path).Length == 0;
+
+                using (var writer = new StreamWriter(path, true, new UTF8Encoding(true)))
+                {
+                    if (writeHeader)
+                    {
+                        writer.WriteLine("日期,时间,物料名,物料号");
+                    }
+
+                    writer.WriteLine(string.Join(",", new[]
+                    {
+                        CsvField(timestamp.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                        CsvField(timestamp.ToString("HH:mm:ss", CultureInfo.InvariantCulture)),
+                        CsvField(materialName),
+                        CsvField(materialCode)
+                    }));
+                }
+            }
+        }
+
+        private static string CsvField(string value) => $"\"{(value ?? "").Replace("\"", "\"\"")}\"";
 
         public ICommand LightConfigCommand => new RelayCommand(() =>
         {

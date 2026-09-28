@@ -278,73 +278,80 @@ namespace MES.Manager
         /// <returns></returns>
         public async void ChangeProductType(int ProductType, int Number)
         {
-            if (!SetHelper.IsFirstStart && SetHelper.NowProduct != null && SetHelper.NowProduct.ProductID == ProductType)
+            SetHelper.StartOk = false;
+            try
             {
-                SetHelper.ListMesMessage.ShowInfoQueue($"当前机型已为{ProductType}，无需重复切型，已忽略本次切型请求", true, EnumLogType.log.ToString(), true);
-                return;
-            }
-
-            var Type = SetHelper.GetProductType(ProductType);
-            if (Type == null)
-            {
-                SetHelper.ListMesMessage.ShowInfoQueue($"未找到产品型号为{ProductType}的型号，切换失败，请检查是否配置", true, EnumLogType.log.ToString(), true);
-                return;
-            }
-            ObservableCollection<MaterailModel> materails = SetHelper.ReadSys<ObservableCollection<MaterailModel>>(SetHelper.materialpath);
-
-            #region 型号切换时,检查批追物料
-
-            if (!SetHelper.IsFirstStart && SetHelper.NowProduct.ProductID != ProductType && materails != null && !SetHelper.StationNumber.numberGroups.FirstOrDefault().Name.Contains("OP3040"))
-            {
-                foreach (var item in materails)
+                if (!SetHelper.IsFirstStart && SetHelper.NowProduct != null && SetHelper.NowProduct.ProductID == ProductType)
                 {
-                    if (item.GlueCode == "")
+                    SetHelper.ListMesMessage.ShowInfoQueue($"当前机型已为{ProductType}，无需重复切型，已忽略本次切型请求", true, EnumLogType.log.ToString(), true);
+                    return;
+                }
+
+                var Type = SetHelper.GetProductType(ProductType);
+                if (Type == null)
+                {
+                    SetHelper.ListMesMessage.ShowInfoQueue($"未找到产品型号为{ProductType}的型号，切换失败，请检查是否配置", true, EnumLogType.log.ToString(), true);
+                    return;
+                }
+                ObservableCollection<MaterailModel> materails = SetHelper.ReadSys<ObservableCollection<MaterailModel>>(SetHelper.materialpath);
+
+                #region 型号切换时,检查批追物料
+
+                if (!SetHelper.IsFirstStart && SetHelper.NowProduct.ProductID != ProductType && materails != null && !SetHelper.StationNumber.numberGroups.FirstOrDefault().Name.Contains("OP3040"))
+                {
+                    foreach (var item in materails)
                     {
-                        continue;
-                    }
-
-                    string stationName = item.LocationNo;
-                    Thread.Sleep(200);
-                    int stationNumber = SetHelper.StationNumber.numberGroups.FirstOrDefault(x => x.Name == stationName).Number - 1;
-
-                    var result = await SetHelper.mesManager.CompSNChange(item.GlueCode.GetCompSNChangeModel(stationNumber), stationNumber);
-
-                    if (result.Item1 == 1)
-                    {
-                        SetHelper.ListMesMessage.ShowInfoQueue($"批追物料校验一致");
-                    }
-                    else if (result.Item1 == 2)
-                    {
-                        SetHelper.ListMesMessage.ShowInfoQueue($"批追物料{item.GlueCode}校验不一致:{result.Item2}");
-
-                        var offlineResult = await SetHelper.mesManager.CompSNOffline(item.GlueCode.GetCompSNOffline(stationNumber, item.LightNumber), stationNumber);
-
-                        if (offlineResult.Item1)
+                        if (item.GlueCode == "")
                         {
-                            SetHelper.ListMesMessage.ShowInfoQueue($"批追物料{item.GlueCode}下料成功");
-                            MaterialOfflineAction(item.GlueCode);
+                            continue;
+                        }
+
+                        string stationName = item.LocationNo;
+                        Thread.Sleep(200);
+                        int stationNumber = SetHelper.StationNumber.numberGroups.FirstOrDefault(x => x.Name == stationName).Number - 1;
+
+                        var result = await SetHelper.mesManager.CompSNChange(item.GlueCode.GetCompSNChangeModel(stationNumber), stationNumber);
+
+                        if (result.Item1 == 1)
+                        {
+                            SetHelper.ListMesMessage.ShowInfoQueue($"批追物料校验一致");
+                        }
+                        else if (result.Item1 == 2)
+                        {
+                            SetHelper.ListMesMessage.ShowInfoQueue($"批追物料{item.GlueCode}校验不一致:{result.Item2}");
+
+                            var offlineResult = await SetHelper.mesManager.CompSNOffline(item.GlueCode.GetCompSNOffline(stationNumber, item.LightNumber), stationNumber);
+
+                            if (offlineResult.Item1)
+                            {
+                                SetHelper.ListMesMessage.ShowInfoQueue($"批追物料{item.GlueCode}下料成功");
+                                MaterialOfflineAction(item.GlueCode);
+                            }
+                            else
+                            {
+                                SetHelper.ListMesMessage.ShowInfoQueue($"批追物料{item.GlueCode}下料失败,请手动下料");
+                            }
                         }
                         else
                         {
-                            SetHelper.ListMesMessage.ShowInfoQueue($"批追物料{item.GlueCode}下料失败,请手动下料");
+                            SetHelper.ListMesMessage.ShowInfoQueue($"批追物料校验接口调用异常，请检查网络。");
                         }
                     }
-                    else
-                    {
-                        SetHelper.ListMesMessage.ShowInfoQueue($"批追物料校验接口调用异常，请检查网络。");
-                    }
                 }
+
+                #endregion 型号切换时,检查批追物料
+
+                if (!SetHelper.InitializedSetting(ProductType, false)) return;
+                GetStatusInfo();
+                ChangeParamsAction(Type);
+                FormulaSend();
+
+                SetHelper.IsFirstStart = false;
             }
-
-            #endregion 型号切换时,检查批追物料
-
-            if (!SetHelper.InitializedSetting(ProductType)) return;
-            SetHelper.StartOk = true;
-            GetStatusInfo();
-            ChangeParamsAction(Type);
-            FormulaSend();
-
-            SetHelper.IsFirstStart = false;
+            finally
+            {
+                SetHelper.StartOk = true;
+            }
         }
 
         public bool FormulaSend()
