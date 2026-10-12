@@ -14,24 +14,23 @@ namespace MES.Manager
     {
         private readonly Dictionary<string, bool> repairModeStatus = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase)
         {
-            { "2030BearingPress1", false },
-            { "2030BearingPress2", false },
-            { "2020BearingPress", false }
+            { "OP2020PressFit1", false },
+            { "OP2020PressFit2", false },
+            { "OP2030PressFit", false }
         };
 
         private string GetStationKeyByNumber(string number)
         {
-            switch (number?.Trim())
+            var stations = SetHelper.StationNumber.numberGroups;
+            if (!int.TryParse(number, out int stationNumber)
+                || stationNumber <= 0 || stationNumber > stations.Count)
             {
-                case "1":
-                    return "2030BearingPress1";
-                case "2":
-                    return "2030BearingPress2";
-                case "3":
-                    return "2020BearingPress";
-                default:
-                    return null;
+                return null;
             }
+
+            // 工位顺序以当前配置为准：OP2030PressFit 在另一台工控机上也是第1工位。
+            string stationName = stations[stationNumber - 1]?.Name;
+            return stationName != null && repairModeStatus.ContainsKey(stationName) ? stationName : null;
         }
 
         public void TriggerRepairMode(bool target, string Number)
@@ -39,8 +38,8 @@ namespace MES.Manager
             bool isOP3040 = int.TryParse(Number, out int stationNumber)
                 && stationNumber > 0
                 && stationNumber <= SetHelper.StationNumber.numberGroups.Count
-                && SetHelper.StationNumber.numberGroups[stationNumber - 1].Name
-                    .IndexOf("OP3040", StringComparison.OrdinalIgnoreCase) >= 0;
+                && SetHelper.StationNumber.numberGroups[stationNumber - 1]?.Name
+                    ?.IndexOf("OP3040", StringComparison.OrdinalIgnoreCase) >= 0;
             if (isOP3040)
             {
                 SetHelper.IsOP3040RepairMode = target;

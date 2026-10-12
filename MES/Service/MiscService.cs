@@ -27,7 +27,7 @@ namespace MES.Service
         [ObservableProperty]
         private Dictionary<string, List<string>> _sNPrefixDic = new Dictionary<string, List<string>>();
 
-        private Dictionary<string, int> MapIndexDic { get; set; } = new Dictionary<string, int>();
+        private Dictionary<string, string> MapStationDic { get; set; } = new Dictionary<string, string>();
 
         private HashSet<string> AmbiguousPrefixes { get; set; } =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -71,7 +71,7 @@ namespace MES.Service
         public void MapSNPrefixDic()
         {
             var prefixDic = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
-            var mapIndexDic = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            var mapStationDic = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var item in SNPrefixes ?? new ObservableCollection<SNPrefix>())
             {
@@ -81,13 +81,13 @@ namespace MES.Service
                     continue;
                 }
 
-                if (!TryGetStationIndex(item.Name, out int stationIndex))
+                if (!TryGetStationName(item.Name, out string stationName))
                 {
                     ShowScanMessage($"SN前缀配置名称{item.Name}无法识别,已忽略");
                     continue;
                 }
 
-                mapIndexDic[item.Name] = stationIndex;
+                mapStationDic[item.Name] = stationName;
                 prefixDic[item.Name] = (item.Value ?? string.Empty)
                     .Split(',')
                     .Select(prefix => prefix.Trim())
@@ -100,10 +100,10 @@ namespace MES.Service
                 .SelectMany(item => item.Value.Select(prefix => new
                 {
                     Prefix = prefix,
-                    StationIndex = mapIndexDic[item.Key]
+                    StationName = mapStationDic[item.Key]
                 }))
                 .GroupBy(item => item.Prefix, StringComparer.OrdinalIgnoreCase)
-                .Where(group => group.Select(item => item.StationIndex).Distinct().Count() > 1)
+                .Where(group => group.Select(item => item.StationName).Distinct().Count() > 1)
                 .Select(group => group.Key)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
@@ -113,7 +113,7 @@ namespace MES.Service
             }
 
             SNPrefixDic = prefixDic;
-            MapIndexDic = mapIndexDic;
+            MapStationDic = mapStationDic;
             AmbiguousPrefixes = ambiguousPrefixes;
         }
 
@@ -133,8 +133,8 @@ namespace MES.Service
             MapSNPrefixDic();
         }
         // 根据扫码枪序号与SN前缀映射到对应工位。
-        //20302把枪扫四个站,20201把枪扫两个站,所以2020扫码枪的index一定为0,无需额外判断直接返回映射
-        //2020站只扫差速器和输出轴,2030只扫中间轴和输入轴,所以可以通过SN前缀来判断是哪个站,然后根据index来返回对应的站号
+        // 啮合站已移出；两把枪均按SN前缀查找当前配置中的压装站，不再按枪号偏移工位索引。
+        // misc.json中的XP2030/QR2030名称是既有配置键，保留以兼容现场已维护的前缀。
         public int ResolveStationIndex(int hardIndex, string str)
         {
             if (string.IsNullOrWhiteSpace(str))
@@ -164,14 +164,23 @@ namespace MES.Service
                     return -1;
                 }
 
-                if (!MapIndexDic.TryGetValue(item.Name, out int stationIndex))
+                if (!MapStationDic.TryGetValue(item.Name, out string stationName))
                 {
                     ShowScanMessage($"SN前缀{item.Prefix}未配置工位映射,不触发进站");
                     return -1;
                 }
 
-                int resolvedIndex = hardIndex == 0 ? stationIndex : stationIndex - 1;
-                ShowScanMessage($"扫码{str}匹配SN前缀{item.Prefix},解析到工位序号{resolvedIndex + 1}");
+                var stations = SetHelper.StationNumber.numberGroups;
+                var matchingStations = stations.Where(station =>
+                    string.Equals(station?.Name, stationName, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (matchingStations.Count != 1)
+                {
+                    ShowScanMessage($"SN前缀{item.Prefix}对应工站{stationName}在当前配置中不存在或不唯一,不触发进站");
+                    return -1;
+                }
+
+                int resolvedIndex = stations.IndexOf(matchingStations[0]);
+                ShowScanMessage($"扫码{str}匹配SN前缀{item.Prefix},解析到工位序号{resolvedIndex + 1}({stationName})");
                 return resolvedIndex;
             }
 
@@ -179,21 +188,21 @@ namespace MES.Service
             return -1;
         }
 
-        private static bool TryGetStationIndex(string name, out int stationIndex)
+        private static bool TryGetStationName(string name, out string stationName)
         {
             if (name.IndexOf("inputShaft", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                stationIndex = 1;
+                stationName = "OP2020PressFit1";
                 return true;
             }
 
             if (name.IndexOf("intermediateShaft", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                stationIndex = 3;
+                stationName = "OP2020PressFit2";
                 return true;
             }
 
-            stationIndex = -1;
+            stationName = null;
             return false;
         }
 

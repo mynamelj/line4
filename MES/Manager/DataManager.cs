@@ -204,7 +204,7 @@ namespace MES.Manager
 
                         //4130不再扫码
                         if ((stationName.ToUpper().Contains("OP1010")|| stationName.ToUpper().Contains("OP3040")|| stationName.ToUpper().Contains("OP2035") ||
-                            (stationName.ToUpper().Contains("OP4020")||stationName.ToUpper().Contains("OP2020")|| 
+                            (stationName.ToUpper().Contains("OP4025")||stationName.ToUpper().Contains("OP2020")||
                             stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("NG_IO")) && Address != 0)) //0为扫码触发
                         {
                             if (stationName.ToUpper().Contains("OP2035") && stationName.Contains("4"))
@@ -236,7 +236,7 @@ namespace MES.Manager
                         {
                             string stationName = SetHelper.StationNumber.numberGroups[iNumber].Name;
                             if (stationName.ToUpper().Contains("OP1010") 
-                                || stationName.ToUpper().Contains("OP4020") || stationName.ToUpper().Contains("OP2020")|| stationName.ToUpper().Contains("OP2035")
+                                || stationName.ToUpper().Contains("OP4025") || stationName.ToUpper().Contains("OP2020")|| stationName.ToUpper().Contains("OP2035")
                                 || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("NG_IO")||stationName.ToUpper().Contains("OP3040"))
                             {
                                 

@@ -313,7 +313,7 @@ namespace MES.Manager
             foreach (var station in SetHelper.StationNumber.numberGroups)
             {
                 string stationName = station?.Name ?? string.Empty;
-                if (stationName.Contains("OP2030"))
+                if (StationRules.IsInputOrIntermediatePressFitStation(stationName))
                 {
                     return true;
                 }

@@ -172,7 +172,7 @@ namespace MES.Manager
                             //{
                             //    continue;//继续执行扫码操作
                             //}
-                            if (SetHelper.IsRestart[iNumber])//PLC给关闭弹窗信号，关闭所有弹窗
+                            if (SetHelper.IsRestart[iNumber])
                             {
                                 ScanSuccess[iNumber] = false;
                                 break;
@@ -428,7 +428,7 @@ namespace MES.Manager
                     {
                         showMsg = "";
                         mesReturn = $"条码{SetHelper.NowMaterialCode[iNumber]}LinkComp上传失败请重新扫码\r\n\r\nMES返回信息:{reuslt.Item2}";
-                        if (stationName.Contains("OP3050")|| stationName.Contains("OP2040"))
+                        if (stationName.Contains("OP3050")|| stationName.Contains("OP2040") || stationName.Contains("OP1030"))
                         //   || stationName.Contains("OP2045"))//20260119
                         {
                             return false;

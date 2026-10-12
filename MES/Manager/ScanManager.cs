@@ -123,6 +123,12 @@ namespace MES.Manager
             {
                 return;
             }
+            if (stationIndex >= SetHelper.StationNumber.numberGroups.Count
+                || stationIndex >= SetHelper.MesSetting.ListGroup.Count)
+            {
+                SetHelper.ListScanMessage.ShowInfoQueue($"扫码对应工位序号{stationIndex + 1}超出当前配置,不触发进站");
+                return;
+            }
 
             hardIndex = stationIndex;
             stationName = SetHelper.StationNumber.numberGroups[hardIndex].Name;
@@ -157,7 +163,7 @@ namespace MES.Manager
                 {
                     SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 2=>");
                     if (stationName.ToUpper().Contains("OP1010") || stationName.ToUpper().Contains("OP3040")|| 
-                        stationName.ToUpper().Contains("OP4020")|| stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2035")
+                        stationName.ToUpper().Contains("OP4025")|| stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2035")
                         || stationName.ToUpper().Contains("OP2030") || stationName.ToUpper().Contains("NG_IO"))
                     {
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 3=>");
@@ -185,7 +191,7 @@ namespace MES.Manager
                                 SetHelper.ListScanMessage.ShowInfoQueue($"{stationName} 扫码SN码窗口已经关闭,扫码不触发进站");
                             }
                         }
-                        if (str.Trim().Length != SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen && DataManager.IsOP1010ViewOpen && !stationName.ToUpper().Contains("OP2030"))
+                        if (str.Trim().Length != SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen && DataManager.IsOP1010ViewOpen && !StationRules.IsInputOrIntermediatePressFitStation(stationName))
                         {
                             SetHelper.ListScanMessage.ShowInfoQueue($"{stationName} 扫码长度:{str.Trim().Length} 与设定SN码长度:{SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen}不符,不触发进站");
                         }
