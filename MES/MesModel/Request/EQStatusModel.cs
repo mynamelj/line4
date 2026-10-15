@@ -40,7 +40,7 @@ namespace MES.MesModel.Request
                 Line = SetHelper.MesSetting.ListGroup[number].Line,
                 MachineID = SetHelper.MesSetting.ListGroup[number].MachineID,
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
-                OPID = SetHelper.MesSetting.ListGroup[number].OPID,
+                OPID = "",
                 FixSN = SetHelper.MesSetting.ListGroup[number].FixSN,
                 Token = SetHelper.MesSetting.ListGroup[number].Token,
                 STATUS = status,

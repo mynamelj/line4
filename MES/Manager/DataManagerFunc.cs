@@ -1355,7 +1355,7 @@ namespace MES.Manager
                                 {
                                     Line = SetHelper.MesSetting.ListGroup[i].Line,
                                     MachineID = SetHelper.MesSetting.ListGroup[i].MachineID,
-                                    OPID = SetHelper.MesSetting.ListGroup[i].OPID,
+                                    OPID = "",
                                     StationID = SetHelper.MesSetting.ListGroup[i].StationID,
                                     SNList = snlists.ToArray()
                                 };

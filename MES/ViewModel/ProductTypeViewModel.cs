@@ -119,7 +119,6 @@ namespace MES.ViewModel
                 var alarm = SetHelper.LoadConfig<List<AlarmData>>(SetHelper.alarm, d02Product);
                 //var glue = SetHelper.LoadConfig<List<MaterailOnOffModel>>(SetHelper.glue, d02Product);
                 var stationNumber = SetHelper.LoadConfig<StationNumberModel>(SetHelper.stationNumber, d02Product);
-                var opid = SetHelper.LoadConfig<List<OPID>>(SetHelper.opid, d02Product);
                 var openBoxCode = SetHelper.LoadConfig<List<List<OpenBox>>>(SetHelper.openBoxCode, d02Product);
                 var lightConfig = SetHelper.LoadConfig<ObservableCollection<LightConfig>>(SetHelper.lightConfig, d02Product);
 
@@ -132,7 +131,6 @@ namespace MES.ViewModel
                 SetHelper.SaveConfig(alarm, SetHelper.alarm, item);
                 // SetHelper.SaveConfig(glue, SetHelper.glue, item);
                 SetHelper.SaveConfig(stationNumber, SetHelper.stationNumber, item);
-                SetHelper.SaveConfig(opid, SetHelper.opid, item);
                 SetHelper.SaveConfig(openBoxCode, SetHelper.openBoxCode, item);
                 SetHelper.SaveConfig(lightConfig, SetHelper.lightConfig, item);
             }
@@ -180,7 +178,6 @@ namespace MES.ViewModel
                 var alarm = SetHelper.LoadConfig<List<AlarmData>>(SetHelper.alarm, SelectComboProductFrom);
                 //var glue = SetHelper.LoadConfig<List<MaterailOnOffModel>>(SetHelper.glue, SelectComboProductFrom);
                 var stationNumber = SetHelper.LoadConfig<StationNumberModel>(SetHelper.stationNumber, SelectComboProductFrom);
-                var opid = SetHelper.LoadConfig<List<OPID>>(SetHelper.opid, SelectComboProductFrom);
                 var openBoxCode = SetHelper.LoadConfig<List<List<OpenBox>>>(SetHelper.openBoxCode, SelectComboProductFrom);
                 var lightConfig = SetHelper.LoadConfig<ObservableCollection<LightConfig>>(SetHelper.lightConfig, SelectComboProductFrom);
 
@@ -193,7 +190,6 @@ namespace MES.ViewModel
                 SetHelper.SaveConfig(alarm, SetHelper.alarm, SelectComboProductTo);
                 //SetHelper.SaveConfig(glue, SetHelper.glue, SelectComboProductTo);
                 SetHelper.SaveConfig(stationNumber, SetHelper.stationNumber, SelectComboProductTo);
-                SetHelper.SaveConfig(opid, SetHelper.opid, SelectComboProductTo);
                 SetHelper.SaveConfig(openBoxCode, SetHelper.openBoxCode, SelectComboProductTo);
                 SetHelper.SaveConfig(lightConfig, SetHelper.lightConfig, SelectComboProductTo);
                 MessageBox.Show($"{SelectComboProductFrom.ProductName}→{SelectComboProductTo.ProductName} 复制成功");
@@ -228,7 +224,6 @@ namespace MES.ViewModel
                 var alarm = SetHelper.LoadConfig<List<AlarmData>>(SetHelper.alarm, null);
                 //var glue = SetHelper.LoadConfig<List<MaterailOnOffModel>>(SetHelper.glue, null);
                 var stationNumber = SetHelper.LoadConfig<StationNumberModel>(SetHelper.stationNumber, null);
-                var opid = SetHelper.LoadConfig<List<OPID>>(SetHelper.opid, null);
                 var openBoxCode = SetHelper.LoadConfig<List<List<OpenBox>>>(SetHelper.openBoxCode, null);
                 var lightConfig = SetHelper.LoadConfig<ObservableCollection<LightConfig>>(SetHelper.lightConfig, null);
 
@@ -244,7 +239,6 @@ namespace MES.ViewModel
                     SetHelper.SaveConfig(alarm, SetHelper.alarm, item);
                     //SetHelper.SaveConfig(glue, SetHelper.glue, item);
                     SetHelper.SaveConfig(stationNumber, SetHelper.stationNumber, item);
-                    SetHelper.SaveConfig(opid, SetHelper.opid, item);
                     SetHelper.SaveConfig(openBoxCode, SetHelper.openBoxCode, item);
                     SetHelper.SaveConfig(lightConfig, SetHelper.lightConfig, item);
 

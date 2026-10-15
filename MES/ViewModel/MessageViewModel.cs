@@ -15,7 +15,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace MES.ViewModel
@@ -26,29 +25,7 @@ namespace MES.ViewModel
 
         public MessageViewModel()
         {
-            //SetHelper.ResultModel = new ResultModel()
-            //{
-            //    Result1 = "OK",
-            //    Result2 = "OK",
-            //    Result3 = "OK",
-            //    MaterialSN = "IYASDBJDNJKASND&HJASDKJNAS_OAJSDNK2IASNDJ1829EHDJNHJASDKJNAS_OAJ",
-            //    CheckInSN = "12376842JSDKFJSNDE8",
-            //    CheckOutSN = "12376842JSDKFJSNDE8"
-            //};
-            //初始化赋值
-            Opid = SetHelper.Opid;
-
             ShowMessage();
-            if (Opid != null)
-            {
-                oldOpid = new OPID[Opid.Length];
-                for (int i = 0; i < Opid.Length; i++)
-                {                                                                                                                                                                                                                                                                                                                                                                                                       
-                    oldOpid[i] = new OPID();
-                    oldOpid[i].Id = Opid[i].Id;
-                }
-            }
-
         }
 
         public MesSettingModel MesSetting { get; set; } = SetHelper.MesSetting;
@@ -62,16 +39,11 @@ namespace MES.ViewModel
         //public Visibility LinkVis { get; set; } = SetHelper.MesSetting.ListGroup[0].MaterialCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 
         public List<ResultModel> ResultModel { get; set; }
-        public OPID[] Opid { get; set; }
         public string ButtonTime { get; set; } = "";
         public string PlcHeart { get; set; } = "";
         public string ProductType { get; set; } = "";
-        public string RepairStatus { get; private set; } = "";
-        public Brush RepairStatusColor { get; private set; } = Brushes.Red;
-        public Visibility RepairStationVisibility { get; private set; } = Visibility.Collapsed;
 
         public static string PlcHeartStatic { get; set; } = "";
-        private OPID[] oldOpid;
 
         public ICommand SpoutOilCommand => new RelayCommand<string>((s) =>
         {
@@ -116,10 +88,6 @@ namespace MES.ViewModel
                     {
                         Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            // 跟随实际返修模式刷新；退出返修时同步隐藏提示。
-                            bool repairMode = SetHelper.IsRepairMode || SetHelper.IsOP3040RepairMode;
-                            RepairStatus = SetHelper.IsOP3040RepairMode ? "OP3040返修模式" : (repairMode ? "返修模式" : "");
-                            RepairStationVisibility = repairMode ? Visibility.Visible : Visibility.Collapsed;
                             MessageModel message = new MessageModel();
                             if (SetHelper.ListPLCMessage.TryDequeue(out message))
                             {
@@ -169,27 +137,6 @@ namespace MES.ViewModel
                         SetHelper.dataManager.DeleteLocalLog();
 
                         ResultModel = SetHelper.resultModel?.ToList();
-                        Opid = SetHelper.Opid;
-                        //将工号实时更新
-                        //if (Opid != null)
-                        //{
-                        //    OPID[] opids = new OPID[8];//留8个
-                        //    for (int i = 0; i < Opid.Length; i++)
-                        //    {
-                        //        opids[i] = new OPID() { Id = SetHelper.Opid[i].Id };
-                        //    }
-                        //    for (int i = 0; i < Opid.Length; i++)
-                        //    {
-                        //        if (oldOpid[i].Id != Opid[i].Id)
-                        //        {
-                        //            opids[i] = new OPID() { Id = SetHelper.Opid[i].Id };
-                        //            string opidJson = JSON.ToJsonFormat(opids);
-                        //            File.WriteAllText(SetHelper.opidPath, opidJson);
-                        //        }
-                        //        oldOpid[i].Id = Opid[i].Id;
-                        //    }
-                        //}
-
                         if (SetHelper.MesSetting.ListGroup.Count > 0 && SetHelper.MesSetting.ListGroup[0]?.IsMauaStation == "1")
                         {
                             object time = 0;

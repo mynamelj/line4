@@ -6,7 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../MES/Manager/FoolproofTestRules.cs" Link="Production/FoolproofTestRules.cs" />
+    <Compile Include="../../MES/MesModel/Response/SNCheckINResponse.cs" Link="Production/SNCheckINResponse.cs" />
     <Compile Include="../../MES/Manager/StationRules.cs" Link="Production/StationRules.cs" />
+    <Compile Include="../../MES/SetModel/ResultModel.cs" Link="Production/ResultModel.cs" />
     <Compile Include="../../MES/Manager/DataManagerRepairMode.cs" Link="Production/DataManagerRepairMode.cs" />
     <Compile Include="../../MES/Service/MiscService.cs" Link="Production/MiscService.cs" />
     <Compile Include="../../MES/Service/IMiscService.cs" Link="Production/IMiscService.cs" />

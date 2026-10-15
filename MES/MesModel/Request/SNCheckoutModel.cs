@@ -104,7 +104,7 @@ namespace MES.MesModel.Request
                 Line = SetHelper.MesSetting.ListGroup[number].Line,
                 MachineID = outchannel == 0 ? SetHelper.MesSetting.ListGroup[number].MachineID : SetHelper.MesSetting.ListGroup[number].MachineID + "#" + outchannel.ToString(),
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
-                OPID = SetHelper.Opid[number].Id,
+                OPID = "",
                 CarrierID = carryID,
                 FixSN = SetHelper.MesSetting.ListGroup[number].FixSN.Obj2String(),
                 Mold = SetHelper.MesSetting.ListGroup[number].Mold.Obj2String(),

@@ -59,7 +59,7 @@ namespace MES.MesModel.Request
                 Line = SetHelper.MesSetting.ListGroup[iNumber].Line,
                 MachineID = SetHelper.MesSetting.ListGroup[iNumber].MachineID,
                 StationID = SetHelper.MesSetting.ListGroup[iNumber].StationID,
-                OPID = SetHelper.MesSetting.ListGroup[iNumber].OPID,
+                OPID = "",
                 SN = SN,
                 CompList = compLists.ToArray(),
                 EventID = apis[apis.Length - 1]//SetHelper.ApiSetting.ListGroup[iNumber].LinkCompApi,

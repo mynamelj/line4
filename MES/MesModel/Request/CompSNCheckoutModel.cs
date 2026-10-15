@@ -43,7 +43,7 @@ namespace MES.MesModel.Request
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
                 FixSN = "CompSN_Checkout",//SetHelper.ApiSetting.ListGroup[number].CompSNCheckout,
                 Token = SetHelper.MesSetting.ListGroup[number].Token,
-                OPID = lightNumber.ToString(), //选垫工位灯号需要发送，其余默认发1 //SetHelper.Opid[number].Id,
+                OPID = lightNumber.ToString(), //选垫工位灯号需要发送，其余默认发1
                 SN = sn,
                 //这个EventID MES要求写死
                 EventID = "CompSN_Checkout"

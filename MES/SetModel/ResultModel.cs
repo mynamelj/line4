@@ -17,6 +17,11 @@ namespace MES.SetModel
         public string MachineID { get; set; }
 
         /// <summary>
+        /// 当前工站的返修模式，默认关闭。
+        /// </summary>
+        public bool IsRepairMode { get; set; }
+
+        /// <summary>
         /// 进站结果
         /// </summary>
         public string Result1 { get; set; }

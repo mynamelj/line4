@@ -27,7 +27,6 @@ namespace MES.Manager
         //public static string gluepath = "";
         public static string stationNumberPath = "";
 
-        public static string opidPath = "";
         public static string openBoxCodePath = "";
         public static string lightConfigPath = "";
 
@@ -40,8 +39,6 @@ namespace MES.Manager
         public static bool IsMsgGreenWindowOpen = false;
         public static string realapipath = "";
         public static string logmainpath = Environment.CurrentDirectory + "\\log\\";
-        public static bool IsRepairMode = false;
-        public static volatile bool IsOP3040RepairMode = false;
         public static bool isSpecialStation = false;
 
         /// <summary>
@@ -125,7 +122,6 @@ namespace MES.Manager
         public static StationNumberModel StationNumber = new StationNumberModel();
 
         public static LightConfigModel LightConfig = new LightConfigModel();
-        public static OPID[] Opid;
 
         /// <summary>
         /// 开箱匹配的码，预留8个工站，每个工站4个开箱
@@ -220,13 +216,6 @@ namespace MES.Manager
 
                 MesSetting = ReadSys<MesSettingModel>(mespath, "MES");
 
-                List<OPID> lsOpid = ReadSys<List<OPID>>(opidPath, "操作人员工号");
-                if (lsOpid == null)
-                {
-                    lsOpid = new List<OPID>();
-                    lsOpid.AddRange(new OPID[] { new OPID() { Id = "" }, new OPID() { Id = "" }, new OPID() { Id = "" }, new OPID() { Id = "" } });
-                }
-
                 OpenBoxes = ReadSys<List<List<OpenBox>>>(openBoxCodePath, "开箱匹配码");
                 if (OpenBoxes == null)
                 {
@@ -246,7 +235,6 @@ namespace MES.Manager
                 IsRestart = new bool[StationNumber.numberGroups.Count];
                 NowMaterialCode = new string[StationNumber.numberGroups.Count];
                 resultModel = new ResultModel[StationNumber.numberGroups.Count];
-                Opid = new OPID[StationNumber.numberGroups.Count];
 
                 for (int i = 0; i < StationNumber.numberGroups.Count; i++)
                 {
@@ -275,9 +263,7 @@ namespace MES.Manager
                     }
                     //resultModel[i].LinkVis = MesSetting.ListGroup[i].ScanMaterialCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 
-                    Opid[i] = new OPID();
 
-                    Opid[i].Id = lsOpid[i] == null ? "" : lsOpid[i].Id;
                 }
 
                 GlueOnLineList = ReadSys<ObservableCollection<MaterailOnOffModel>>(gluepath, "胶水");
@@ -438,7 +424,6 @@ namespace MES.Manager
         //public const string glue = "glue.json";
         public const string stationNumber = "stationNumber.json";
 
-        public const string opid = "opid.json";
         public const string openBoxCode = "openBoxCode.json";
         public const string lightConfig = "lightConfig.json";
 
@@ -458,10 +443,9 @@ namespace MES.Manager
             alarmpath = System.IO.Path.Combine(mainpath, ProductName, alarm);
             //gluepath = System.IO.Path.Combine(mainpath, ProductName, glue);
             stationNumberPath = System.IO.Path.Combine(mainpath, ProductName, stationNumber);
-            opidPath = System.IO.Path.Combine(mainpath, ProductName, opid);
             openBoxCodePath = System.IO.Path.Combine(mainpath, ProductName, openBoxCode);
             lightConfigPath = System.IO.Path.Combine(mainpath, ProductName, lightConfig);
-            List<string> pathList = new List<string>() { mespath, apipath, simapipath, scanpath, plcpath, alarmpath, materialpath, gluepath, stationNumberPath, opidPath, openBoxCodePath, lightConfigPath, productpath, userpath };
+            List<string> pathList = new List<string>() { mespath, apipath, simapipath, scanpath, plcpath, alarmpath, materialpath, gluepath, stationNumberPath, openBoxCodePath, lightConfigPath, productpath, userpath };
             List<string> directoryList = new List<string>() { logmainpath };
             CheckDirectory(pathList, directoryList);
 

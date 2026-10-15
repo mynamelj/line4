@@ -51,24 +51,19 @@ namespace MES.Manager
 
                 int SeqID = 0;
 
-                if (SetHelper.IsRepairMode)
+                bool isStationInRepair = SetHelper.resultModel[iNumber].IsRepairMode
+                    && stationName.IndexOf("PressFit", StringComparison.OrdinalIgnoreCase) >= 0;
+                if (isStationInRepair)
                 {
-                    bool isStationInRepair = repairModeStatus.Any(kv =>
-                        kv.Value && (stationName.Equals(kv.Key, StringComparison.OrdinalIgnoreCase)
-                                  || stationName.IndexOf(kv.Key, StringComparison.OrdinalIgnoreCase) >= 0));
-
-                    if (isStationInRepair)
-                    {
-                        snCode = string.IsNullOrWhiteSpace(scanSN) ? ScanManager.SNCode : scanSN;
-                        SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品SN_" + stationNumber, snCode);
-                        SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, 1);
-                        SetHelper.CheckInResult[iNumber] = 5;
-                        SetHelper.EnqueueCheckInResult(snCode, 5);
-                        SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + stationNumber, 5);
-                        SetHelper.resultModel[iNumber].Result1 = "OK-返修件";
-                        SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 返修模式进站完成，SN码: {snCode}，进站结果: 5 (已入队)");
-                        return;
-                    }
+                    snCode = string.IsNullOrWhiteSpace(scanSN) ? ScanManager.SNCode : scanSN;
+                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品SN_" + stationNumber, snCode);
+                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "扫描材料码结果_" + stationNumber, 1);
+                    SetHelper.CheckInResult[iNumber] = 5;
+                    SetHelper.EnqueueCheckInResult(snCode, 5);
+                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "进站结果_" + stationNumber, 5);
+                    SetHelper.resultModel[iNumber].Result1 = "OK-返修件";
+                    SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 返修模式进站完成，SN码: {snCode}，进站结果: 5 (已入队)");
+                    return;
                 }
 
                 if (stationName.ToUpper().Contains("NG_IO"))
@@ -299,7 +294,11 @@ namespace MES.Manager
                     {
                         // 获取MES返回的Result原值 (假设response.Item5存放的是Result字符串)
                         string mesResult =response.Item4.Trim();
-                        if (mesResult.ToUpper().Contains("REPAIR"))
+                        if (FoolproofTestRules.IsFoolproofTest(response.Item5))
+                        {
+                            checkInResult = FoolproofTestRules.CheckInResult;
+                        }
+                        else if (mesResult.ToUpper().Contains("REPAIR"))
                         {
                             // 特殊工位返修：对应所有要求的特殊工位
 
@@ -381,6 +380,7 @@ namespace MES.Manager
                         3 => "NG-空载具",
                         5 => stationName.ToUpper().Contains("OP3040") ? "OK-返修打散" : "OK-返修件",
                         6 => stationName.ToUpper().Contains("OP3040") ? "OK-返修合装" : "OK-返修件",
+                        FoolproofTestRules.CheckInResult => "OK",
                         _ => "NG"
                     };
 
@@ -457,7 +457,7 @@ namespace MES.Manager
                         $"{(result ? "成功" : "失败")}");
 
                     if (SetHelper.MesSetting.ListGroup[iNumber].ScanMaterialCount == 0
-                        && (checkInResult == 1 || checkInResult == 4))
+                        && (checkInResult == 1 || checkInResult == 4 || checkInResult == FoolproofTestRules.CheckInResult))
                     {
                         result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"扫描材料码结果_" + stationNumber,1); // 1=扫码完成
                         SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} {carryID}--{stationName} 工位无精追码。" +

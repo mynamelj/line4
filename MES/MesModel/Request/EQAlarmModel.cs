@@ -38,7 +38,7 @@ namespace MES.MesModel.Request
                 Line = SetHelper.MesSetting.ListGroup[number].Line,
                 MachineID = SetHelper.MesSetting.ListGroup[number].MachineID,
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
-                OPID = SetHelper.Opid[number].Id,
+                OPID = "",
                 ResetTime = DateTime.Now.ToString(),
                 AlarmID = alarmID.ToString(),
             };
@@ -78,7 +78,7 @@ namespace MES.MesModel.Request
     //            Line = SetHelper.MesSetting.ListGroup[number].Line,
     //            MachineID = SetHelper.MesSetting.ListGroup[number].MachineID,
     //            StationID = SetHelper.MesSetting.ListGroup[number].StationID,
-    //            OPID = SetHelper.Opid[number].Id,
+    //            OPID = "",
     //            Status = status.ToString(),
     //            AlarmIDList = alarmIDLists,
     //            EventID = apis[apis.Length - 1],

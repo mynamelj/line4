@@ -44,7 +44,7 @@ namespace MES.Manager
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
                 FixSN = "", // 如果有产品SN，这里也要传
                 Token = SetHelper.MesSetting.ListGroup[number].Token,
-                OPID = SetHelper.Opid[number].Id,
+                OPID = "",
                 CarrierID = SN, // 使用传入的托盘号
                 SendTime = dtStart.ToString("yyyy/MM/dd HH:mm:ss"), // 建议格式化时间
             };
@@ -120,7 +120,7 @@ namespace MES.Manager
                 Line = SetHelper.MesSetting.ListGroup[number].Line,
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
                 MachineID = SetHelper.MesSetting.ListGroup[number].MachineID,
-                OPID = SetHelper.Opid[number].Id,
+                OPID = "",
                 SendTime = dtStart.ToString("yyyy/MM/dd HH:mm:ss")
             };
 
@@ -408,8 +408,13 @@ namespace MES.Manager
                     {
                         result = (true, msg, sn, @string, "返修特殊工位");
                     }
+                    if (FoolproofTestRules.IsFoolproofTest(response.Result, msg))
+                    {
+                        result = (true, msg, sn, @string, FoolproofTestRules.MesResult);
+                    }
                     //增加上料口转盘逻辑
-                    if (checkINModel.StationID.Contains("1Turntable")&& msg.Contains("PASS->Status"))
+                    if (!FoolproofTestRules.IsFoolproofTest(response.Result, msg)
+                        && checkINModel.StationID.Contains("1Turntable") && msg.Contains("PASS->Status"))
                     {
                         result = (true, msg, sn, @string, "返修件");
                     }

@@ -47,7 +47,7 @@ namespace MES.MesModel.Request
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
                 FixSN = SetHelper.MesSetting.ListGroup[number].FixSN,
                 Token = SetHelper.MesSetting.ListGroup[number].Token,
-                OPID = SetHelper.Opid[number].Id,
+                OPID = "",
                 SN = isDownLine==true?CarrierID:snCode,//下线将载具码放到SN栏位
                 CarrierID = isDownLine==true?"":CarrierID,//下线载具码栏位为空
                 EventID = apis[apis.Length-1]

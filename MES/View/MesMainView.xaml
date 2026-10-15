@@ -61,15 +61,6 @@
                              Padding="5"
                              HorizontalAlignment="Stretch"
                              TextAlignment="Center" />
-                    <!--<TextBlock Text="操作人员ID"
-                           Margin="5"
-                           HorizontalAlignment="Center" />
-                <TextBox Text="{Binding OPID}"
-                         Height="30"
-                         Margin="20,0,20,0"
-                         Padding="5"
-                         HorizontalAlignment="Stretch"
-                         TextAlignment="Center" />-->
                     <TextBlock Text="Token"
                                Margin="5"
                                HorizontalAlignment="Center" />

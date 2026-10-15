@@ -260,7 +260,7 @@ namespace MES.ViewModel
             //        {
             //            Line = mesSetting.Line,
             //            MachineID = mesSetting.MachineID,
-            //            OPID = mesSetting.OPID,
+            //            OPID = "",
             //            StationID = mesSetting.StationID,
             //            SNList = snlists.ToArray()
             //        };
@@ -283,7 +283,7 @@ namespace MES.ViewModel
                 StationID = mesSetting.StationID,
                 FixSN = mesSetting.FixSN,
                 Token = mesSetting.Token,
-                OPID = mesSetting.OPID,
+                OPID = "",
                 SN = SN,
                 CarrierID = SN,
             };
@@ -309,7 +309,7 @@ namespace MES.ViewModel
                 Line = mesSetting.Line,
                 MachineID = mesSetting.MachineID,
                 StationID = mesSetting.StationID,
-                OPID = mesSetting.OPID,
+                OPID = "",
                 SN = SN,
                 CompList = compLists.ToArray(),
             };
@@ -345,7 +345,7 @@ namespace MES.ViewModel
                 Line = mesSetting.Line,
                 MachineID = mesSetting.MachineID,
                 StationID = mesSetting.StationID,
-                OPID = mesSetting.OPID,
+                OPID = "",
                 CarrierID = "",
                 FixSN = mesSetting.FixSN,
                 Mold = mesSetting.Mold,
@@ -364,7 +364,7 @@ namespace MES.ViewModel
                 Line = mesSetting.Line,
                 MachineID = mesSetting.MachineID,
                 StationID = mesSetting.StationID,
-                OPID = mesSetting.OPID,
+                OPID = "",
                 // ResetTime = DateTime.Now.ToString(),
             };
 
@@ -379,7 +379,7 @@ namespace MES.ViewModel
                 Line = mesSetting.Line,
                 MachineID = mesSetting.MachineID,
                 StationID = mesSetting.StationID,
-                OPID = mesSetting.OPID,
+                OPID = "",
                 FixSN = mesSetting.FixSN,
                 Token = mesSetting.Token,
                 STATUS = "",

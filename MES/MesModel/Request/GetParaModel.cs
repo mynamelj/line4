@@ -66,7 +66,7 @@ namespace MES.MesModel.Request
                 Line = SetHelper.MesSetting.ListGroup[number].Line,
                 MachineID = SetHelper.MesSetting.ListGroup[number].MachineID,
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
-                OPID = SetHelper.Opid[number].Id,
+                OPID = "",
                 FixSN = SetHelper.MesSetting.ListGroup[number].FixSN.Obj2String(),
                 Token = SetHelper.MesSetting.ListGroup[number].Token.Obj2String(),
                 Para_Info = para_Infos.ToArray(),

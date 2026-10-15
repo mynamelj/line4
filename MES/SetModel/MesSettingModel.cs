@@ -35,10 +35,6 @@ namespace MES.SetModel
         /// </summary>
         public string MachineID { get; set; }
         /// <summary>
-        /// 操作人员ID
-        /// </summary>
-        public string OPID { get; set; } = "";
-        /// <summary>
         /// 用于验证是否能调用该接口，需MES提供
         /// </summary>
         public string Token { get; set; } = "";

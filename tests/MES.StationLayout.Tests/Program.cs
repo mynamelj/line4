@@ -13,7 +13,8 @@ internal static class Program
         {
             ScanRouting();
             RepairRouting();
-            Console.WriteLine($"PASS: {checks} station layout assertions");
+            FoolproofTests.Run(Check);
+            Console.WriteLine($"PASS: {checks} station layout and foolproof assertions");
             return 0;
         }
         catch (Exception ex)
@@ -33,6 +34,7 @@ internal static class Program
     {
         SetHelper.StationNumber.numberGroups = new ObservableCollection<NumberGroup>(
             names.Select((name, index) => new NumberGroup { Number = index + 1, Name = name }));
+        SetHelper.resultModel = names.Select(_ => new ResultModel()).ToArray();
     }
 
     private static void ScanRouting()
@@ -98,44 +100,53 @@ internal static class Program
     {
         Layout("OP2020PressFit1", "OP2020PressFit2");
         var pair = new DataManager();
+        Check(SetHelper.resultModel.All(model => !model.IsRepairMode), "all station indicators default to blank");
         pair.TriggerRepairMode(true, "1");
-        Check(pair.IsStationInRepair("OP2020PressFit1"), "station 1 sets input repair");
-        Check(!pair.IsStationInRepair("OP2020PressFit2"), "input repair does not affect intermediate");
+        Check(SetHelper.resultModel[0].IsRepairMode, "station 1 sets input repair");
+        Check(!SetHelper.resultModel[1].IsRepairMode, "input repair does not affect intermediate");
         pair.TriggerRepairMode(true, "2");
         pair.TriggerRepairMode(false, "1");
-        Check(SetHelper.IsRepairMode && pair.IsStationInRepair("OP2020PressFit2"), "intermediate keeps repair enabled independently");
+        Check(!SetHelper.resultModel[0].IsRepairMode && SetHelper.resultModel[1].IsRepairMode,
+            "intermediate keeps repair enabled independently");
         pair.TriggerRepairMode(false, "2");
-        Check(!SetHelper.IsRepairMode, "both disabled clears aggregate repair mode");
+        Check(SetHelper.resultModel.All(model => !model.IsRepairMode), "both disabled clears both indicators");
 
         Layout("OP2030PressFit", "OP2040ShaftAssy", "OP2045Assy");
         var shaft = new DataManager();
         shaft.TriggerRepairMode(true, "1");
-        Check(shaft.IsStationInRepair("OP2030PressFit"), "layout 2 station 1 sets shaft press repair");
-        Check(!shaft.IsStationInRepair("OP2020PressFit1"), "layout 2 station 1 cannot set input repair");
         shaft.TriggerRepairMode(false, "2");
         shaft.TriggerRepairMode(false, "3");
-        Check(shaft.IsStationInRepair("OP2030PressFit"), "OP2040 and OP2045 cannot clear shaft press repair");
+        Check(SetHelper.resultModel[0].IsRepairMode, "other stations cannot clear shaft press repair");
         shaft.TriggerRepairMode(false, "1");
-        Check(!SetHelper.IsRepairMode, "shaft station clears own repair mode");
         shaft.TriggerRepairMode(true, "2");
         shaft.TriggerRepairMode(true, "3");
-        Check(!SetHelper.IsRepairMode, "OP2040 and OP2045 cannot enable press repair by their positions");
-        foreach (string number in new[] { "0", "4", "bad", null })
+        Check(!SetHelper.resultModel[0].IsRepairMode, "other stations cannot enable shaft press repair");
+        Check(SetHelper.resultModel[1].IsRepairMode && SetHelper.resultModel[2].IsRepairMode,
+            "non-press stations also store their own repair display state");
+        foreach (string number in new[] { "0", "4", "bad", null, "-1" })
             shaft.TriggerRepairMode(true, number);
-        Check(!SetHelper.IsRepairMode, "invalid station number cannot enable repair");
+        Check(!SetHelper.resultModel[0].IsRepairMode, "invalid station numbers cannot change repair state");
 
         Layout("OP2020PressFit2", "OP2020PressFit1");
-        var reordered = new DataManager();
-        reordered.TriggerRepairMode(true, "1");
-        Check(reordered.IsStationInRepair("OP2020PressFit2"), "repair follows configured name rather than fixed position");
-        Check(!reordered.IsStationInRepair("OP2020PressFit1"), "reordered station does not set other press station");
-        reordered.TriggerRepairMode(false, "1");
+        pair.TriggerRepairMode(true, "1");
+        Check(SetHelper.resultModel[0].IsRepairMode && !SetHelper.resultModel[1].IsRepairMode,
+            "repair follows current station configuration after reload");
 
-        Layout("OP3040Assy");
+        Layout("OP3040Assy", "OP3040Assy", "CustomPressFit");
         var separate = new DataManager();
         separate.TriggerRepairMode(true, "1");
-        Check(SetHelper.IsOP3040RepairMode && !SetHelper.IsRepairMode, "OP3040 remains separate from shaft repair");
+        Check(SetHelper.resultModel[0].IsRepairMode && !SetHelper.resultModel[1].IsRepairMode,
+            "OP3040 stations with identical names still have independent repair states");
+        separate.TriggerRepairMode(true, "3");
         separate.TriggerRepairMode(false, "1");
-        Check(!SetHelper.IsOP3040RepairMode, "OP3040 mode can be disabled");
+        Check(!SetHelper.resultModel[0].IsRepairMode && SetHelper.resultModel[2].IsRepairMode,
+            "new PressFit names work independently without a hardcoded station list");
+
+        SetHelper.resultModel = null;
+        separate.TriggerRepairMode(true, "1");
+        SetHelper.resultModel = new ResultModel[1];
+        separate.TriggerRepairMode(true, "1");
+        separate.TriggerRepairMode(true, "2");
+        Check(SetHelper.resultModel[0] == null, "uninitialized station models are ignored safely");
     }
 }

@@ -40,7 +40,7 @@ namespace MES.MesModel.Request
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
                 FixSN = SetHelper.MesSetting.ListGroup[number].FixSN,
                 Token = SetHelper.MesSetting.ListGroup[number].Token,
-                OPID = SetHelper.Opid[number].Id,
+                OPID = "",
                 CarrierID = CarrierID,
                 EventID = apis[apis.Length - 1]
             };

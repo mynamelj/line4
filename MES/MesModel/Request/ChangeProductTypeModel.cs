@@ -26,7 +26,7 @@ namespace MES.MesModel.Request
                 Line = SetHelper.MesSetting.ListGroup[number].Line,
                 MachineID = SetHelper.MesSetting.ListGroup[number].MachineID,
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
-                OPID = SetHelper.Opid[number].Id,
+                OPID = "",
                 EventID = "Order_Get",
             };
             return model;

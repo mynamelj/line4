@@ -43,7 +43,7 @@ namespace MES.MesModel.Request
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
                 FixSN = SetHelper.MesSetting.ListGroup[number].FixSN,
                 Token = SetHelper.MesSetting.ListGroup[number].Token,
-                OPID = SetHelper.Opid[number].Id,
+                OPID = "",
                 SN = sn,
                 EventID = apis[apis.Length - 1]// SetHelper.ApiSetting.ListGroup[number].FeedingCheck,
             };

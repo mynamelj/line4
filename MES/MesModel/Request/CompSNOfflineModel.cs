@@ -48,7 +48,7 @@ namespace MES.MesModel.Request
                 StationID = SetHelper.MesSetting.ListGroup[number].StationID,
                 FixSN = "CompSN_Offline",// SetHelper.ApiSetting.ListGroup[number].CompSNOffline,
                 Token = SetHelper.MesSetting.ListGroup[number].Token,
-                OPID = lightNumber < 1 ? 1.ToString() : lightNumber.ToString(), //SetHelper.Opid[number].Id,
+                OPID = lightNumber < 1 ? 1.ToString() : lightNumber.ToString(),
                 SN = sn,
                 EventID = "CompSN_Offline"// SetHelper.ApiSetting.ListGroup[number].CompSNOffline,
             };

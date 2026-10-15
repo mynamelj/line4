@@ -6,8 +6,7 @@ namespace MES.Manager
     public static class SetHelper
     {
         public static StationNumberModel StationNumber = new StationNumberModel();
-        public static bool IsRepairMode;
-        public static bool IsOP3040RepairMode;
+        public static ResultModel[] resultModel;
         public static TestMessages ListScanMessage = new TestMessages();
         public static TestMessages ListPLCMessage = new TestMessages();
     }
@@ -17,13 +16,7 @@ namespace MES.Manager
         public void ShowInfoQueue(string message) { }
     }
 
-    public partial class DataManager
-    {
-        public bool IsStationInRepair(string stationName)
-        {
-            return repairModeStatus.TryGetValue(stationName, out bool enabled) && enabled;
-        }
-    }
+
 }
 
 namespace PropertyChanged
@@ -32,4 +25,4 @@ namespace PropertyChanged
 }
 namespace MES.Comm { }
 namespace MES.View { }
-namespace System.Windows { }
+namespace System.Windows { public enum Visibility { Visible, Hidden, Collapsed } }

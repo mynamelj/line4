@@ -128,11 +128,13 @@ namespace MES.Manager
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
                     //从这个大字典中，取出键名为 "CheckOutGroup"（出站组）的那一部分子字典。
                     var dic = SetHelper.siemens.DicDataItems[PLCGroupName.CheckOutGroup.ToString()];//<TagName,DataItem>                                                                    //读取对应工位的参数
-                    dic = dic.Where(it => it.Key.Contains("_" + number)).ToDictionary(it => it.Key, it => it.Value);
+                    bool isFoolproofTest = checkInResult == FoolproofTestRules.CheckInResult;
+                    dic = dic.Where(it => FoolproofTestRules.ShouldReadCheckOutTag(it.Key, number, checkInResult))
+                        .ToDictionary(it => it.Key, it => it.Value);
 
                     // 根据sn对应的结果判定读取的出站数据：
                     // 返修出站或处于OP3040返修模式时，按返修合装上传项过滤（进站6逻辑）
-                    if ((checkInResult == 6 || SetHelper.IsOP3040RepairMode) && stationName.Contains("3040"))
+                    if (!isFoolproofTest && (checkInResult == 6 || SetHelper.resultModel[iNumber].IsRepairMode) && stationName.Contains("3040"))
                     {
                         // 临时固定返修合装上传项，后续再恢复配置。
                         var repairUploadTags = new[] { "HeatTemp_1", "CoverPressDisplace_1", "CoverPressForce_1" };
@@ -152,11 +154,14 @@ namespace MES.Manager
                         {
                             for (int i = 0; i < datarray.Length; i++)
                             {
-                                PLCTag tag = SetHelper.PLCSetting.ListGroup.FirstOrDefault(x => x.GroupType == PLCGroupName.CheckOutGroup.ToString())?.ListTag.FirstOrDefault(x => TagNameList[i].Contains(x.TagName));
+                                string configuredTagName = TagNameList[i].Substring(0, TagNameList[i].LastIndexOf('_'));
+                                PLCTag tag = SetHelper.PLCSetting.ListGroup.FirstOrDefault(x => x.GroupType == PLCGroupName.CheckOutGroup.ToString())?.ListTag.FirstOrDefault(x =>
+                                    string.Equals(x.TagName, TagNameList[i], StringComparison.OrdinalIgnoreCase)
+                                    || string.Equals(x.TagName, configuredTagName, StringComparison.OrdinalIgnoreCase));
                                 bool isStringType = tag?.DataType.ToLower() == "string";
                                 var value = isStringType ? datarray[i]?.ToString() : Convert.ToSingle(datarray[i]).ToString("0.############################", System.Globalization.CultureInfo.InvariantCulture);
                                 SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 读到{TagNameList[i]}为{value}");
-                                if (isStringType)
+                                if (isStringType && !isFoolproofTest)
                                 {
                                     compList.Add(new CompList() { CompID = datarray[i].ToString(), Qty = 1 });
                                 }
@@ -164,7 +169,7 @@ namespace MES.Manager
                                 {
                                     DC_Info dC_Info = new DC_Info()
                                     {
-                                        Item = TagNameList[i].Substring(0, TagNameList[i].LastIndexOf('_')),//去掉下划线
+                                        Item = FoolproofTestRules.GetMesItemName(TagNameList[i]),//去掉工位后缀及防呆前缀
                                         Value = value,
                                         Result = "Pass",
                                     };
