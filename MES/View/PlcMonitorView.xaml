@@ -1,0 +1,38 @@
+<Window x:Class="MES.View.PlcMonitorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PLC监控界面" Width="1280" Height="800" MinWidth="900" MinHeight="550"
+        WindowState="Maximized" WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="20">
+        <TextBlock DockPanel.Dock="Top" Text="PLC监控界面" FontSize="26" FontWeight="Bold" Margin="0,0,0,12" />
+        <TextBlock DockPanel.Dock="Bottom" Margin="0,12,0,0" Foreground="Gray"
+                   Text="每秒刷新当前信号组的全部标签；读取失败显示 null。" />
+        <TabControl ItemsSource="{Binding Groups}" SelectedItem="{Binding SelectedGroup}">
+            <TabControl.ItemTemplate>
+                <DataTemplate><TextBlock Text="{Binding Title}" Margin="16,8" FontSize="16" /></DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <DockPanel Margin="16">
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,16">
+                            <TextBlock Text="{Binding Rows.Count, StringFormat=共 {0} 个标签}" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <DataGrid ItemsSource="{Binding Rows}"
+                                  AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                                  SelectionMode="Single" SelectionUnit="FullRow" RowHeight="34"
+                                  EnableRowVirtualization="True" EnableColumnVirtualization="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Tag 名称" Binding="{Binding Tag.TagName}" Width="2*" />
+                                <DataGridTextColumn Header="DB" Binding="{Binding Tag.TagDbArea}" Width="80" />
+                                <DataGridTextColumn Header="地址" Binding="{Binding Tag.TagAddress}" Width="120" />
+                                <DataGridTextColumn Header="数据类型" Binding="{Binding Tag.DataType}" Width="110" />
+                                <DataGridTextColumn Header="实时值" Binding="{Binding Value}" Width="2*" />
+                                <DataGridTextColumn Header="说明" Binding="{Binding Tag.TagDesc}" Width="2*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </DockPanel>
+</Window>

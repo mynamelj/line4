@@ -322,7 +322,7 @@
                              HorizontalAlignment="Stretch"
                              TextAlignment="Center" />
 
-                    <TextBlock Text="是否为胶水上料工位(0=不是，1=是)"
+                    <TextBlock Text="胶水上料工位(0=不是，1=单胶，2=支持双胶)"
                                Margin="5"
                                HorizontalAlignment="Center" />
                     <TextBox Text="{Binding IsGlueStation}"
@@ -782,6 +782,10 @@
                                 Margin="10"
                                 Command="{Binding OpenTestWindowCommand}"
                                 Content="测试页面" />
+                        <Button Height="30"
+                                Margin="10"
+                                Command="{Binding OpenPlcMonitorWindowCommand}"
+                                Content="打开PLC监控界面" />
                         <Button Height="30"
                                 Margin="10"
                                 Command="{Binding OpenMiscWindowCommand}"

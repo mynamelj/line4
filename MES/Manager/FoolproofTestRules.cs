@@ -7,7 +7,7 @@ namespace MES.Manager
         // 内部防呆标识，供进站流程沿用；MES实际返回 PASS + FD。
         public const string MesResult = "FDCSJ";
         public const int CheckInResult = 7;
-        private const string TagPrefix = "fd_";
+        private const string TagPrefix = "FD_";
 
         public static bool IsFoolproofTest(string result)
         {
@@ -25,7 +25,7 @@ namespace MES.Manager
             if (!tagName.EndsWith("_" + stationNumber, StringComparison.Ordinal))
                 return false;
 
-            bool hasFoolproofPrefix = tagName.StartsWith(TagPrefix, StringComparison.OrdinalIgnoreCase);
+            bool hasFoolproofPrefix = tagName.ToUpper().StartsWith(TagPrefix, StringComparison.OrdinalIgnoreCase);
             if (checkInResult == CheckInResult)
             {
                 // 防呆件：只读取并上传 fd_ 前缀的标签。
@@ -39,8 +39,8 @@ namespace MES.Manager
         public static string GetMesItemName(string tagName)
         {
             string item = tagName.Substring(0, tagName.LastIndexOf('_'));
-            return item.StartsWith(TagPrefix, StringComparison.OrdinalIgnoreCase)
-                ? item.Substring(TagPrefix.Length)
+            return item.ToUpper().StartsWith(TagPrefix, StringComparison.OrdinalIgnoreCase)
+                ? item.ToUpper().Substring(TagPrefix.Length)
                 : item;
         }
     }

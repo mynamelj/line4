@@ -168,7 +168,9 @@ namespace MES.Manager
                     {
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + " 3=>");
                         SetHelper.ListScanMessage.ShowInfoQueue(stationName + $" 5=>{hardIndex} {str.Trim().Length} {SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen}");
-                        if (str.Trim().Length == SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen||stationName.ToUpper().Contains("OP2030")|| stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2035"))
+                        if (str.Trim().Length == SetHelper.MesSetting.ListGroup[hardIndex].SNCodeLen||
+                            stationName.ToUpper().Contains("OP2030")|| stationName.ToUpper().Contains("OP2020") || stationName.ToUpper().Contains("OP2035")
+                            || stationName.ToUpper().Contains("OP1010"))
                         {    //弹窗未关闭
                             if (DataManager.IsOP1010ViewOpen)
                             {

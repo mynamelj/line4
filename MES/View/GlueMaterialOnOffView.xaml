@@ -64,6 +64,7 @@
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
@@ -124,8 +125,23 @@
                               SelectedValue="{Binding BoxNo}" />
                 </DockPanel>-->
 
+                <DockPanel Grid.Column="3"
+                           Width="200"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding GlueTypeVisibility}">
+                    <TextBlock Text="胶水种类"
+                               Margin="10"
+                               VerticalAlignment="Center" />
+                    <ComboBox Height="30"
+                              MinWidth="70"
+                              Margin="5,10"
+                              VerticalContentAlignment="Center"
+                              ItemsSource="{Binding GlueTypes}"
+                              SelectedItem="{Binding GlueType, Mode=TwoWay}" />
+                </DockPanel>
+
                 <Button x:Name="MaterialOnButton"
-                        Grid.Column="3"
+                        Grid.Column="4"
                         Height="30"
                         Margin="10"
                         VerticalAlignment="Center"
@@ -272,7 +288,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="MES返回的信息"
+                <DataGridTemplateColumn Header="胶水种类"
                                         Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

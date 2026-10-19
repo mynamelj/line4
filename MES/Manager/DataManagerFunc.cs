@@ -1580,7 +1580,7 @@ namespace MES.Manager
                     Thread.Sleep(10);
                     try
                     {
-                        var mes = SetHelper.MesSetting.ListGroup.FirstOrDefault(x => x.IsGlueStation == "1");
+                        var mes = SetHelper.MesSetting.ListGroup.FirstOrDefault(x => GlueStationRules.IsGlueStation(x.IsGlueStation));
                         if (mes == null)
                         {
                             continue;

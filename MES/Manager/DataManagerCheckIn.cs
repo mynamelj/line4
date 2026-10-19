@@ -115,6 +115,7 @@ namespace MES.Manager
                 }
                 else
                 {
+                    
 
                     // 这些工位的产品本身有条码（如24位电机壳体码），操作员手动扫码进站
                     // PLC不提供进站载具码，SN码由扫码枪获取
@@ -147,8 +148,10 @@ namespace MES.Manager
  
                         // FeedingSNCodeLen > 0 时才触发，说明该工位需要先校验条码合法性
                         // 确认该条码是否属于当前工单/产品类型
-                        if (SetHelper.MesSetting.ListGroup[iNumber].FeedingSNCodeLen > 1)
+                        if (SetHelper.MesSetting.ListGroup[iNumber].FeedingSNCodeLen > 1 && snCode.Length > 12)
                         {
+
+                            
                             SetHelper.ListOEEMessage.ShowInfoQueue("触发feedingcheck");
                             // 调用MES的FeedingCheck接口，校验扫码的SN码是否合法
                             (bool, string, string) response0 = await SetHelper.mesManager.FeedingCheck(
@@ -466,26 +469,33 @@ namespace MES.Manager
 
                     if (checkInResult == 1 || checkInResult == 4)
                     {
-                        ObservableCollection<MaterailOnOffModel> GlueInfo = SetHelper.GlueOnLineList;
+                        string glueSetting = SetHelper.MesSetting.ListGroup[iNumber].IsGlueStation;
+                        // 按当前工位筛选，其他工位上胶不能代替本工位；双胶允许只上任意一种。
+                        var glueCodes = await Application.Current.Dispatcher.InvokeAsync(() => SetHelper.GlueOnLineList
+                            .Where(info => !string.IsNullOrWhiteSpace(info.GlueCode)
+                                && GlueStationRules.MatchesStation(info.LocationNo, stationName))
+                            .Select(info => info.GlueCode).ToList());
 
-                        // 胶水工位但未上胶
-                        // 胶水工位（IsGlueStation="1"）且胶水在线列表为空 禁止进站
-                        if (SetHelper.MesSetting.ListGroup[iNumber].IsGlueStation == "1" && GlueInfo.Count < 1)
+                        if (GlueStationRules.IsGlueStation(glueSetting) || glueCodes.Count > 0)
                         {
-                            response.Item1 = false; // 强制标记进站失败
-                            msg = $" 工站:{stationName}\r\n胶水未上料，进站失败!!!\r\n\r\n请扫描胶水码上料后重新进站";
-                            // 给PLC发材料合法性结果=2（失败），阻止机器开始加工
-                            result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,"检查材料合法性结果_" + stationNumber,2);
-                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 材料合法性校验结果写{2},{(result ? "成功" : "失败")}");
-                        }
-
-                        // 遍历已上料的胶水列表，对属于当前工位的胶水码做FeedingCheck
-                        foreach (var info in GlueInfo)
-                        {
-                            if (!string.IsNullOrEmpty(info.GlueCode) && info.LocationNo == stationName)
+                            var glueCheck = await GlueStationRules.CheckAsync(glueCodes, async code =>
                             {
-                                // 异步校验胶水码合法性，校验结果会写入PLC"检查材料合法性结果"
-                                await FeedingCheckAsync(stationNumber, info.GlueCode);
+                                var feeding = await SetHelper.mesManager.FeedingCheck(code.GetFeedingCheck(iNumber), iNumber);
+                                SetHelper.ListMesMessage.ShowInfoQueue(
+                                    $"{stationName} 胶水码:{code}--FeedingCheck结果:{feeding.Item1},消息:{feeding.Item2}\r\nMES返回完整信息:{feeding.Item3}");
+                                return (feeding.Item1, feeding.Item2);
+                            });
+
+                            // 全部核验完成后只写一次，防止第二种胶水成功覆盖第一种失败。
+                            int feedingResult = glueCheck.Success ? 1 : 2;
+                            result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup,
+                                "检查材料合法性结果_" + stationNumber, feedingResult);
+                            SetHelper.ListPLCMessage.ShowInfoQueue($"{stationName} 材料合法性校验结果写{feedingResult},{(result ? "成功" : "失败")}");
+                            SetHelper.NowProductCode = "";
+                            if (!glueCheck.Success)
+                            {
+                                response.Item1 = false;
+                                msg = $"工站:{stationName}\r\n胶水核验失败，禁止加工！\r\n\r\n{glueCheck.Message}";
                             }
                         }
                     }

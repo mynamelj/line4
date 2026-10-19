@@ -35,13 +35,7 @@ namespace MES.ViewModel
                 //{
                 //    LocationList.Add((i + 1).ToString());
                 //}
-                for (int i = 0; i < SetHelper.StationNumber.numberGroups.Count; i++)
-                {
-                    if (SetHelper.MesSetting.ListGroup[i].IsGlueStation == "1")
-                    {
-                        LocationList.Add(SetHelper.StationNumber.numberGroups[i].Name);
-                    }
-                }
+                RefreshLocations();
             }
 
             SetHelper.scanManager.OnScanOpenBox += ScanManager_OnScanOpenBox;
@@ -54,14 +48,10 @@ namespace MES.ViewModel
             // 上下料始终使用当前生产配置，实际切型后同步列表。
             void RefreshCurrentProduct()
             {
-                LocationList.Clear();
-                for (int i = 0; i < SetHelper.StationNumber.numberGroups.Count && i < SetHelper.MesSetting.ListGroup.Count; i++)
-                {
-                    if (SetHelper.MesSetting.ListGroup[i].IsGlueStation == "1")
-                        LocationList.Add(SetHelper.StationNumber.numberGroups[i].Name);
-                }
+                RefreshLocations();
                 LocationNo = "";
                 LocationIndex = -1;
+                GlueType = GlueStationRules.FirstType;
                 GlueCode = "";
                 BoxNo = "";
                 ErrorMsg = "";
@@ -70,6 +60,17 @@ namespace MES.ViewModel
             if (Application.Current?.Dispatcher != null)
                 Application.Current.Dispatcher.Invoke(RefreshCurrentProduct);
             else RefreshCurrentProduct();
+        }
+
+        private void RefreshLocations()
+        {
+            LocationList.Clear();
+            for (int i = 0; i < SetHelper.StationNumber.numberGroups.Count && i < SetHelper.MesSetting.ListGroup.Count; i++)
+            {
+                foreach (var location in GlueStationRules.GetLocations(
+                    SetHelper.StationNumber.numberGroups[i].Name, SetHelper.MesSetting.ListGroup[i].IsGlueStation))
+                    LocationList.Add(location);
+            }
         }
 
         /// <summary>
@@ -81,7 +82,9 @@ namespace MES.ViewModel
             {
                 while (true)
                 {
-                    foreach (var item in GlueOnLineList)
+                    // 列表在UI线程上下料，先取快照，避免替换胶水时中断倒计时任务。
+                    var materials = Application.Current.Dispatcher.Invoke(() => GlueOnLineList.ToList());
+                    foreach (var item in materials)
                     {
                         double time = (DateTime.Now - Convert.ToDateTime(item.DateTime)).TotalSeconds;
                         item.RestDateTimeNow = Convert.ToInt32((Convert.ToDouble(item.RestDateTime) - time));
@@ -119,6 +122,24 @@ namespace MES.ViewModel
         public string BoxNo { get; set; } = "";
         public string LocationNo { get; set; } = "";
         public int LocationIndex { get; set; } = 0;
+        public IReadOnlyList<string> GlueTypes { get; } = new[] { GlueStationRules.FirstType, GlueStationRules.SecondType };
+        public string GlueType { get; set; } = GlueStationRules.FirstType;
+
+        [DependsOn(nameof(LocationNo))]
+        public Visibility GlueTypeVisibility
+        {
+            get
+            {
+                int index = GlueStationRules.ResolveStationIndex(LocationNo,
+                    SetHelper.StationNumber.numberGroups.Select(it => it.Name));
+                return index >= 0 && index < SetHelper.MesSetting.ListGroup.Count
+                    && SetHelper.MesSetting.ListGroup[index].IsGlueStation == "2"
+                    ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private void OnLocationNoChanged() => GlueType = GlueStationRules.FirstType;
+
         /// <summary>
         /// 批追码
         /// </summary>
@@ -166,51 +187,61 @@ namespace MES.ViewModel
                 return;
             }
 
+            // 在请求前固定条码和位置，避免等待MES时切换选项导致记录到其他位置。
+            string loadingCode = GlueCode;
+            string loadingLocation = LocationNo;
+            int iNumber = GlueStationRules.ResolveStationIndex(loadingLocation,
+                SetHelper.StationNumber.numberGroups.Select(it => it.Name));
+            if (iNumber < 0 || iNumber >= SetHelper.MesSetting.ListGroup.Count || !LocationList.Contains(loadingLocation))
+            {
+                ErrorMsg = "胶水工位配置无效，请重新选择工位！";
+                Color = Brushes.Red;
+                return;
+            }
+            string glueSetting = SetHelper.MesSetting.ListGroup[iNumber].IsGlueStation;
+            string loadingType = glueSetting == "2" ? GlueType : null;
+            if (glueSetting == "2" && loadingType != GlueStationRules.FirstType && loadingType != GlueStationRules.SecondType)
+            {
+                ErrorMsg = "请选择胶水种类！";
+                Color = Brushes.Red;
+                return;
+            }
+            if (!GlueStationRules.IsGlueStation(glueSetting))
+            {
+                ErrorMsg = "胶水工位配置已变化，请重新加载配置后上料！";
+                Color = Brushes.Red;
+                return;
+            }
+
             ErrorMsg = $"{GlueCode}:上料正在请求MES中...";
             Color = Brushes.Green;
-            //var response = await SetHelper.mesManager.GlueOnLine(GlueCode.GetGlueCheckOutModel(LocationNo));
 
-            //int iNumber= LocationList.IndexOf(LocationNo); 20250417改为由名称匹配获取
-            int iNumber = SetHelper.StationNumber.numberGroups.Select(it => it.Name).ToList().IndexOf(LocationNo);
-            //1代表上线，2代表下线
-            var response = await SetHelper.mesManager.GlueOnOrOffLine(GlueCode.GetGlueCheckOutModel(1.ToString(), iNumber), iNumber);
+            var response = await SetHelper.mesManager.GlueOnOrOffLine(loadingCode.GetGlueCheckOutModel(1.ToString(), iNumber), iNumber);
 
-            //var response = (true,"code1#123");//测试用
             if (response.Item1)
             {
-                //string openMsg = "";
-                //if (BoxNo != "")//如果选择了箱号那么就开箱
-                //{
-                //    string tagName = "开箱" + BoxNo;
-                //    bool result = SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, tagName, true);
-                //    openMsg = $"\r\n料箱{BoxNo}开箱{(result ? "成功" : "失败")}！";
-                //}
 
-                ErrorMsg = $"{GlueCode}:胶水上料成功！\r\nMES返回的信息:{response.Item2}";
+                ErrorMsg = $"{loadingCode}:胶水上料成功！\r\nMES返回的信息:{response.Item2}";
                 Color = Brushes.Green;
 
                 var ReturnMsg = response.Item2.Split('#');
-                string snCode = GlueCode;//胶水SN
+                string snCode = loadingCode;//胶水SN
                 //string Batch = "";
                 string dateTime = System.DateTime.Now.ToString();//扫码时间
-                string stationName = LocationNo;//工位号
                 string restTime = ReturnMsg[ReturnMsg.Length - 1];//最后一位//胶水剩余时间（分钟）2025/4/6Mes人员修改为秒
 
-                //var detail = GlueCode.Split('|').ToArray();
-                //if (detail.Length > 7)
-                //{
-                //    Mcode = detail[0].Obj2String();
-                //    DateTime = detail[1].Obj2String();
-                //    Batch = detail[6].Obj2String();
-                //}
-                GlueOnLineList.Add(new MaterailOnOffModel() { GlueCode = snCode, DateTime = dateTime, LocationNo = stationName, RestDateTime = restTime, RestDateTimeNow = Convert.ToInt32(restTime) });
+                var material = new MaterailOnOffModel() { GlueCode = snCode, DateTime = dateTime, LocationNo = loadingLocation, MesMsg = loadingType, RestDateTime = restTime, RestDateTimeNow = Convert.ToInt32(restTime) };
+                foreach (var previous in GlueOnLineList.Where(item =>
+                    GlueStationRules.ShouldReplace(item.LocationNo, item.MesMsg, loadingLocation, glueSetting, loadingType)).ToList())
+                    GlueOnLineList.Remove(previous);
+                GlueOnLineList.Add(material);
                 //GlueOnLineList.Add(new MaterailOnOffModel() { GlueCode = GlueCode, BoxNo = BoxNo, MaterialName = MaterialName, MaterialCode = Mcode, Batch = Batch ,DateTime = DateTime,LocationNo=LocationNo });
                 SetHelper.SaveSys(GlueOnLineList, SetHelper.gluepath);
                 SetHelper.GlueOnLineList = GlueOnLineList;
             }
             else
             {
-                ErrorMsg = $" {GlueCode} :胶水上料失败！\r\n\r\n MES返回的信息:{response.Item2}";
+                ErrorMsg = $" {loadingCode} :胶水上料失败！\r\n\r\n MES返回的信息:{response.Item2}";
                 Color = Brushes.Red;
             }
             GlueCode = "";
@@ -223,7 +254,14 @@ namespace MES.ViewModel
         /// </summary>
         public ICommand MaterialOffLineCommand => new RelayCommand<MaterailOnOffModel>(async (s) =>
         {
-            int iNumber = LocationList.IndexOf(s.LocationNo);
+            int iNumber = GlueStationRules.ResolveStationIndex(s.LocationNo,
+                SetHelper.StationNumber.numberGroups.Select(it => it.Name));
+            if (iNumber < 0 || iNumber >= SetHelper.MesSetting.ListGroup.Count)
+            {
+                ErrorMsg = "下料失败，找不到胶水对应的工位配置！";
+                Color = Brushes.Red;
+                return;
+            }
             //int iNumber = SetHelper.StationNumber.numberGroups.Select(it => it.Name).ToList().IndexOf(LocationNo);
 
             var result = MessageBox.Show($"胶水\r\n{s.GlueCode}\r\n是否确认下料??", "下料确认", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -364,7 +402,7 @@ namespace MES.ViewModel
         /// </summary>
         public string LocationNo { get; set; }
         /// <summary>
-        /// MES返回的信息
+        /// 双胶工位的胶水种类：第一种、第二种；单胶工位不使用。
         /// </summary>
         public string MesMsg { get; set; }
     }

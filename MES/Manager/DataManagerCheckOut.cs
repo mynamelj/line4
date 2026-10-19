@@ -122,7 +122,7 @@ namespace MES.Manager
                 }
 
                 // 只有返修状态（5或6）且工站为 OP5005 或 OP2010 时才不上传，其余全部上传。
-                if (!(checkInResult == 5 && (stationName.ToUpper().Contains("OP2010") || stationName.ToUpper().Contains("OP5005"))))
+                if ( !(checkInResult == 5 && (stationName.ToUpper().Contains("OP2010") || stationName.ToUpper().Contains("OP5005"))) )
                 {
                     #region 读取产品需要上传MES的数据
                     //结构：Dictionary<组名, Dictionary<标签名, 数据项对象>>
@@ -184,7 +184,7 @@ namespace MES.Manager
                     #region 获取compList物料信息 放批次号及使用的数量
 
                     // 处理批追物料（普通批次料，如螺栓、垫片等）
-                    if (materails != null && materails.Count > 0)
+                    if (materails != null && materails.Count > 0 && checkInResult!=7)
                     {
                         // 根据当前工位是否为"选垫工位"走不同逻辑
                         // IsSelectStation=="1" 表示该工位存在多种规格垫片，需要根据PLC灯号动态选择
@@ -278,13 +278,14 @@ namespace MES.Manager
                         if (SetHelper.MesSetting.ListGroup[iNumber].IsSelectStation != "1")
                         {
                             // ---- 普通工位：仅当该工位配置为"胶水工位"时才上报胶水物料 ----
-                            // IsGlueStation=="1" 表示本工位有涂胶工序（如OP3030涂胶工位）
-                            if (SetHelper.MesSetting.ListGroup[iNumber].IsGlueStation == "1")
+                            // 1=单胶，2=支持两种胶水。
+                            if (GlueStationRules.IsGlueStation(SetHelper.MesSetting.ListGroup[iNumber].IsGlueStation))
                             {
                                 foreach (var item in glueMaterails)
                                 {
                                     // 情况1：本工位自己的胶水，正常上报
-                                    if (!string.IsNullOrEmpty(item.GlueCode) && item.LocationNo == stationName)
+                                    if (!string.IsNullOrEmpty(item.GlueCode)
+                                        && GlueStationRules.MatchesStation(item.LocationNo, stationName))
                                     {
                                         compList.Add(new CompList() { CompID = item.GlueCode, Qty = 1 });
                                     }
@@ -300,7 +301,7 @@ namespace MES.Manager
                                     }
                                 }
                             }
-                            // 若 IsGlueStation != "1"，则不上报胶水物料（非胶水工位无需处理）
+                            // 非胶水工位无需处理。
                         }
                         else
                         {
@@ -309,7 +310,8 @@ namespace MES.Manager
                             // 原因：选垫工位的胶水（如润滑脂）不受垫片选型影响，每次都要用
                             foreach (var item in glueMaterails)
                             {
-                                if (!string.IsNullOrEmpty(item.GlueCode) && item.LocationNo == stationName)
+                                if (!string.IsNullOrEmpty(item.GlueCode)
+                                    && GlueStationRules.MatchesStation(item.LocationNo, stationName))
                                 {
                                     // 胶水每次使用数量固定为1（一桶/一支）
                                     compList.Add(new CompList() { CompID = item.GlueCode, Qty = 1 });

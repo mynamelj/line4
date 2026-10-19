@@ -551,6 +551,12 @@ namespace MES.ViewModel
         }
 
         [RelayCommand]
+        private void OpenPlcMonitorWindow()
+        {
+            new PlcMonitorView().Show();
+        }
+
+        [RelayCommand]
         private void OpenMiscWindow()
         {
             _windowService.ShowDialog<MiscView>();

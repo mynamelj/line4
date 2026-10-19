@@ -138,7 +138,7 @@ namespace MES.SetModel
         /// </summary>
         public string IsGivePlcCode { get; set; } = "0";
         /// <summary>
-        /// 是否为胶水工位（进站检查胶水有无上料）
+        /// 胶水工位：0=不是，1=单胶，2=支持两种胶水（至少上料一种，进站逐一核验）
         /// </summary>
         public string IsGlueStation { get; set; } = "0";
         /// <summary>
