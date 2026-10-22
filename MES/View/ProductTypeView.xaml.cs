@@ -31,6 +31,8 @@ namespace MES.View
 
         private void Button_PreviewMouseDown_1(object sender, MouseButtonEventArgs e)
         {
+            var command = (sender as Button)?.Command;
+            if (command == null) return;
             Stopwatch sw = new Stopwatch();
             sw.Restart();
             isLeave = true;
@@ -43,7 +45,7 @@ namespace MES.View
                         SetHelper.IsAdmin = true;
                         Dispatcher.Invoke(() =>
                         {
-                            (this.DataContext as ProductTypeViewModel).CopyCommand.Execute(null);
+                            command.Execute(null);
                         });
                         SetHelper.IsAdmin = false;
                         sw.Reset();

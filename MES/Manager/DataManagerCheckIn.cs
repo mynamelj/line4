@@ -470,10 +470,12 @@ namespace MES.Manager
                     if (checkInResult == 1 || checkInResult == 4)
                     {
                         string glueSetting = SetHelper.MesSetting.ListGroup[iNumber].IsGlueStation;
-                        // 按当前工位筛选，其他工位上胶不能代替本工位；双胶允许只上任意一种。
+                        int glueProductId = SetHelper.NowProduct.ProductID;
+                        // 双胶先按当前生产机型筛选，再核验本工位已上的胶水；允许只上任意一种。
                         var glueCodes = await Application.Current.Dispatcher.InvokeAsync(() => SetHelper.GlueOnLineList
                             .Where(info => !string.IsNullOrWhiteSpace(info.GlueCode)
-                                && GlueStationRules.MatchesStation(info.LocationNo, stationName))
+                                && GlueStationRules.MatchesStation(info.LocationNo, stationName)
+                                && GlueStationRules.MatchesProduct(info.MesMsg, glueSetting, glueProductId))
                             .Select(info => info.GlueCode).ToList());
 
                         if (GlueStationRules.IsGlueStation(glueSetting) || glueCodes.Count > 0)

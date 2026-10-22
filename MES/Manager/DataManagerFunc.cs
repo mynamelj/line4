@@ -279,6 +279,7 @@ namespace MES.Manager
         public async void ChangeProductType(int ProductType, int Number)
         {
             SetHelper.StartOk = false;
+            SetHelper.ListScanMessage.ShowInfoQueue($"正在切换产品型号至{ProductType}，已限制扫码");
             try
             {
                 if (!SetHelper.IsFirstStart && SetHelper.NowProduct != null && SetHelper.NowProduct.ProductID == ProductType)
@@ -341,16 +342,27 @@ namespace MES.Manager
 
                 #endregion 型号切换时,检查批追物料
 
-                if (!SetHelper.InitializedSetting(ProductType, false)) return;
+                if (!SetHelper.InitializedSetting(ProductType, false))
+                {
+                    SetHelper.ListMesMessage.ShowInfoQueue($"产品型号{ProductType}配置初始化失败，切型失败", true, EnumLogType.log.ToString(), true);
+                    return;
+                }
                 GetStatusInfo();
                 ChangeParamsAction(Type);
                 FormulaSend();
 
                 SetHelper.IsFirstStart = false;
+                SetHelper.ListMesMessage.ShowInfoQueue($"切型成功，已切换至机型{Type.ProductName}（ID:{ProductType}）");
+            }
+            catch (Exception ex)
+            {
+                SetHelper.ListMesMessage.ShowInfoQueue($"切型执行异常:{ex}");
             }
             finally
             {
+                // 无论是切型成功还是切型失败，均视为切型结束，解开扫码限制
                 SetHelper.StartOk = true;
+                SetHelper.ListScanMessage.ShowInfoQueue("切型流程结束，已解开扫码限制");
             }
         }
 
@@ -406,12 +418,17 @@ namespace MES.Manager
         /// <returns>（接口调用结果，产品型号）</returns>
         public async Task<(bool, int)> GetProductFromMES(int Number)
         {
-            Number = Number - 1;
+            // 触发切型获取机型时，立即禁止扫码
+            SetHelper.StartOk = false;
+            SetHelper.ListScanMessage.ShowInfoQueue("触发切型请求，正在获取产品型号，已限制扫码");
+
+            int stationNumber = Number <= 0 ? 1 : Number;
+            int stationIndex = stationNumber - 1;
             (bool, int) res = (false, 0);
             string message = "";
             try
             {
-                var response = await SetHelper.mesManager.ChangeProductType(Number.GetChangeProductTypeModel(), Number);
+                var response = await SetHelper.mesManager.ChangeProductType(stationIndex.GetChangeProductTypeModel(), stationIndex);
                 if (response.Item1)//MES返回成功
                 {
                     string[] result = response.Item2.Split(',');
@@ -420,12 +437,14 @@ namespace MES.Manager
                         var productType = SetHelper.products.FirstOrDefault(x => x.ProductName == result[1].ToString());
                         if (productType != null)//与本地配置的产品型号能匹配上
                         {
-                            res.Item1 = response.Item1;
+                            res.Item1 = true;
                             res.Item2 = productType.ProductID;
                             message = $"获取产品型号成功:{response.Item2}，产品型号：{result[1]}";
 
-                            SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品型号_1", res.Item2);
-                            SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品型号结果_1", res.Item1);
+                            SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品型号_" + stationNumber, res.Item2);
+                            SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品型号结果_" + stationNumber, true);
+                            SetHelper.ListMesMessage.ShowInfoQueue(message);
+                            SetHelper.ListScanMessage.ShowInfoQueue($"获取产品型号成功({result[1]})，等待PLC切型切换，扫码保持限制");
                         }
                         else
                         {
@@ -441,11 +460,15 @@ namespace MES.Manager
                 {
                     message = $"获取产品型号失败:{response.Item3 ?? ""}";
                 }
-                SetHelper.ListMesMessage.ShowInfoQueue(message);
 
-                //校验失败了
-                if (!response.Item1)
+                // 切型失败处理：无论哪个分支失败，均视为切型结束，解开扫码限制，并通知PLC
+                if (!res.Item1)
                 {
+                    SetHelper.ListMesMessage.ShowInfoQueue(message);
+                    SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品型号结果_" + stationNumber, false);
+                    SetHelper.StartOk = true;
+                    SetHelper.ListScanMessage.ShowInfoQueue("切型失败，视为切型结束，已解开扫码限制");
+
                     await Application.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (SetHelper.IsMsgWindowOpen)
@@ -460,6 +483,9 @@ namespace MES.Manager
             catch (Exception ex)
             {
                 SetHelper.ListMesMessage.ShowInfoQueue(ex.ToString());
+                SetHelper.siemens.WriteItem(PLCGroupName.WriteGroup, "产品型号结果_" + stationNumber, false);
+                SetHelper.StartOk = true;
+                SetHelper.ListScanMessage.ShowInfoQueue("切型异常，视为切型结束，已解开扫码限制");
             }
             return res;
         }

@@ -274,6 +274,11 @@ namespace MES.Manager
                     // 处理胶水物料（GlueMaterial，如密封胶、润滑脂等）
                     if (glueMaterails != null && glueMaterails.Count > 0)
                     {
+                        int glueProductId = SetHelper.NowProduct.ProductID;
+                        string glueSetting = SetHelper.MesSetting.ListGroup[iNumber].IsGlueStation;
+                        // 与进站使用相同规则，双胶工位仅扣除当前生产机型的胶水。
+                        var matchingGlueMaterials = glueMaterails.Where(item =>
+                            GlueStationRules.MatchesProduct(item.MesMsg, glueSetting, glueProductId)).ToList();
                         // 同样区分普通工位和选垫工位
                         if (SetHelper.MesSetting.ListGroup[iNumber].IsSelectStation != "1")
                         {
@@ -281,7 +286,7 @@ namespace MES.Manager
                             // 1=单胶，2=支持两种胶水。
                             if (GlueStationRules.IsGlueStation(SetHelper.MesSetting.ListGroup[iNumber].IsGlueStation))
                             {
-                                foreach (var item in glueMaterails)
+                                foreach (var item in matchingGlueMaterials)
                                 {
                                     // 情况1：本工位自己的胶水，正常上报
                                     if (!string.IsNullOrEmpty(item.GlueCode)
@@ -308,7 +313,7 @@ namespace MES.Manager
                             // 选垫工位胶水料不需要按灯号区分，直接按工位匹配上报 
                             // 注意：此处历史代码保留了按灯号筛选的注释逻辑，但实际已简化为直接按工位匹配
                             // 原因：选垫工位的胶水（如润滑脂）不受垫片选型影响，每次都要用
-                            foreach (var item in glueMaterails)
+                            foreach (var item in matchingGlueMaterials)
                             {
                                 if (!string.IsNullOrEmpty(item.GlueCode)
                                     && GlueStationRules.MatchesStation(item.LocationNo, stationName))

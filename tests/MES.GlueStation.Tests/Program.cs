@@ -10,6 +10,7 @@ internal static class Program
         {
             LocationsAndRouting();
             LoadedGlueSelection();
+            ModelGlueSelection();
             await FeedingChecks();
             Console.WriteLine($"PASS: {checks} glue station assertions");
             return 0;
@@ -65,12 +66,14 @@ internal static class Program
             "dual glue does not treat null MesMsg as first type");
         Check(!GlueStationRules.ShouldReplace("Glue", "unknown", "Glue", "2", GlueStationRules.FirstType),
             "dual glue does not convert an unknown MesMsg to first type");
-        foreach (var newType in new[] { GlueStationRules.FirstType, GlueStationRules.SecondType })
+        foreach (var newType in new[] { "小鹏1", "小鹏2", "奇瑞1", "奇瑞2" })
         {
             var records = new[]
             {
-                (Location: "Glue", Type: GlueStationRules.FirstType),
-                (Location: "Glue", Type: GlueStationRules.SecondType),
+                (Location: "Glue", Type: "小鹏1"),
+                (Location: "Glue", Type: "小鹏2"),
+                (Location: "Glue", Type: "奇瑞1"),
+                (Location: "Glue", Type: "奇瑞2"),
                 (Location: "Other", Type: newType)
             };
             var replaced = records.Where(record =>
@@ -82,6 +85,45 @@ internal static class Program
         foreach (var location in new[] { "Other", "Other-1", "Other-2", "Glue-3", "Glue-extra", null, "" })
             Check(!GlueStationRules.MatchesStation(location, "Glue"), "unrelated location excluded: " + location);
         Check(!GlueStationRules.MatchesStation("Glue-2", "Glue"), "station matching does not strip suffixes");
+    }
+
+    private static void ModelGlueSelection()
+    {
+        Check(GlueStationRules.GetGlueType("小鹏", GlueStationRules.FirstType) == "小鹏1", "XiaoPeng first type persisted");
+        Check(GlueStationRules.GetGlueType("小鹏", GlueStationRules.SecondType) == "小鹏2", "XiaoPeng second type persisted");
+        Check(GlueStationRules.GetGlueType("奇瑞", GlueStationRules.FirstType) == "奇瑞1", "QiRui first type persisted");
+        Check(GlueStationRules.GetGlueType("奇瑞", GlueStationRules.SecondType) == "奇瑞2", "QiRui second type persisted");
+        Check(GlueStationRules.GetGlueType(null, GlueStationRules.FirstType) == null, "missing model rejected");
+        Check(GlueStationRules.GetGlueType("unknown", GlueStationRules.FirstType) == null, "unknown model rejected");
+        Check(GlueStationRules.GetGlueType("小鹏", null) == null, "missing type rejected");
+        Check(GlueStationRules.GetGlueType("小鹏", "unknown") == null, "unknown type rejected");
+
+        var records = new[]
+        {
+            (Location: "Glue", Type: "小鹏1", Code: "XP1"),
+            (Location: "Glue", Type: "小鹏2", Code: "XP2"),
+            (Location: "Glue", Type: "奇瑞1", Code: "QR1"),
+            (Location: "Glue", Type: "奇瑞2", Code: "QR2"),
+            (Location: "Other", Type: "奇瑞1", Code: "OTHER"),
+            (Location: "Glue", Type: GlueStationRules.FirstType, Code: "LEGACY1"),
+            (Location: "Glue", Type: GlueStationRules.SecondType, Code: "LEGACY2"),
+            (Location: "Glue", Type: (string)null, Code: "UNTYPED"),
+            (Location: "Glue", Type: "unknown", Code: "UNKNOWN")
+        };
+        foreach (int productId in new[] { 1, 24, 25, 26 })
+        {
+            var selected = records.Where(record => GlueStationRules.MatchesStation(record.Location, "Glue")
+                && GlueStationRules.MatchesProduct(record.Type, "2", productId)).Select(record => record.Code).ToArray();
+            var expected = productId == 25 ? new[] { "QR1", "QR2" } : new[] { "XP1", "XP2" };
+            Check(selected.SequenceEqual(expected), "check-in and checkout select only model glue: " + productId);
+            foreach (var onlyGlue in records.Take(4))
+            {
+                var codes = new[] { onlyGlue }.Where(record => GlueStationRules.MatchesProduct(record.Type, "2", productId));
+                Check(codes.Any() == expected.Contains(onlyGlue.Code), "one type allowed only for matching model");
+            }
+            Check(GlueStationRules.MatchesProduct(null, "1", productId), "single glue remains independent of model");
+            Check(GlueStationRules.MatchesProduct("legacy", "1", productId), "single glue accepts existing records");
+        }
     }
 
     private static async Task FeedingChecks()

@@ -52,6 +52,7 @@ namespace MES.ViewModel
                 LocationNo = "";
                 LocationIndex = -1;
                 GlueType = GlueStationRules.FirstType;
+                GlueModel = GlueStationRules.XiaoPengModel;
                 GlueCode = "";
                 BoxNo = "";
                 ErrorMsg = "";
@@ -124,6 +125,8 @@ namespace MES.ViewModel
         public int LocationIndex { get; set; } = 0;
         public IReadOnlyList<string> GlueTypes { get; } = new[] { GlueStationRules.FirstType, GlueStationRules.SecondType };
         public string GlueType { get; set; } = GlueStationRules.FirstType;
+        public IReadOnlyList<string> GlueModels { get; } = new[] { GlueStationRules.XiaoPengModel, GlueStationRules.QiRuiModel };
+        public string GlueModel { get; set; } = GlueStationRules.XiaoPengModel;
 
         [DependsOn(nameof(LocationNo))]
         public Visibility GlueTypeVisibility
@@ -138,7 +141,11 @@ namespace MES.ViewModel
             }
         }
 
-        private void OnLocationNoChanged() => GlueType = GlueStationRules.FirstType;
+        private void OnLocationNoChanged()
+        {
+            GlueType = GlueStationRules.FirstType;
+            GlueModel = GlueStationRules.XiaoPengModel;
+        }
 
         /// <summary>
         /// 批追码
@@ -199,10 +206,10 @@ namespace MES.ViewModel
                 return;
             }
             string glueSetting = SetHelper.MesSetting.ListGroup[iNumber].IsGlueStation;
-            string loadingType = glueSetting == "2" ? GlueType : null;
-            if (glueSetting == "2" && loadingType != GlueStationRules.FirstType && loadingType != GlueStationRules.SecondType)
+            string loadingType = glueSetting == "2" ? GlueStationRules.GetGlueType(GlueModel, GlueType) : null;
+            if (glueSetting == "2" && loadingType == null)
             {
-                ErrorMsg = "请选择胶水种类！";
+                ErrorMsg = "请选择机型和胶水种类！";
                 Color = Brushes.Red;
                 return;
             }
@@ -402,7 +409,7 @@ namespace MES.ViewModel
         /// </summary>
         public string LocationNo { get; set; }
         /// <summary>
-        /// 双胶工位的胶水种类：第一种、第二种；单胶工位不使用。
+        /// 双胶工位的机型及胶水种类：小鹏1、小鹏2、奇瑞1、奇瑞2；单胶工位不使用。
         /// </summary>
         public string MesMsg { get; set; }
     }

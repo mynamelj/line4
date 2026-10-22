@@ -9,6 +9,26 @@ namespace MES.Manager
     {
         public const string FirstType = "第一种";
         public const string SecondType = "第二种";
+        public const string XiaoPengModel = "小鹏";
+        public const string QiRuiModel = "奇瑞";
+
+        public static string GetModelName(int productId) => productId == 25 ? QiRuiModel : XiaoPengModel;
+
+        // 下拉框保留第一种/第二种，持久化时组合为四种明确的机型胶水类型。
+        public static string GetGlueType(string model, string type)
+        {
+            if (model != XiaoPengModel && model != QiRuiModel) return null;
+            if (type == FirstType) return model + "1";
+            if (type == SecondType) return model + "2";
+            return null;
+        }
+
+        public static bool MatchesProduct(string mesMsg, string setting, int productId)
+        {
+            if (setting != "2") return true;
+            string model = GetModelName(productId);
+            return mesMsg == GetGlueType(model, FirstType) || mesMsg == GetGlueType(model, SecondType);
+        }
 
         public static bool IsGlueStation(string setting) => setting == "1" || setting == "2";
 
@@ -17,7 +37,7 @@ namespace MES.Manager
             if (IsGlueStation(setting)) yield return stationName;
         }
 
-        // 单胶只匹配工位；双胶额外匹配MesMsg中的种类。
+        // 单胶只匹配工位；双胶额外匹配MesMsg中的机型和种类。
         public static bool ShouldReplace(string location, string mesMsg,
             string stationName, string setting, string glueType)
             => MatchesStation(location, stationName)

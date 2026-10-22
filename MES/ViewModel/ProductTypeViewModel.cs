@@ -160,7 +160,11 @@ namespace MES.ViewModel
             MessageBox.Show($"复制成功");
         });
 
-        public ICommand CopyCommand => new RelayCommand(() =>
+        public ICommand CopyCommand => new RelayCommand(() => CopyConfiguration(true));
+
+        public ICommand CopyWithoutPlcCommand => new RelayCommand(() => CopyConfiguration(false));
+
+        private void CopyConfiguration(bool includePlc)
         {
             try
             {
@@ -170,10 +174,17 @@ namespace MES.ViewModel
                     return;
                 }
 
+                if (SelectComboProductFrom == null || SelectComboProductTo == null
+                    || string.IsNullOrEmpty(SelectComboProductFrom.ProductName)
+                    || string.IsNullOrEmpty(SelectComboProductTo.ProductName))
+                {
+                    MessageBox.Show("请选择来源型号和目标型号");
+                    return;
+                }
+
                 var Mes = SetHelper.LoadConfig<MesSettingModel>(SetHelper.mes, SelectComboProductFrom);
                 var Api = SetHelper.LoadConfig<ApiSettingModel>(SetHelper.api, SelectComboProductFrom);
                 var scan = SetHelper.LoadConfig<List<ScanSettingModel>>(SetHelper.scan, SelectComboProductFrom);
-                var plc = SetHelper.LoadConfig<PLCSettingModel>(SetHelper.plc, SelectComboProductFrom);
 
                 var alarm = SetHelper.LoadConfig<List<AlarmData>>(SetHelper.alarm, SelectComboProductFrom);
                 //var glue = SetHelper.LoadConfig<List<MaterailOnOffModel>>(SetHelper.glue, SelectComboProductFrom);
@@ -181,25 +192,30 @@ namespace MES.ViewModel
                 var openBoxCode = SetHelper.LoadConfig<List<List<OpenBox>>>(SetHelper.openBoxCode, SelectComboProductFrom);
                 var lightConfig = SetHelper.LoadConfig<ObservableCollection<LightConfig>>(SetHelper.lightConfig, SelectComboProductFrom);
 
-                AddTags(plc, Api);
+                if (includePlc)
+                {
+                    var plc = SetHelper.LoadConfig<PLCSettingModel>(SetHelper.plc, SelectComboProductFrom);
+                    AddTags(plc, Api);
+                    SetHelper.SaveConfig(plc, SetHelper.plc, SelectComboProductTo);
+                }
 
                 SetHelper.SaveConfig(Mes, SetHelper.mes, SelectComboProductTo);
                 SetHelper.SaveConfig(Api, SetHelper.api, SelectComboProductTo);
                 SetHelper.SaveConfig(scan, SetHelper.scan, SelectComboProductTo);
-                SetHelper.SaveConfig(plc, SetHelper.plc, SelectComboProductTo);
                 SetHelper.SaveConfig(alarm, SetHelper.alarm, SelectComboProductTo);
                 //SetHelper.SaveConfig(glue, SetHelper.glue, SelectComboProductTo);
                 SetHelper.SaveConfig(stationNumber, SetHelper.stationNumber, SelectComboProductTo);
                 SetHelper.SaveConfig(openBoxCode, SetHelper.openBoxCode, SelectComboProductTo);
                 SetHelper.SaveConfig(lightConfig, SetHelper.lightConfig, SelectComboProductTo);
-                MessageBox.Show($"{SelectComboProductFrom.ProductName}→{SelectComboProductTo.ProductName} 复制成功");
+                string copyNote = includePlc ? "" : "（不复制PLC设置）";
+                MessageBox.Show($"{SelectComboProductFrom.ProductName}→{SelectComboProductTo.ProductName} 复制成功{copyNote}");
             }
             catch (Exception ex)
             {
                 SetHelper.ListMesMessage.ShowInfoQueue(ex.ToString());
             }
 
-        });
+        }
 
         public ICommand CopyOriginalCommand => new RelayCommand(() =>
         {

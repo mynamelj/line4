@@ -175,6 +175,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
@@ -224,13 +225,24 @@
                                 MinWidth="90"
                                 Margin="10"
                                 VerticalAlignment="Center"
+                                Command="{Binding CopyWithoutPlcCommand}"
+                                PreviewMouseDown="Button_PreviewMouseDown_1"
+                                PreviewMouseUp="Button_PreviewMouseUp"
+                                Content="复制配置文件（不复制PLC设置）" />
+
+                        <Button Grid.Row="3"
+                                Grid.ColumnSpan="3"
+                                Height="30"
+                                MinWidth="90"
+                                Margin="10"
+                                VerticalAlignment="Center"
                                 Command="{Binding CopyOriginalCommand}"
                                 PreviewMouseDown="Button_PreviewMouseDown"
                                 PreviewMouseUp="orbtn_PreviewMouseUp"
                                 Content="复制原始配置文件到每个型号"
                                 Visibility="Collapsed" />
 
-                        <Button Grid.Row="2"
+                        <Button Grid.Row="3"
                                 Grid.ColumnSpan="3"
                                 Height="30"
                                 MinWidth="90"
