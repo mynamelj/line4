@@ -162,9 +162,9 @@ namespace MES.ViewModel
 
         public ICommand CopyCommand => new RelayCommand(() => CopyConfiguration(true));
 
-        public ICommand CopyWithoutPlcCommand => new RelayCommand(() => CopyConfiguration(false));
+        public ICommand CopyWithoutCheckOutDataCommand => new RelayCommand(() => CopyConfiguration(false));
 
-        private void CopyConfiguration(bool includePlc)
+        private void CopyConfiguration(bool includeCheckOutData)
         {
             try
             {
@@ -192,12 +192,29 @@ namespace MES.ViewModel
                 var openBoxCode = SetHelper.LoadConfig<List<List<OpenBox>>>(SetHelper.openBoxCode, SelectComboProductFrom);
                 var lightConfig = SetHelper.LoadConfig<ObservableCollection<LightConfig>>(SetHelper.lightConfig, SelectComboProductFrom);
 
-                if (includePlc)
+                var plc = SetHelper.LoadConfig<PLCSettingModel>(SetHelper.plc, SelectComboProductFrom);
+                PLCGroup originalCheckOutGroup = null;
+                if (!includeCheckOutData)
                 {
-                    var plc = SetHelper.LoadConfig<PLCSettingModel>(SetHelper.plc, SelectComboProductFrom);
-                    AddTags(plc, Api);
-                    SetHelper.SaveConfig(plc, SetHelper.plc, SelectComboProductTo);
+                    var originalPlc = SetHelper.LoadConfig<PLCSettingModel>(SetHelper.plc, SelectComboProductTo);
+                    originalCheckOutGroup = originalPlc.ListGroup.FirstOrDefault(x => x.GroupType == PLCGroupName.CheckOutGroup.ToString());
                 }
+
+                AddTags(plc, Api);
+                if (!includeCheckOutData)
+                {
+                    // 复制完整PLC配置，仅写回目标型号原有的出站数据条目。
+                    var checkOutGroup = plc.ListGroup.FirstOrDefault(x => x.GroupType == PLCGroupName.CheckOutGroup.ToString());
+                    if (checkOutGroup != null)
+                    {
+                        checkOutGroup.ListTag = originalCheckOutGroup?.ListTag ?? new ObservableCollection<PLCTag>();
+                    }
+                    else if (originalCheckOutGroup != null)
+                    {
+                        plc.ListGroup.Add(originalCheckOutGroup);
+                    }
+                }
+                SetHelper.SaveConfig(plc, SetHelper.plc, SelectComboProductTo);
 
                 SetHelper.SaveConfig(Mes, SetHelper.mes, SelectComboProductTo);
                 SetHelper.SaveConfig(Api, SetHelper.api, SelectComboProductTo);
@@ -207,7 +224,7 @@ namespace MES.ViewModel
                 SetHelper.SaveConfig(stationNumber, SetHelper.stationNumber, SelectComboProductTo);
                 SetHelper.SaveConfig(openBoxCode, SetHelper.openBoxCode, SelectComboProductTo);
                 SetHelper.SaveConfig(lightConfig, SetHelper.lightConfig, SelectComboProductTo);
-                string copyNote = includePlc ? "" : "（不复制PLC设置）";
+                string copyNote = includeCheckOutData ? "" : "（不复制出站数据）";
                 MessageBox.Show($"{SelectComboProductFrom.ProductName}→{SelectComboProductTo.ProductName} 复制成功{copyNote}");
             }
             catch (Exception ex)

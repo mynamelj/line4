@@ -50,7 +50,7 @@ namespace MES.View
 
         private void PopupWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            txtMessage.Text = Message;
+            txtMessage.Text = MaterialDisplayText.Instance.Format(Message);
             this.Activate();
         }
 

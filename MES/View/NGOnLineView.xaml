@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:MES.View"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:MES.ViewModel" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:display="clr-namespace:MES.Comm"
              d:DesignHeight="450"
              d:DesignWidth="800"
              Background="White"
@@ -116,7 +117,7 @@
         <Border Grid.Row="2"
                 BorderBrush="Black"
                 BorderThickness="1,0,1,1">
-            <TextBox Text="{Binding ErrorMsg}"
+            <TextBox Text="{display:MaterialText Path=ErrorMsg}"
                        Margin="10"
                         BorderThickness="0"
                        HorizontalAlignment="Center"

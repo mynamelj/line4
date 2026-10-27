@@ -271,7 +271,7 @@ namespace MES.ViewModel
             }
             //int iNumber = SetHelper.StationNumber.numberGroups.Select(it => it.Name).ToList().IndexOf(LocationNo);
 
-            var result = MessageBox.Show($"胶水\r\n{s.GlueCode}\r\n是否确认下料??", "下料确认", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var result = MessageBox.Show(MaterialDisplayText.Instance.Format($"胶水\r\n{s.GlueCode}\r\n是否确认下料??"), "下料确认", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.No)
             {
                 return;
@@ -324,7 +324,7 @@ namespace MES.ViewModel
             {
                 if (SetHelper.IsAdmin)
                 {
-                    var msgResult = MessageBox.Show($"是否强制删除:\r\n物料名称：胶水\r\n料号：{material.GlueCode}", "", MessageBoxButton.YesNo);
+                    var msgResult = MessageBox.Show(MaterialDisplayText.Instance.Format($"是否强制删除:\r\n物料名称：胶水\r\n料号：{material.GlueCode}"), "", MessageBoxButton.YesNo);
                     if (msgResult == MessageBoxResult.Yes)
                     {
                         GlueOnLineList.Remove(material);

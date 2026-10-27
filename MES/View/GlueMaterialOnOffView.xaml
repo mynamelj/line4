@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:MES.View"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:MES.ViewModel"
+             xmlns:display="clr-namespace:MES.Comm"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              d:DesignHeight="450"
              d:DesignWidth="800"
@@ -45,7 +46,7 @@
                                Content="!"
                                FontSize="10"
                                FontWeight="Bold"
-                               ToolTip="胶水上下料使用当前生产机型配置" />
+                               ToolTip="{display:MaterialText 胶水上下料使用当前生产机型配置}" />
                     </Grid>
                 </WrapPanel>
 
@@ -71,7 +72,7 @@
                 </Grid.ColumnDefinitions>
                 <DockPanel Grid.Column="0"
                            VerticalAlignment="Center">
-                    <TextBlock Text="扫描胶水物料码"
+                    <TextBlock Text="{display:MaterialText 扫描胶水物料码}"
                                Margin="10"
                                Padding="0,6,0,0"
                                VerticalAlignment="Top" />
@@ -145,7 +146,7 @@
                            Width="180"
                            VerticalAlignment="Center"
                            Visibility="{Binding GlueTypeVisibility}">
-                    <TextBlock Text="胶水种类"
+                    <TextBlock Text="{display:MaterialText 胶水种类}"
                                Margin="10"
                                VerticalAlignment="Center" />
                     <ComboBox Height="30"
@@ -169,7 +170,7 @@
         <Border Grid.Row="2"
                 BorderBrush="Black"
                 BorderThickness="1,0,1,1">
-            <TextBox Text="{Binding ErrorMsg}"
+            <TextBox Text="{display:MaterialText Path=ErrorMsg}"
                      BorderThickness="0"
                      Margin="10"
                      HorizontalAlignment="Center"
@@ -202,7 +203,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="胶水码"
+                <DataGridTemplateColumn Header="{display:MaterialText 胶水码}"
                                         Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -304,7 +305,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="胶水种类"
+                <DataGridTemplateColumn Header="{display:MaterialText 胶水种类}"
                                         Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

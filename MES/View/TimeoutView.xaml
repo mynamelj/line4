@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MES.View"
         xmlns:vm="clr-namespace:MES.ViewModel"
+        xmlns:display="clr-namespace:MES.Comm"
         mc:Ignorable="d"
         Title="超时报警" Height="300" Width="600" 
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Topmost="True">
@@ -14,7 +15,7 @@
     <Grid Background="#F5F5F5">
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="450">
 
-            <TextBlock Text="⚠️ 涂胶超时，请输入密码然后确认" 
+            <TextBlock Text="{display:MaterialText '⚠️ 涂胶超时，请输入密码然后确认'}"
                        Foreground="Red" 
                        FontSize="26" 
                        FontWeight="Bold" 

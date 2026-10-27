@@ -225,10 +225,10 @@
                                 MinWidth="90"
                                 Margin="10"
                                 VerticalAlignment="Center"
-                                Command="{Binding CopyWithoutPlcCommand}"
+                                Command="{Binding CopyWithoutCheckOutDataCommand}"
                                 PreviewMouseDown="Button_PreviewMouseDown_1"
                                 PreviewMouseUp="Button_PreviewMouseUp"
-                                Content="复制配置文件（不复制PLC设置）" />
+                                Content="复制配置文件（不复制出站数据）" />
 
                         <Button Grid.Row="3"
                                 Grid.ColumnSpan="3"

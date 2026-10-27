@@ -230,6 +230,7 @@ namespace MES.Manager
                 realapipath = apipath;
 
                 StationNumber = ReadSys<StationNumberModel>(stationNumberPath, "工站");
+                MaterialDisplayText.Instance.Refresh(StationNumber.numberGroups.Select(station => station?.Name));
                 IsOpen = new bool[StationNumber.numberGroups.Count];
                 //扫码窗口数量与工位数相同
                 IsRestart = new bool[StationNumber.numberGroups.Count];

@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:MES.View"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:MES.ViewModel"
+             xmlns:display="clr-namespace:MES.Comm"
              d:DesignHeight="450"
              d:DesignWidth="800"
              Background="White"
@@ -618,7 +619,7 @@
                                                     <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
                                                                FontSize="15"
                                                                Foreground="{Binding FailBrush}" />
-                                                    <TextBlock Text="{Binding Info}"
+                                                    <TextBlock Text="{display:MaterialText Path=Info}"
                                                                Grid.Column="1"
                                                                FontSize="15"
                                                                TextWrapping="Wrap"
@@ -745,7 +746,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
                                                            FontSize="15" />
-                                                <TextBlock Text="{Binding Info}"
+                                                <TextBlock Text="{display:MaterialText Path=Info}"
                                                            Grid.Column="1"
                                                            FontSize="15"
                                                            TextWrapping="Wrap" />
@@ -791,7 +792,7 @@
                                                             <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
                                                                        FontSize="15"
                                                                        Foreground="{Binding FailBrush}" />
-                                                            <TextBlock Text="{Binding Info}"
+                                                            <TextBlock Text="{display:MaterialText Path=Info}"
                                                                        Grid.Column="1"
                                                                        FontSize="15"
                                                                        Foreground="{Binding FailBrush}"
@@ -823,7 +824,7 @@
                                                             <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
                                                                        FontSize="15"
                                                                        Foreground="{Binding FailBrush}" />
-                                                            <TextBlock Text="{Binding Info}"
+                                                            <TextBlock Text="{display:MaterialText Path=Info}"
                                                                        Grid.Column="1"
                                                                        FontSize="15"
                                                                        Foreground="{Binding FailBrush}"
@@ -855,7 +856,7 @@
                                                             <TextBlock Text="{Binding DTNow, StringFormat='HH:mm:ss'}"
                                                                        FontSize="15"
                                                                        Foreground="{Binding FailBrush}" />
-                                                            <TextBlock Text="{Binding Info}"
+                                                            <TextBlock Text="{display:MaterialText Path=Info}"
                                                                        Grid.Column="1"
                                                                        FontSize="15"
                                                                        Foreground="{Binding FailBrush}"

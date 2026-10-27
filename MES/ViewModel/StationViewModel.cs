@@ -148,6 +148,7 @@ namespace MES.ViewModel
             //File.WriteAllText(SetHelper.stationNumberPath, materialjson);
             SetHelper.SaveConfig(model, SetHelper.stationNumber, ProductType);
             SetHelper.StationNumber.numberGroups = GlueOnLineList;
+            MaterialDisplayText.Instance.Refresh(GlueOnLineList.Select(station => station?.Name));
 
         }
     }

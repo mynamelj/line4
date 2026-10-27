@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:MES.View"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:MES.ViewModel"
+             xmlns:display="clr-namespace:MES.Comm"
              Background="White"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:MesMainViewModel, IsDesignTimeCreatable=False}">
@@ -322,7 +323,7 @@
                              HorizontalAlignment="Stretch"
                              TextAlignment="Center" />
 
-                    <TextBlock Text="胶水上料工位(0=不是，1=单胶，2=支持双胶)"
+                    <TextBlock Text="{display:MaterialText '胶水上料工位(0=不是，1=单胶，2=支持双胶)'}"
                                Margin="5"
                                HorizontalAlignment="Center" />
                     <TextBox Text="{Binding IsGlueStation}"
@@ -599,7 +600,7 @@
                                  HorizontalAlignment="Stretch"
                                  TextAlignment="Center" />
 
-                        <TextBlock Text="胶水上下料"
+                        <TextBlock Text="{display:MaterialText 胶水上下料}"
                                    Margin="5"
                                    HorizontalAlignment="Center" />
                         <TextBox Text="{Binding GlueCheckOut}"
